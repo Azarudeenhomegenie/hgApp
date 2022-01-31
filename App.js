@@ -1,20 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, } from "react-native";
+import Navigation from './navigation/navigation';
+import { Provider as StoreProvider } from 'react-redux';
+import store from './store';
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
+import Text from "./components/MyText";
+
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  let [fontsLoaded] = useFonts({
+    'Lobster': require('./assets/fonts/Lobster/Lobster.ttf'),
+    'PoppinsBL': require('./assets/fonts/Poppins/Poppins-Black.ttf'),
+    'PoppinsBO': require('./assets/fonts/Poppins/Poppins-Bold.ttf'),
+    'PoppinsEB': require('./assets/fonts/Poppins/Poppins-ExtraBold.ttf'),
+    'PoppinsEL': require('./assets/fonts/Poppins/Poppins-ExtraLight.ttf'),
+    'PoppinsL': require('./assets/fonts/Poppins/Poppins-Light.ttf'),
+    'PoppinsM': require('./assets/fonts/Poppins/Poppins-Medium.ttf'),
+    'PoppinsR': require('./assets/fonts/Poppins/Poppins-Regular.ttf'),
+    'PoppinsSB': require('./assets/fonts/Poppins/Poppins-SemiBold.ttf'),
+    'PoppinsT': require('./assets/fonts/Poppins/Poppins-Thin.ttf'),
+  });
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+      <StoreProvider store={store}>
+        <Navigation />
+        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}><Text>test</Text></View> */}
+      </StoreProvider>
+    );
+  }
+  // return (
+  //   <StoreProvider store={store}>
+  //     <Navigation />
+  //   </StoreProvider>
+  // );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

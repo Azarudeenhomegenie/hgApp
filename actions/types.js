@@ -1,0 +1,10 @@
+export const GET_POPULAR_SERVICE = "GET_POPULAR_SERVICE";
+export const GET_OFFERS = "GET_OFFERS";
+export const GET_LOGIN = "GET_LOGIN";
+export const VERIFY_OTP = "VERIFY_OTP";
+export const GET_CUSTOMER_DETAILS = "GET_CUSTOMER_DETAILS";
+export const REGISTER_VIA_PHONE = "REGISTER_VIA_PHONE";
+export const GET_ERROR = 'GET_ERROR'
+export const GET_CITY = 'GET_CITY'
+export const GET_SEARCH = "GET_SEARCH"
+export const GET_SPECIALIZED = "GET_SPECIALIZED"
