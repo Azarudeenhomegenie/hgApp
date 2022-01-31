@@ -16,7 +16,6 @@ import Swiper from "react-native-swiper";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Text from "../../components/MyText";
-// import AllFonts from '../../components/AllFonts';
 import Header from '../../components/header';
 import { connect } from "react-redux";
 import { getCity, getPopularService, getOffers, getSearch, getSpecialized } from "../../actions/hgAction";
