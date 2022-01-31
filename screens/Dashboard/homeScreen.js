@@ -12,15 +12,17 @@ import {
     FlatList,
     Dimensions,
 } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Swiper from "react-native-swiper";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
-import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Text from "../../components/MyText";
 import Header from '../../components/header';
 import { connect } from "react-redux";
 import { getCity, getPopularService, getOffers, getSearch, getSpecialized } from "../../actions/hgAction";
-import css, { zIndex5 } from '../../components/commonCss';
+import css from '../../components/commonCss';
 import Whatsapp from "../../components/whtsApp";
+let imgPath = '../../assets/icons/';
+let imgPathImage = '../../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -82,7 +84,7 @@ const HomeScreen = (props) => {
                                 </View>
                             }
                         >
-                            <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require("../../assets/Images/home_slider1.jpg")} />
+                            <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require(imgPath + "home_slider1.jpg")} />
                         </View>
                         <View
                             style={styles.slide}
@@ -99,7 +101,7 @@ const HomeScreen = (props) => {
                                 </View>
                             }
                         >
-                            <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require("../../assets/Images/home_slider2.jpg")} />
+                            <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require(imgPath + "home_slider2.jpg")} />
                         </View>
                         <View
                             style={styles.slide}
@@ -116,7 +118,7 @@ const HomeScreen = (props) => {
                                 </View>
                             }
                         >
-                            <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require("../../assets/Images/home_slider3.jpg")} />
+                            <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require(imgPath + "home_slider3.jpg")} />
                         </View>
                     </Swiper>
                 </View>
@@ -161,7 +163,7 @@ const HomeScreen = (props) => {
                                 style={[styles.imageContainer, css.width50]}
                                 onPress={() => props.navigation.navigate("CategoryPage", { catName: 'dailyutilities', })}
                             >
-                                <Image source={require("../../assets/Images/Handyman.png")} style={[styles.backgroundImage, css.img95]} />
+                                <Image source={require(imgPath + "Handyman.png")} style={[styles.backgroundImage, css.img95]} />
                                 <Text style={styles.serviceTitle}>DAILY {"\n"}UTILITIES</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -171,7 +173,7 @@ const HomeScreen = (props) => {
                                 })}
                             >
                                 <Image
-                                    source={require("../../assets/icons/pcr.png")}
+                                    source={require(imgPath + "pcr.png")}
                                     style={[styles.backgroundImage, css.img95]}
                                 />
                                 <Text style={styles.serviceTitle}>Health & {"\n"}Wellness</Text>
@@ -185,7 +187,7 @@ const HomeScreen = (props) => {
                                 })}
                             >
                                 <Image
-                                    source={require("../../assets/icons/Lifestyle.png")}
+                                    source={require(imgPath + "Lifestyle.png")}
                                     style={[styles.backgroundImage, css.img95]}
                                 />
                                 <Text style={styles.serviceTitle}>Lifestyle {"\n"}& Decor</Text>
@@ -197,7 +199,7 @@ const HomeScreen = (props) => {
                                 })}
                             >
                                 <Image
-                                    source={require("../../assets/Images/pet_groom.png")}
+                                    source={require(imgPath + "pet_groom.png")}
                                     style={[styles.backgroundImage, css.img95]}
                                 />
                                 <Text style={styles.serviceTitle}>Others</Text>
@@ -363,7 +365,7 @@ const HomeScreen = (props) => {
                         </Text>
                         <View style={styles.flexRow}>
                             <Image
-                                source={require("../../assets/icons/hgWarranty.png")}
+                                source={require(imgPath + "hgWarranty.png")}
                                 style={styles.warrantyImage}
                             />
                             <Text style={styles.content}>
@@ -378,7 +380,7 @@ const HomeScreen = (props) => {
                             <View style={styles.flexRowSpace}>
                                 <View style={styles.whyHomegenieImage}>
                                     <Image
-                                        source={require("../../assets/icons/expert.png")}
+                                        source={require(imgPath + "expert.png")}
                                         style={styles.alignCenter}
                                     />
                                     <Text style={styles.whyContent}>
@@ -387,14 +389,14 @@ const HomeScreen = (props) => {
                                 </View>
                                 <View style={styles.whyHomegenieImage}>
                                     <Image
-                                        source={require("../../assets/icons/priceverification.png")}
+                                        source={require(imgPath + "priceverification.png")}
                                         style={styles.alignCenter}
                                     />
                                     <Text style={styles.whyContent}>Great {"\n"} prices</Text>
                                 </View>
                                 <View style={styles.whyHomegenieImage}>
                                     <Image
-                                        source={require("../../assets/icons/oneshop.png")}
+                                        source={require(imgPath + "oneshop.png")}
                                         style={styles.alignCenter}
                                     />
                                     <Text style={styles.whyContent}>One-stop {"\n"} shop</Text>
@@ -403,7 +405,7 @@ const HomeScreen = (props) => {
                             <View style={styles.flexRowSpace}>
                                 <View style={styles.whyHomegenieImage}>
                                     <Image
-                                        source={require("../../assets/icons/qualityControl.png")}
+                                        source={require(imgPath + "qualityControl.png")}
                                         style={styles.alignCenter}
                                     />
                                     <Text style={styles.whyContent}>
@@ -412,7 +414,7 @@ const HomeScreen = (props) => {
                                 </View>
                                 <View style={styles.whyHomegenieImage}>
                                     <Image
-                                        source={require("../../assets/icons/customerService.png")}
+                                        source={require(imgPath + "customerService.png")}
                                         style={styles.alignCenter}
                                     />
                                     <Text style={styles.whyContent}>
@@ -430,15 +432,15 @@ const HomeScreen = (props) => {
                         <View style={styles.featureIN}>
                             <Text style={styles.featureInText}>Featured in</Text>
                             <View style={styles.flexRowSpace}>
-                                <Image source={require("../../assets/icons/gulfNews.png")} />
-                                <Image source={require("../../assets/icons/khaleejTimes.png")} />
-                                <Image source={require("../../assets/icons/theNational.png")} />
+                                <Image source={require(imgPath + "gulfNews.png")} />
+                                <Image source={require(imgPath + "khaleejTimes.png")} />
+                                <Image source={require(imgPath + "theNational.png")} />
                             </View>
                             <View style={styles.space10}></View>
                             <View style={styles.flexRowSpace}>
-                                <Image source={require("../../assets/icons/business.png")} />
-                                <Image source={require("../../assets/icons/247.png")} />
-                                <Image source={require("../../assets/icons/forbes.png")} />
+                                <Image source={require(imgPath + "business.png")} />
+                                <Image source={require(imgPath + "247.png")} />
+                                <Image source={require(imgPath + "forbes.png")} />
                             </View>
                         </View>
                     </View>

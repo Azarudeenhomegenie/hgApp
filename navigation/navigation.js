@@ -7,8 +7,8 @@ import { AntDesign } from "@expo/vector-icons";
 
 import homeScreen from '../screens/Dashboard/homeScreen';
 import login from '../screens/Dashboard/login';
-import BookingScreen from '../screens/BookingScreen';
-//import GetgenieScreen from '../screens/GetgenieScreen';
+import MyBookingScreen from '../screens/MyBookingScreen';
+import GetgenieScreen from '../screens/GetgenieScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 import OfferScreen from '../screens/OfferScreen';
 import AccountScreen from '../screens/AccountScreen';
@@ -28,6 +28,7 @@ const HomeScreenStack = ({ navigation }) => {
     )
 }
 
+
 const BottomTab = ({ navigation }) => {
     return (
         <Tab.Navigator screenOptions={({ route }) => ({
@@ -43,7 +44,6 @@ const BottomTab = ({ navigation }) => {
                 },
             },
             tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
                 if (route.name === "Home") {
                     return (
                         <Image
@@ -59,6 +59,7 @@ const BottomTab = ({ navigation }) => {
                 } else if (route.name === "GetGenie") {
                     return (
                         <Image
+                            style={{ width: 70, height: 70 }}
                             source={require(imagePath + "genieNavbar.png")}
                         />
                     );
@@ -75,7 +76,6 @@ const BottomTab = ({ navigation }) => {
                         />
                     );
                 }
-                return <AntDesign name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: "#2EB0E4",
             tabBarInactiveTintColor: "#525252",
@@ -89,76 +89,26 @@ const BottomTab = ({ navigation }) => {
                 name="Home"
                 component={homeScreen}
                 style={[styles.tabMenu, styles.homeMenu]}
-            // options={{
-            //     title: "Home",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 source={require(imagePath + "homeIcon.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
             />
             <Tab.Screen
                 name="Bookings"
-                component={BookingScreen}
+                component={MyBookingScreen}
                 style={[styles.tabMenu, styles.bookingMenu]}
-            // options={{
-            //     title: "Booking",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 source={require(imagePath + "bookings.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
             />
-            {/* <Tab.Screen name="GetGenie" component={GetgenieScreen} style={[styles.tabMenu, styles.getGenieMenu]}
-            // options={{
-            //     title: "",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 style={{ width: 70, height: 70 }}
-            //                 source={require("../assets/new_images/genieNavbar.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
-            /> */}
+            <Tab.Screen
+                name="GetGenie"
+                component={GetgenieScreen}
+                style={[styles.tabMenu, styles.getGenieMenu]}
+            />
             <Tab.Screen
                 name="Offers"
                 component={OfferScreen}
                 style={[styles.tabMenu, styles.offerMenu]}
-            // options={{
-            //     title: "",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 style={{ width: 70, height: 70 }}
-            //                 source={require("../assets/new_images/genieNavbar.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
             />
             <Tab.Screen
                 name="Account"
                 component={AccountScreen}
                 style={[styles.tabMenu, styles.accountMenu]}
-            // options={{
-            //     title: "",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 style={{ width: 70, height: 70 }}
-            //                 source={require("../assets/new_images/genieNavbar.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
             />
         </Tab.Navigator>
     )
