@@ -1,7 +1,6 @@
 import {
     StyleSheet,
     View,
-    // Text,
     Image,
     ScrollView,
     SafeAreaView,
@@ -11,6 +10,7 @@ import {
     Pressable,
     FlatList,
     Dimensions,
+    Linking,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Swiper from "react-native-swiper";
@@ -20,12 +20,12 @@ import Header from '../../components/header';
 import { connect } from "react-redux";
 import { getCity, getPopularService, getOffers, getSearch, getSpecialized } from "../../actions/hgAction";
 import css from '../../components/commonCss';
+import StatusBar from '../../components/StatusBar';
 import Whatsapp from "../../components/whtsApp";
 let imgPath = '../../assets/icons/';
 let imgPathImage = '../../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
 
 const HomeScreen = (props) => {
     const [infoBar, setInfoBar] = useState(true);
@@ -33,7 +33,12 @@ const HomeScreen = (props) => {
     const [specializedData, setSpecializedData] = useState([]);
     const [specializedData2, setSpecializedData2] = useState([]);
     const [specializedData3, setSpecializedData3] = useState([]);
-
+    const [overlaySpecial, setOverlaySpecial] = useState(false);
+    const [overlaySpecial2, setOverlaySpecial2] = useState(false);
+    const toggleoverlaySpecial = () => { setOverlaySpecial(!overlaySpecial) };
+    const toggleoverlaySpecial2 = () => { setOverlaySpecial2(!overlaySpecial2) };
+    const [overlaySpecial3, setOverlaySpecial3] = useState(false);
+    const toggleoverlaySpecial3 = () => { setOverlaySpecial3(!overlaySpecial3) };
     useLayoutEffect(() => {
         props.getCity();
         props.getPopularService('Dubai', 'en');
@@ -53,15 +58,20 @@ const HomeScreen = (props) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
+            <StatusBar />
             <Header data={props.hg.getCity} />
-            <ScrollView style={styles.ScrollView} nestedScrollEnabled={true}>
+            <ScrollView
+                style={styles.ScrollView}
+                nestedScrollEnabled={true}
+                keyboardShouldPersistTaps="handled"
+            >
                 <View>
                     <Swiper
                         style={styles.wrapper}
                         height={200}
-                        dot={<View style={{ elevation: 1, zIndex: 1, backgroundColor: "#fff", width: 20, height: 3, borderRadius: 0, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, bottom: -6, }} />}
-                        activeDot={<View style={{ backgroundColor: "#2EB0E4", width: 25, height: 3, borderRadius: 0, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, bottom: -6, }} />}
-                        paginationStyle={{ bottom: 17, left: null, right: 25 }}
+                        dot={<View style={{ elevation: 1, zIndex: 9, backgroundColor: "#fff", width: 20, height: 2, borderRadius: 0, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, bottom: -6, }} />}
+                        activeDot={<View style={{ backgroundColor: "#2EB0E4", width: 25, height: 2, borderRadius: 0, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, bottom: -6, }} />}
+                        paginationStyle={{ bottom: 17, left: null, right: 25, zIndex: 9 }}
                         autoplay={true}
                         autoplayDirection
                         scrollEnabled
@@ -70,16 +80,13 @@ const HomeScreen = (props) => {
                         <View
                             style={styles.slide}
                             title={
-                                <View style={[styles.homeBannerTextBox, css.zIndex1,]}>
-                                    <Text
-                                        style={[styles.homeBannerText, css.zIndex5]}
-                                        style={{ marginTop: 10, color: "#fff", fontSize: 12, left: 10, }}
-                                    >
-                                        At your service, on-demand! {"\n"}Making home services
+                                <View style={[styles.homeBannerTextBox]}>
+                                    <Text style={[styles.homeBannerText, css.zIndex5]} >
+                                        <Text style={{ fontFamily: 'PoppinsSB' }}>At your service, on-demand!</Text> {"\n"}Making home services
                                         experts {"\n"}simple, reliable and affordable.{" "}
                                     </Text>
-                                    <TouchableOpacity style={[styles.homeBannerButton, css.zIndex5]} onPress={() => props.navigation.navigate("GetGenie")}>
-                                        <Text style={[styles.homeBannerButtonText,]}>BOOK NOW</Text>
+                                    <TouchableOpacity style={[styles.homeBannerButton]} onPress={() => props.navigation.navigate("GetgenieScreen")}>
+                                        <Text style={[styles.homeBannerButtonText]}>BOOK NOW</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -91,12 +98,12 @@ const HomeScreen = (props) => {
                             title={
                                 <View style={[styles.homeBannerTextBox, css.zIndex1,]}>
                                     <Text style={[styles.homeBannerTextLaunch, css.zIndex5]}>NEW LAUNCHES</Text>
-                                    <Text style={[styles.homeBannerText, css.zIndex5]} style={{ marginTop: 15, color: "#fff", fontSize: 12, left: 10, }}>
-                                        We're now LIVE in AbuDhabi. {"\n"}Get AED 25 OFF on first
+                                    <Text style={[styles.homeBannerText, css.zIndex5, { marginTop: 15 }]} >
+                                        <Text style={{ fontFamily: 'PoppinsSB' }}>We're now LIVE in AbuDhabi.</Text> {"\n"}Get AED 25 OFF on first
                                         self service. HGSELF25{" "}
                                     </Text>
-                                    <TouchableOpacity style={[styles.homeBannerButton, css.zIndex5]} onPress={() => props.navigation.navigate("GetGenie")}>
-                                        <Text style={[styles.homeBannerButtonText,]}>BOOK NOW</Text>
+                                    <TouchableOpacity style={[styles.homeBannerButton]} onPress={() => props.navigation.navigate("GetgenieScreen")}>
+                                        <Text style={[styles.homeBannerButtonText]}>BOOK NOW</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -108,11 +115,11 @@ const HomeScreen = (props) => {
                             title={
                                 <View style={styles.homeBannerTextBox}>
                                     <Text style={styles.homeBannerTextLaunch}>NEW LAUNCHES</Text>
-                                    <Text style={styles.homeBannerText} style={{ marginTop: 10, color: "#fff", fontSize: 12, left: 10, }}>
-                                        Launching COVID19 services {"\n"}Services you need in the
+                                    <Text style={styles.homeBannerText}>
+                                        <Text style={{ fontFamily: 'PoppinsSB' }}>Launching COVID19 services</Text> {"\n"}Services you need in the
                                         safety and comfort {"\n"}of your home.{" "}
                                     </Text>
-                                    <TouchableOpacity style={styles.homeBannerButton} onPress={() => props.navigation.navigate("GetGenie")}>
+                                    <TouchableOpacity style={[styles.homeBannerButton]} onPress={() => props.navigation.navigate("GetgenieScreen")}>
                                         <Text style={styles.homeBannerButtonText}>BOOK NOW</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -123,21 +130,24 @@ const HomeScreen = (props) => {
                     </Swiper>
                 </View>
                 {infoBar ? (
-                    <View style={([styles.infoBar, styles.flexRow], { backgroundColor: "#f6b700", padding: 10, marginTop: -2, flexDirection: "row", justifyContent: "space-between", })}>
-                        <View style={([styles.textLeft], { width: "75%" })}>
-                            <Text style={([styles.infoBarText], { fontSize: 11, color: "#fff", letterSpacing: 0.1 })}>
-                                Learn more about the{" "}
-                                <Text style={{ fontWeight: "bold" }}>COVID-19 measures</Text>{" "}
+                    <View style={([styles.infoBar])}>
+                        <View style={([styles.textLeft], { width: "85%" })}>
+                            <Text style={([styles.infoBarText])}>
+                                <Text style={[css.fr, { textDecorationLine: 'underline', textDecorationColor: '#fff', fontSize: 10 }]} onPress={() => Linking.openURL('https://www.homegenie.com/en/covid-19-precautions')}>Learn more</Text> about the{" "}
+                                <Text style={{ fontFamily: 'PoppinsSB', fontSize: 11 }}>COVID-19 measures</Text>{" "}
                                 we’re taking to ensure the safety of our customers and us.
                             </Text>
                         </View>
-                        <TouchableOpacity style={[styles.cancelButton]} onPress={() => setInfoBar(false)}>
-                            <Text style={([styles.cancelButtonText], { color: "#fff", fontSize: 18 })}>x</Text>
+                        <TouchableOpacity style={[styles.cancelButton, { paddingRight: 5 }]} onPress={() => setInfoBar(false)}>
+                            <Text style={([styles.cancelButtonText], { color: "#fff", fontSize: 18, })}>x</Text>
                         </TouchableOpacity>
                     </View>
                 ) : null}
                 <View style={[styles.section]}>
-                    <Text style={[styles.mostPopular]}>MOST POPULAR</Text>
+
+                </View>
+                <View style={[styles.section]}>
+                    <View style={[styles.mostPopular]}><Text style={[styles.mostPopularText]}>MOST POPULAR</Text></View>
                     <SwiperFlatList
                         autoplay={true}
                         autoplayDelay={3}
@@ -145,7 +155,7 @@ const HomeScreen = (props) => {
                         data={props.hg.getPopularService}
                         keyExtractor={(item, index) => { return item._id; }}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={[styles.child]} onPress={() => props.navigation.navigate('GetGenie')}>
+                            <TouchableOpacity style={[styles.child]} onPress={() => props.navigation.navigate('GetgenieScreen')}>
                                 <Image style={styles.mostPopularImage} source={{ uri: item.imageURL, }} />
                                 <Text style={styles.textFlat}>{item.name}</Text>
                             </TouchableOpacity>
@@ -161,47 +171,49 @@ const HomeScreen = (props) => {
                         <View style={[css.flexDRSB, css.imgFull]}>
                             <TouchableOpacity
                                 style={[styles.imageContainer, css.width50]}
-                                onPress={() => props.navigation.navigate("CategoryPage", { catName: 'dailyutilities', })}
+                                //onPress={() => props.navigation.navigate("CategoryPage", { catName: 'dailyutilities', })}
+                                onPress={() => props.navigation.navigate('GetgenieScreen')}
                             >
-                                <Image source={require(imgPath + "Handyman.png")} style={[styles.backgroundImage, css.img95]} />
+                                <Image source={require(imgPath + "Handyman.png")} style={[styles.backgroundImage, css.img95,]} />
+                                <View style={styles.overlay} />
                                 <Text style={styles.serviceTitle}>DAILY {"\n"}UTILITIES</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.imageContainer, css.width50]}
-                                onPress={() => props.navigation.navigate("CategoryPage", {
-                                    catName: 'healthandwellness',
-                                })}
+                                //onPress={() => props.navigation.navigate("CategoryPage", { catName: 'healthandwellness', })}
+                                onPress={() => props.navigation.navigate('GetgenieScreen')}
                             >
                                 <Image
                                     source={require(imgPath + "pcr.png")}
                                     style={[styles.backgroundImage, css.img95]}
                                 />
+                                <View style={styles.overlay} />
                                 <Text style={styles.serviceTitle}>Health & {"\n"}Wellness</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={[css.flexDRSB, css.imgFull]}>
                             <TouchableOpacity
                                 style={[styles.imageContainer, css.width50]}
-                                onPress={() => props.navigation.navigate("CategoryPage", {
-                                    catName: 'lifestyledecor',
-                                })}
+                                //onPress={() => props.navigation.navigate("CategoryPage", {  catName: 'lifestyledecor', })}
+                                onPress={() => props.navigation.navigate('GetgenieScreen')}
                             >
                                 <Image
                                     source={require(imgPath + "Lifestyle.png")}
                                     style={[styles.backgroundImage, css.img95]}
                                 />
+                                <View style={styles.overlay} />
                                 <Text style={styles.serviceTitle}>Lifestyle {"\n"}& Decor</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.imageContainer, css.width50]}
-                                onPress={() => props.navigation.navigate("CategoryPage", {
-                                    catName: 'others',
-                                })}
+                                //onPress={() => props.navigation.navigate("CategoryPage", { catName: 'others', })}
+                                onPress={() => props.navigation.navigate('GetgenieScreen')}
                             >
                                 <Image
                                     source={require(imgPath + "pet_groom.png")}
                                     style={[styles.backgroundImage, css.img95]}
                                 />
+                                <View style={styles.overlay} />
                                 <Text style={styles.serviceTitle}>Others</Text>
                             </TouchableOpacity>
                         </View>
@@ -210,6 +222,7 @@ const HomeScreen = (props) => {
                         <Text style={[styles.homeTitles, styles.textLeft]}>Offers & Promos</Text>
                         <SwiperFlatList
                             autoplay={true}
+                            style={{ width: windowWidth, height: 210 }}
                             autoplayDelay={3}
                             autoplayLoop={true}
                             data={props.hg.getOffers}
@@ -218,8 +231,8 @@ const HomeScreen = (props) => {
                             }}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
-                                    style={[styles.swiperOffer, { height: 200, width: 380 }]}
-                                    onPress={() => props.navigation.navigate('GetGenie')}
+                                    style={[styles.swiperOffer, { height: 200, width: windowWidth, marginTop: 10 }]}
+                                    onPress={() => props.navigation.navigate('GetgenieScreen')}
                                 >
                                     <Image
                                         key={item._id}
@@ -228,19 +241,23 @@ const HomeScreen = (props) => {
                                             uri: item.image,
                                         }}
                                     />
-                                    <View style={{ position: 'absolute', top: 10, left: 15, width: 160, height: 30, backgroundColor: '#f6b700', alignItems: 'center', justifyContent: 'center', fontFamily: "PoppinsBL" }}>
-                                        <Text style={{ color: '#fff' }}>{item.soldCount} claimed already! </Text>
+                                    <View style={{ position: 'absolute', top: 3, left: 20, width: 150, height: 25, backgroundColor: '#f6b700', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Text style={[css.fm, css.whiteC, css.f10]}>{item.soldCount} claimed already! </Text>
                                     </View>
+                                    {item.trending ? <Image
+                                        style={{ top: -15, right: 25, position: 'absolute', }}
+                                        source={require(imgPath + "trending.png")}
+                                    /> : null}
                                 </TouchableOpacity>
                             )}
                         />
 
                     </View>
                     <View style={styles.section}>
-                        <Text style={[styles.homeTitles, styles.textCenter]}>
+                        <Text style={[styles.homeTitles, styles.textCenter, css.fsb]}>
                             Specialized services
                         </Text>
-                        <Text style={[styles.homeTitlesSub, styles.textCenter]}>
+                        <Text style={[styles.homeTitlesSub, styles.textCenter, css.fr]}>
                             Handpicked services from innovated brands. Now available!
                         </Text>
                         <View style={[styles.specialServiceAll]}>
@@ -250,16 +267,18 @@ const HomeScreen = (props) => {
                                     return item._id;
                                 }}
                                 renderItem={({ item }) => (
-                                    <TouchableOpacity>
-                                        <View
+                                    <View>
+                                        <Pressable
                                             style={{
                                                 borderBottomWidth: 10,
                                                 borderColor: "#2eb0e4",
                                                 borderRadius: 10,
                                                 marginTop: 10,
                                             }}
+                                            onPress={() => toggleoverlaySpecial()}
                                         >
                                             <ImageBackground
+
                                                 source={{
                                                     uri: item.image,
                                                 }}
@@ -267,16 +286,33 @@ const HomeScreen = (props) => {
                                                     height: 250,
                                                 }}
                                                 imageStyle={{
-                                                    resizeMode: "cover",
+                                                    resizeMode: 'cover',
+                                                    borderRadius: 0,
+                                                    width: '160%',
+                                                    justifyContent: 'flex-start',
                                                     borderTopLeftRadius: 10,
                                                     borderTopRightRadius: 10,
                                                 }}
                                             ></ImageBackground>
-                                        </View>
+                                            {overlaySpecial ?
+                                                <View style={[styles.overlaySpecial, css.alignCenter]}
+                                                    onPress={() => toggleoverlaySpecial()}
+                                                >
+                                                    <Pressable
+                                                        style={[css.yellowBG, css.alignCenter, css.borderRadius30, { width: 120, height: 30 }]}
+                                                        onPress={() => props.navigation.navigate("GetgenieScreen")}
+                                                    >
+                                                        <Text style={[css.fsb, css.f12, css.whiteC]}>BOOK NOW</Text>
+                                                    </Pressable>
+                                                </View>
+                                                :
+                                                null
+                                            }
+                                        </Pressable>
                                         <Text style={styles.textSpecialService}>
                                             {item.subCategoryName}
                                         </Text>
-                                    </TouchableOpacity>
+                                    </View>
                                 )}
                             />
                             <FlatList
@@ -285,7 +321,8 @@ const HomeScreen = (props) => {
                                     return item._id;
                                 }}
                                 renderItem={({ item }) => (
-                                    <TouchableOpacity style={[styles.specialserviceSecond, { marginTop: 20 }]} onPress={() => props.navigation.navigate('GetGenie')}>
+                                    <Pressable style={[styles.specialserviceSecond, { marginTop: 20 }]}
+                                        onPress={() => toggleoverlaySpecial2()}>
                                         <View
                                             style={{
                                                 borderBottomWidth: 10,
@@ -298,21 +335,37 @@ const HomeScreen = (props) => {
                                                 style={{
                                                     width: "100%",
                                                     height: 120,
-                                                    borderRadius: 10,
+                                                    borderRadius: 0,
+                                                    borderTopLeftRadius: 10,
+                                                    borderTopRightRadius: 10,
                                                     resizeMode: "cover",
                                                 }}
                                                 source={{
                                                     uri: item.image,
                                                 }}
                                             />
+                                            {overlaySpecial2 ?
+                                                <View style={[styles.overlaySpecial, css.alignCenter]}
+                                                    onPress={() => toggleoverlaySpecial2()}
+                                                >
+                                                    <Pressable
+                                                        style={[css.yellowBG, css.alignCenter, css.borderRadius30, { width: 120, height: 30 }]}
+                                                        onPress={() => props.navigation.navigate("GetgenieScreen")}
+                                                    >
+                                                        <Text style={[css.fsb, css.f12, css.whiteC]}>BOOK NOW</Text>
+                                                    </Pressable>
+                                                </View>
+                                                :
+                                                null
+                                            }
                                         </View>
                                         <Text style={styles.textSpecialService}>
                                             {item.subCategoryName}
                                         </Text>
-                                    </TouchableOpacity>
+                                    </Pressable>
                                 )}
                             />
-                            <View style={[styles.specialserviceThird,]}>
+                            <View style={[styles.specialserviceThird, { alignItems: 'center', justifyContent: 'space-between' }]}>
                                 <SwiperFlatList
                                     autoplay={true}
                                     autoplayDelay={3}
@@ -330,7 +383,7 @@ const HomeScreen = (props) => {
                                         return item._id;
                                     }}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity onPress={() => props.navigation.navigate('GetGenie')}>
+                                        <Pressable onPress={() => toggleoverlaySpecial3()}>
                                             <View style={[styles.childd,]}>
                                                 <View
                                                     style={{
@@ -338,21 +391,39 @@ const HomeScreen = (props) => {
                                                         borderColor: "#2eb0e4",
                                                         borderRadius: 10,
                                                         marginTop: 10,
-
                                                     }}
                                                 >
                                                     <Image
-                                                        style={[styles.specialserviceThirdImage]}
+                                                        style={[styles.specialserviceThirdImage, {
+                                                            width: "100%",
+                                                            borderTopLeftRadius: 10,
+                                                            borderTopRightRadius: 10,
+                                                            resizeMode: 'cover'
+                                                        }]}
                                                         source={{
                                                             uri: item.image,
                                                         }}
                                                     />
+                                                    {overlaySpecial3 ?
+                                                        <View style={[styles.overlaySpecial, css.alignCenter]}
+                                                            onPress={() => toggleoverlaySpecial3()}
+                                                        >
+                                                            <Pressable
+                                                                style={[css.yellowBG, css.alignCenter, css.borderRadius30, { width: 100, height: 30 }]}
+                                                                onPress={() => props.navigation.navigate("GetgenieScreen")}
+                                                            >
+                                                                <Text style={[css.fsb, css.f12, css.whiteC]}>BOOK NOW</Text>
+                                                            </Pressable>
+                                                        </View>
+                                                        :
+                                                        null
+                                                    }
                                                 </View>
                                                 <Text style={styles.textSpecialService}>
                                                     {item.subCategoryName}
                                                 </Text>
                                             </View>
-                                        </TouchableOpacity>
+                                        </Pressable>
                                     )}
                                 >
                                 </SwiperFlatList>
@@ -368,8 +439,8 @@ const HomeScreen = (props) => {
                                 source={require(imgPath + "hgWarranty.png")}
                                 style={styles.warrantyImage}
                             />
-                            <Text style={styles.content}>
-                                All service bookings are covered with at least an AED 1000
+                            <Text style={[styles.content]}>
+                                All service bookings are covered with at least an <Text style={[css.fsb, css.f12, css.blackC]}> AED 1000 </Text>
                                 warranty against any damages.{" "}
                             </Text>
                         </View>
@@ -446,7 +517,7 @@ const HomeScreen = (props) => {
                     </View>
                     <View style={styles.section}>
                         <View style={styles.flexRowSpace}>
-                            <View>
+                            <View style={[css.alignSelfC]}>
                                 <Text style={styles.needHelpText}>Need Help?</Text>
                             </View>
                             <Whatsapp />
@@ -462,44 +533,38 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         padding: 0,
-        //   fontFamily: 'PoppinsM',
     },
     section: {
         padding: 20,
-        //   fontFamily: 'PoppinsM',
+        paddingBottom: 0
     },
     textCenter: {
         textAlign: "center",
-        //   fontFamily: 'PoppinsM',
     },
     textLeft: {
         textAlign: "left",
     },
     homeTitles: {
-        fontSize: 20,
         color: "#2EB0E4",
-        fontWeight: "bold",
         textTransform: "uppercase",
         fontSize: 16,
         marginBottom: 10,
-        //   fontFamily: 'PoppinsM',
+        fontFamily: 'PoppinsSB',
     },
     homeTitlesSub: {
         fontSize: 12,
         color: "grey",
     },
     mostPopular: {
-        color: "#fff",
-        fontWeight: "bold",
-        textTransform: "uppercase",
-        fontSize: 10,
         marginBottom: 10,
         backgroundColor: "#f6b700",
-        padding: 5,
-        width: 110,
-        textAlign: 'center',
-        //   fontFamily: 'PoppinsM',
+        width: 100,
+        height: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 2,
     },
+    mostPopularText: { fontFamily: 'PoppinsBO', color: '#fff', fontSize: 10, textTransform: "uppercase", },
     flexRow: {
         flexDirection: "row",
     },
@@ -509,7 +574,7 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         width: "50%",
-        height: 100,
+        height: 120,
         marginBottom: 10,
         position: "relative",
     },
@@ -521,25 +586,29 @@ const styles = StyleSheet.create({
     serviceTitle: {
         position: "absolute",
         bottom: 10,
-        left: 10,
+        left: 15,
         color: "#fff",
-        fontSize: 18,
-        fontWeight: "bold",
+        fontSize: 16,
+        fontFamily: 'PoppinsEB',
         textTransform: "uppercase",
     },
     content: {
         textAlignVertical: "center",
-        fontSize: 18,
+        fontSize: 12,
         flex: 1,
+        color: '#525252',
         paddingLeft: 10,
+        fontFamily: 'PoppinsM',
     },
     whyContent: {
         textAlignVertical: "bottom",
-        fontSize: 14,
+        fontSize: 11,
         flex: 1,
         textAlign: "center",
         justifyContent: "center",
         alignItems: "center",
+        fontFamily: 'PoppinsM',
+        color: '#525252',
     },
     alignCenter: {
         alignItems: "center",
@@ -555,6 +624,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 20,
         color: "#525252",
+        fontFamily: 'PoppinsSB'
     },
     whyHomegenieImage: {
         marginTop: 20,
@@ -566,11 +636,12 @@ const styles = StyleSheet.create({
         height: 110,
     },
     featureInText: {
-        textAlign: "center",
         textTransform: "uppercase",
         fontSize: 16,
-        color: "#525252",
         marginBottom: 20,
+        textAlign: "center",
+        color: "#525252",
+        fontFamily: 'PoppinsSB'
     },
     space10: {
         paddingBottom: 10,
@@ -642,7 +713,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     homeBannerTextBox: {
-        backgroundColor: "#00000052",
+        backgroundColor: "#00000080",
         height: 60,
         width: windowWidth,
         flex: 1,
@@ -651,18 +722,20 @@ const styles = StyleSheet.create({
         right: 0,
         left: 0,
         elevation: 0,
-        zIndex: 0,
+        zIndex: 1,
     },
     homeBannerTextLaunch: {
         backgroundColor: "#fff",
         position: "absolute",
         left: 10,
         bottom: 50,
-        padding: 5,
-        fontSize: 10,
-        color: "#000",
+        padding: 3,
+        fontSize: 9,
+        color: "#525252",
+        fontFamily: 'PoppinsSB',
+        borderRadius: 3
     },
-    homeBannerText: {},
+    homeBannerText: { marginTop: 10, color: "#fff", fontSize: 10, left: 10, fontFamily: 'PoppinsR' },
     homeBannerButton: {
         height: 30,
         width: 110,
@@ -671,20 +744,25 @@ const styles = StyleSheet.create({
         bottom: 20,
         right: 10,
         padding: 5,
-        flex: 1,
+        //flex: 1,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 20,
+        zIndex: 9,
     },
     homeBannerButtonText: {
         color: "#fff",
-        fontSize: 12,
+        fontSize: 11,
+        fontFamily: 'PoppinsM',
     },
+    infoBar: { backgroundColor: "#f6b700", padding: 10, marginTop: -3, flexDirection: "row", justifyContent: "space-between", },
+    infoBarText: { fontSize: 10, color: "#fff", letterSpacing: 0.1, fontFamily: 'PoppinsR' },
     child: {
         borderRadius: 10,
-        borderColor: "grey",
-        padding: 5,
-        width: 80,
+        //borderColor: "grey",
+        //padding: 2,
+        width: 85,
+        height: 85,
         marginRight: 8,
         marginBottom: 10,
         marginLeft: 2,
@@ -702,23 +780,27 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     textFlat: {
-        fontSize: 10,
-        color: "#000",
-        marginTop: 5,
+        fontSize: 11,
+        bottom: 5,
+        position: 'absolute',
+        color: "#525252",
         textAlign: "center",
+        fontFamily: 'PoppinsM'
     },
     mostPopularImage: {
         height: 35,
         width: 35,
+        marginBottom: 15,
     },
     textSpecialService: {
         textAlign: "center",
-        fontSize: 12,
-        color: "grey",
+        fontSize: 10,
+        color: "#525252",
         marginTop: 5,
         textTransform: "uppercase",
-        fontWeight: "bold",
+        fontFamily: 'PoppinsSB',
         padding: 2,
+
     },
     childd: {
         width: 110,
@@ -742,7 +824,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         resizeMode: "contain",
     },
-
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(61, 61, 61, 0.48)',
+        borderRadius: 10,
+        width: '95%',
+    },
+    overlaySpecial: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: '#21adea',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        width: '100%',
+        opacity: 0.8,
+    }
 });
 
 const mapStateToProps = (state) => ({

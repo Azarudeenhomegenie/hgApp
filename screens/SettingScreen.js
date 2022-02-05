@@ -2,7 +2,6 @@ import React, { Component, useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -13,15 +12,20 @@ import {
     TouchableOpacity,
     Pressable,
     Alert,
-    FlatList
+    FlatList,
+    Dimensions,
 } from "react-native";
 import Modal from 'react-native-modal';
-import SocialMedia from "../components/SocialMedia";
-import Whatsapp800 from "../components/Whatsapp800";
+import Text from "../components/MyText";
+import SocialMedia from "../components/socialMedia";
+import Whatsapp800 from "../components/whtsApp";
 import ModalComingSoon from "../components/ModalComingSoon";
 import css from '../components/commonCss';
 import StatusBarAll from "../components/StatusBar";
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+let imgPath = "../assets/icons/";
+let imgPathImages = "../assets/icons/images/"
 
 let card = 'no'
 let address = 'no'
@@ -42,7 +46,7 @@ export default function SettingScreen({ navigation }) {
                         style={[css.whiteC, css.backButton]}
                         onPress={() => navigation.goBack()}
                     >
-                        <Image source={require("../assets/backArrow.png")} />
+                        <Image source={require(imgPath + "backArrow.png")} />
                     </TouchableOpacity>
                     <Text style={[css.headerTitle]}>SETTINGS</Text>
                 </View>
@@ -54,14 +58,14 @@ export default function SettingScreen({ navigation }) {
                             <View style={[css.flexDRSB, css.line10]}>
                                 <View style={[css.flexDR_ALC]}>
                                     <Image
-                                        source={require("../assets/iconIndex.png")}
+                                        source={require(imgPath + "iconIndex.png")}
                                         style={[styles.titleIcon]}
                                     />
                                     <Text style={[css.marginL10, css.f16]}>BASIC INFO</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => navigation.navigate('SettingAddInfoPage')}>
                                     <Image
-                                        source={require("../assets/iconEdit.png")}
+                                        source={require(imgPath + "iconEdit.png")}
                                         style={[styles.editIcon]}
                                     />
                                 </TouchableOpacity>
@@ -83,14 +87,14 @@ export default function SettingScreen({ navigation }) {
                             <View style={[css.flexDRSB, css.line10]}>
                                 <View style={[css.flexDR_ALC]}>
                                     <Image
-                                        source={require("../assets/iconLocation.png")}
+                                        source={require(imgPath + "iconLocation.png")}
                                         style={[styles.titleIcon]}
                                     />
                                     <Text style={[css.marginL10, css.f16]}>ADDRESS</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => navigation.navigate('SettingAddAddressPage')}>
                                     <Image
-                                        source={require("../assets/iconEdit.png")}
+                                        source={require(imgPath + "iconEdit.png")}
                                         style={[styles.editIcon]}
                                     />
                                 </TouchableOpacity>
@@ -107,7 +111,7 @@ export default function SettingScreen({ navigation }) {
                             <View style={[css.flexDRSB, css.line10]}>
                                 <View style={[css.flexDR_ALC]}>
                                     <Image
-                                        source={require("../assets/iconCard.png")}
+                                        source={require(imgPath + "iconCard.png")}
                                         style={[styles.titleIcon]}
                                     />
                                     <Text style={[css.marginL10, css.f16]}>CARDS</Text>
@@ -115,7 +119,7 @@ export default function SettingScreen({ navigation }) {
                                 <View>
                                     <TouchableOpacity onPress={() => navigation.navigate('SettingAddCardPage')}>
                                         <Image
-                                            source={require("../assets/iconEdit.png")}
+                                            source={require(imgPath + "iconEdit.png")}
                                             style={[styles.editIcon]}
                                         />
                                     </TouchableOpacity>
@@ -129,7 +133,7 @@ export default function SettingScreen({ navigation }) {
                             <View style={[css.flexDRSB, css.line10]}>
                                 <View style={[css.flexDR_ALC]}>
                                     <Image
-                                        source={require("../assets/iconFav.png")}
+                                        source={require(imgPath + "iconFav.png")}
                                         style={[styles.titleIcon]}
                                     />
                                     <Text style={[css.marginL10, css.f16]}>FAVOURITES</Text>
@@ -137,7 +141,7 @@ export default function SettingScreen({ navigation }) {
                                 <View>
                                     <TouchableOpacity onPress={() => setModalComingsoon(true)}>
                                         <Image
-                                            source={require("../assets/iconEdit.png")}
+                                            source={require(imgPath + "iconEdit.png")}
                                             style={[styles.editIcon]}
                                         />
                                     </TouchableOpacity>

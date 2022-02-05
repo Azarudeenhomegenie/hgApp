@@ -139,6 +139,7 @@ module.exports = {
     img40: { width: 40, height: 40 },
     img30: { width: 30, height: 30 },
     img20: { width: 20, height: 20 },
+    img10: { width: 10, height: 10 },
     img150: { width: 150, height: 150 },
     imgBR50: { width: 50, height: 50, borderRadius: 50 / 2 },
     imgBR100: { width: 100, height: 100, borderRadius: 100 / 2 },

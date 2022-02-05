@@ -2,7 +2,6 @@ import React, { Component, useState } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -16,12 +15,13 @@ import {
     Modal,
     Dimensions,
 } from "react-native";
-import SocialMedia from "../components/SocialMedia";
-import Whatsapp800 from "../components/Whatsapp800";
+import Text from "../components/MyText";
+import SocialMedia from "../components/socialMedia";
+import Whatsapp800 from "../components/whtsApp";
 import StatusBarAll from "../components/StatusBar";
 import css from "../components/commonCss";
-let imgPath = '../assets/'
-let imgPathImage = '../assets/images'
+let imgPath = '../assets/icons/';
+let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -41,7 +41,7 @@ export default function NotificationScreen({ navigation }) {
                         <Image
                             resizeMode="contain"
                             style={{}}
-                            source={require("../assets/backArrow.png")}
+                            source={require(imgPath + "backArrow.png")}
                         />
                     </TouchableOpacity>
                     <Text style={[css.headerTitle, css.alignSelfC]}>NOTIFICATION</Text>

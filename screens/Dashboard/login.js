@@ -1,501 +1,505 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image, ScrollView, Pressable, Dimensions, } from 'react-native';
 import React, { useState } from 'react';
 import { connect } from "react-redux";
 import { getLogin } from "../../actions/hgAction";
-import css from '../../components/commonCss';
 import Whatsapp from "../../components/whtsApp";
 import SocialMedia from '../../components/socialMedia';
 import LoginModal from "../../components/loginModal";
+import css from '../../components/commonCss';
+let imgPath = '../../assets/icons/';
+let imgPathImage = '../../assets/icons/images/';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const Login = (props) => {
     const [user, setUser] = useState(false)
     const [displayName, setDisplyName] = useState(null);
     const [displayEmail, setDisplayEmail] = useState(null);
     const [loginModal, setLoginModal] = useState(false);
-    
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-        <View style={css.header}>
-            <View style={styles.flexRow}>
-                <TouchableOpacity
-                    style={[styles.textWhite, styles.backButton]}
-                    onPress={() => props.navigation.goBack()}
-                >
-                    <Image
-                        resizeMode="contain"
-                        style={{}}
-                        source={require("../../assets/icons/backArrow.png")}
-                    />
-                </TouchableOpacity>
-                <Text style={[css.headerTitle]}>My Accounts</Text>
-            </View>
-        </View>
 
-        {user ? 
-            <ScrollView style={styles.ScrollView}>
-                <View style={[styles.screen]}>
-                    <View style={[styles.bgLiteBlue]}>
-                        <View
-                            style={[
-                                styles.flexRowSpace,
-                                { padding: 15, paddingTop: 5, paddingBottom: 5 },
-                            ]}
-                        >
-                            <View
-                                style={
-                                    ([styles.flexStarts],
-                                        { justifyContent: "flex-start", flexDirection: "row" })
-                                }
-                            >
-                                <View style={{ borderRadius: "50%" }}>
-                                    <Image
-                                        resizeMode="contain"
-                                        style={{ borderRadius: 50, width: 50, marginRight: 15 }}
-                                        source={require("../../assets/icons/genieicon.png")}
-                                    />
-                                </View>
-                                <View style={[css.flexDC]}>
-                                    <Text
-                                        style={[
-                                            styles.accountName,
-                                            { fontWeight: "bold", marginTop: 15 },
-                                        ]}
-                                    >
-                                        {displayName}
-                                    </Text>
-                                    <Text style={[styles.accountEmail]}>
-                                        {displayEmail}
-                                    </Text>
-                                </View>
-                            </View>
-                            <Pressable
-                                style={[
-                                    styles.notificationBell,
-                                    { paddingTop: 20, paddingBottom: 10 },
-                                ]}
-                                onPress={() => navigation.navigate('NotificationPage')}
-                            >
-                                <Image
-                                    resizeMode="contain"
-                                    style={{}}
-                                    source={require("../../assets/icons/notify.png")}
-                                />
-                            </Pressable>
-                        </View>
-                    </View>
-                    <View style={[styles.section]}>
-                        <View style={[styles.container]}>
-                            <Pressable
-                                style={[
-                                    styles.accountLinks,
-                                    styles.flexRow,
-                                    {
-                                        borderBottomColor: "#C9C9C920",
-                                        borderBottomWidth: 1,
-                                        paddingTop: 20,
-                                        paddingBottom: 10,
-                                    },
-                                ]}
-                                onPress={() => navigation.navigate('Bookings')}
-                            >
-                                <Image
-                                    style={{ marginRight: 10 }}
-                                    source={require("../../assets/icons/booking-history.png")}
-                                />
-                                <Text
-                                    style={[
-                                        styles.accountLinkText,
-                                        { fontSize: 14, justifyContent: "center", flex: 1 },
-                                    ]}
-                                >
-                                    Bookings
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                style={[
-                                    styles.accountLinks,
-                                    styles.flexRow,
-                                    {
-                                        borderBottomColor: "#C9C9C920",
-                                        borderBottomWidth: 1,
-                                        paddingTop: 20,
-                                        paddingBottom: 10,
-                                    },
-                                ]}
-                                onPress={() => navigation.navigate('Offers')}
-                            >
-                                <Image
-                                    style={{ marginRight: 10 }}
-                                    source={require("../../assets/icons/offer-icon.png")}
-                                />
-                                <Text
-                                    style={[
-                                        styles.accountLinkText,
-                                        { fontSize: 14, justifyContent: "center", flex: 1 },
-                                    ]}
-                                >
-                                    Offers
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                style={[
-                                    styles.accountLinks,
-                                    styles.flexRow,
-                                    {
-                                        borderBottomColor: "#C9C9C920",
-                                        borderBottomWidth: 1,
-                                        paddingTop: 20,
-                                        paddingBottom: 10,
-                                    },
-                                ]}
-                                onPress={() => setModalComingsoon(true)}
-                            >
-                                <Image
-                                    style={{
-                                        marginRight: 10,
-                                        width: 18,
-                                        height: 18,
-                                        resizeMode: "contain",
-                                    }}
-                                    source={require("../../assets/icons/wallet.png")}
-                                />
-                                <Text
-                                    style={[
-                                        styles.accountLinkText,
-                                        { fontSize: 14, justifyContent: "center", flex: 1 },
-                                    ]}
-                                >
-                                    Wallet
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                style={[
-                                    styles.accountLinks,
-                                    styles.flexRow,
-                                    {
-                                        borderBottomColor: "#C9C9C920",
-                                        borderBottomWidth: 1,
-                                        paddingTop: 20,
-                                        paddingBottom: 10,
-                                    },
-                                ]}
-                                onPress={() => navigation.navigate('SettingPage')}
-                            >
-                                <Image
-                                    style={{ marginRight: 10 }}
-                                    source={require("../../assets/icons/settings.png")}
-                                />
-                                <Text
-                                    style={[
-                                        styles.accountLinkText,
-                                        { fontSize: 14, justifyContent: "center", flex: 1 },
-                                    ]}
-                                >
-                                    Settings
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                style={[
-                                    styles.accountLinks,
-                                    styles.flexRow,
-                                    {
-                                        borderBottomColor: "#C9C9C920",
-                                        borderBottomWidth: 1,
-                                        paddingTop: 20,
-                                        paddingBottom: 10,
-                                    },
-                                ]}
-                                onPress={() => navigation.navigate('SupportPage')}
-                            >
-                                <Image
-                                    style={{ marginRight: 10 }}
-                                    source={require("../../assets/icons/Support.png")}
-                                />
-                                <Text
-                                    style={[
-                                        styles.accountLinkText,
-                                        { fontSize: 14, justifyContent: "center", flex: 1 },
-                                    ]}
-                                >
-                                    Support
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                style={[
-                                    styles.accountLinks,
-                                    styles.flexRow,
-                                    { paddingTop: 20, paddingBottom: 10 },
-                                ]}
-                                onPress={() => setLoginModal(true)}
-                            >
-                                <Image
-                                    style={{
-                                        marginRight: 10,
-                                        width: 18,
-                                        height: 18,
-                                        resizeMode: "contain",
-                                    }}
-                                    source={require("../../assets/icons/logout.png")}
-                                />
-                                <Text
-                                    style={[
-                                        styles.accountLinkText,
-                                        { fontSize: 14, justifyContent: "center", flex: 1, color: '#2eb0e4' },
-                                    ]}
-                                    onPress={() => { setUser(false) }}
-                                >
-                                    Logout
-                                </Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                    <SocialMedia />
-                    <View style={styles.section}>
-                        <View style={styles.flexRowSpace}>
-                            <Whatsapp />
-                        </View>
-                        <View>
-                            <Text
-                                style={
-                                    ([styles.copyrightsText],
-                                    {
-                                        fontSize: 12,
-                                        color: "#d3d3d3",
-                                        fontWeight: "bold",
-                                        paddingLeft: 5,
-                                        marginTop: 5,
-                                    })
-                                }
-                            >
-                                VERSION 2.0.0 Copyright HomeGenie
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-        : 
-        <ScrollView style={styles.ScrollView}>
-            <View style={[styles.screen]}>
-                <View style={[styles.bgLiteBlue]}>
-                    <View
-                        style={[
-                            styles.flexRowSpace,
-                            { padding: 15, paddingTop: 5, paddingBottom: 5 },
-                        ]}
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+            <View style={css.header}>
+                <View style={styles.flexRow}>
+                    <TouchableOpacity
+                        style={[styles.textWhite, styles.backButton]}
+                        onPress={() => props.navigation.goBack()}
                     >
-                        <View
-                            style={[css.flexDRSB, css.imgFull]}
-                        >
-                            <View style={[css.flexDR]}>
-                                <View style={{ borderRadius: 50 }}>
-                                    <Image
-                                        resizeMode="contain"
-                                        style={{ borderRadius: 50, width: 50, marginRight: 15 }}
-                                        source={require("../../assets/icons/genieicon.png")}
-                                    />
+                        <Image
+                            resizeMode="contain"
+                            style={{}}
+                            source={require(imgPath + "backArrow.png")}
+                        />
+                    </TouchableOpacity>
+                    <Text style={[css.headerTitle, css.alignSelfC]}>My Accounts</Text>
+                </View>
+            </View>
+
+            {user ?
+                <ScrollView style={styles.ScrollView}>
+                    <View style={[styles.screen]}>
+                        <View style={[styles.bgLiteBlue]}>
+                            <View
+                                style={[
+                                    styles.flexRowSpace,
+                                    { padding: 15, paddingTop: 5, paddingBottom: 5 },
+                                ]}
+                            >
+                                <View
+                                    style={
+                                        ([styles.flexStarts],
+                                            { justifyContent: "flex-start", flexDirection: "row" })
+                                    }
+                                >
+                                    <View style={{ borderRadius: "50%" }}>
+                                        <Image
+                                            resizeMode="contain"
+                                            style={{ borderRadius: 50, width: 50, marginRight: 15 }}
+                                            source={require(imgPath + "genieicon.png")}
+                                        />
+                                    </View>
+                                    <View style={[css.flexDC]}>
+                                        <Text
+                                            style={[
+                                                styles.accountName,
+                                                { fontWeight: "bold", marginTop: 15 },
+                                            ]}
+                                        >
+                                            {displayName}
+                                        </Text>
+                                        <Text style={[styles.accountEmail]}>
+                                            {displayEmail}
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={[styles.flexDirectionColumn], { marginVertical: 10 }}>
-                                    <Text
-                                        style={[
-                                            styles.accountName,
-                                            { fontWeight: "bold", marginTop: 15, fontSize: 20 },
-                                        ]}
-                                    >
-                                        Guest
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={[css.alignSelfC]}>
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('NotificationPage')}
+                                <Pressable
+                                    style={[
+                                        styles.notificationBell,
+                                        { paddingTop: 20, paddingBottom: 10 },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('NotificationPage')}
                                 >
                                     <Image
                                         resizeMode="contain"
                                         style={{}}
-                                        source={require("../../assets/icons/notify.png")}
+                                        source={require(imgPath + "notify.png")}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
+                            </View>
+                        </View>
+                        <View style={[styles.section]}>
+                            <View style={[styles.container]}>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('Bookings')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "booking-history.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Bookings
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('Offers')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "offer-icon.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Offers
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => setModalComingsoon(true)}
+                                >
+                                    <Image
+                                        style={{
+                                            marginRight: 10,
+                                            width: 18,
+                                            height: 18,
+                                            resizeMode: "contain",
+                                        }}
+                                        source={require(imgPath + "wallet.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Wallet
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('SettingPage')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "settings.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Settings
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('SupportPage')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "Support.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Support
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        { paddingTop: 20, paddingBottom: 10 },
+                                    ]}
+                                    onPress={() => setLoginModal(true)}
+                                >
+                                    <Image
+                                        style={{
+                                            marginRight: 10,
+                                            width: 18,
+                                            height: 18,
+                                            resizeMode: "contain",
+                                        }}
+                                        source={require(imgPath + "logout.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1, color: '#2eb0e4' },
+                                        ]}
+                                        onPress={() => { setUser(false) }}
+                                    >
+                                        Logout
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                        <SocialMedia />
+                        <View style={styles.section}>
+                            <View style={styles.flexRowSpace}>
+                                <Whatsapp />
+                            </View>
+                            <View>
+                                <Text
+                                    style={
+                                        ([styles.copyrightsText],
+                                        {
+                                            fontSize: 12,
+                                            color: "#d3d3d3",
+                                            fontWeight: "bold",
+                                            paddingLeft: 5,
+                                            marginTop: 5,
+                                        })
+                                    }
+                                >
+                                    VERSION 2.0.0 Copyright HomeGenie
+                                </Text>
                             </View>
                         </View>
                     </View>
-                </View>
-                <View style={[styles.section]}>
-                    <View style={[styles.container]}>
-                        <Pressable
-                            style={[
-                                styles.accountLinks,
-                                styles.flexRow,
-                                {
-                                    borderBottomColor: "#C9C9C920",
-                                    borderBottomWidth: 1,
-                                    paddingTop: 20,
-                                    paddingBottom: 10,
-                                },
-                            ]}
-                            onPress={() => navigation.navigate('Bookings')}
-                        >
-                            <Image
-                                style={{ marginRight: 10 }}
-                                source={require("../../assets/icons/booking-history.png")}
-                            />
-                            <Text
+                </ScrollView>
+                :
+                <ScrollView style={styles.ScrollView}>
+                    <View style={[styles.screen]}>
+                        <View style={[styles.bgLiteBlue]}>
+                            <View
                                 style={[
-                                    styles.accountLinkText,
-                                    { fontSize: 14, justifyContent: "center", flex: 1 },
+                                    styles.flexRowSpace,
+                                    { padding: 15, paddingTop: 5, paddingBottom: 5 },
                                 ]}
                             >
-                                Bookings
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            style={[
-                                styles.accountLinks,
-                                styles.flexRow,
-                                {
-                                    borderBottomColor: "#C9C9C920",
-                                    borderBottomWidth: 1,
-                                    paddingTop: 20,
-                                    paddingBottom: 10,
-                                },
-                            ]}
-                            onPress={() => navigation.navigate('Offers')}
-                        >
-                            <Image
-                                style={{ marginRight: 10 }}
-                                source={require("../../assets/icons/offer-icon.png")}
-                            />
-                            <Text
-                                style={[
-                                    styles.accountLinkText,
-                                    { fontSize: 14, justifyContent: "center", flex: 1 },
-                                ]}
-                            >
-                                Offers
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            style={[
-                                styles.accountLinks,
-                                styles.flexRow,
-                                {
-                                    borderBottomColor: "#C9C9C920",
-                                    borderBottomWidth: 1,
-                                    paddingTop: 20,
-                                    paddingBottom: 10,
-                                },
-                            ]}
-                            onPress={() => navigation.navigate('WalletPage')}
-                        >
-                            <Image
-                                style={{
-                                    marginRight: 10,
-                                    width: 18,
-                                    height: 18,
-                                    resizeMode: "contain",
-                                }}
-                                source={require("../../assets/icons/wallet.png")}
-                            />
-                            <Text
-                                style={[
-                                    styles.accountLinkText,
-                                    { fontSize: 14, justifyContent: "center", flex: 1 },
-                                ]}
-                            >
-                                Wallet
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            style={[
-                                styles.accountLinks,
-                                styles.flexRow,
-                                {
-                                    borderBottomColor: "#C9C9C920",
-                                    borderBottomWidth: 1,
-                                    paddingTop: 20,
-                                    paddingBottom: 10,
-                                },
-                            ]}
-                            onPress={() => navigation.navigate('SettingPage')}
-                        >
-                            <Image
-                                style={{ marginRight: 10 }}
-                                source={require("../../assets/icons/settings.png")}
-                            />
-                            <Text
-                                style={[
-                                    styles.accountLinkText,
-                                    { fontSize: 14, justifyContent: "center", flex: 1 },
-                                ]}
-                            >
-                                Settings
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            style={[
-                                styles.accountLinks,
-                                styles.flexRow,
-                                {
-                                    borderBottomColor: "#C9C9C920",
-                                    borderBottomWidth: 1,
-                                    paddingTop: 20,
-                                    paddingBottom: 10,
-                                },
-                            ]}
-                            onPress={() => navigation.navigate('SupportPage')}
-                        >
-                            <Image
-                                style={{ marginRight: 10 }}
-                                source={require("../../assets/icons/Support.png")}
-                            />
-                            <Text
-                                style={[
-                                    styles.accountLinkText,
-                                    { fontSize: 14, justifyContent: "center", flex: 1 },
-                                ]}
-                            >
-                                Support
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            style={[
-                                styles.accountLinks,
-                                styles.flexRow,
-                                { paddingTop: 20, paddingBottom: 10 },
-                            ]}
-                            onPress={() => setLoginModal(true)}
-                        >
-                            <Image
-                                style={{
-                                    marginRight: 10,
-                                    width: 18,
-                                    height: 18,
-                                    resizeMode: "contain",
-                                }}
-                                source={require("../../assets/icons/signin.png")}
-                            />
-                            <Text
-                                style={[
-                                    styles.accountLinkText,
-                                    { fontSize: 14, justifyContent: "center", flex: 1 },
-                                ]}
-                            >
-                                Login/Signup
-                            </Text>
-                        </Pressable>
+                                <View
+                                    style={[css.flexDRSB, css.imgFull]}
+                                >
+                                    <View style={[css.flexDR]}>
+                                        <View style={{ borderRadius: 50 }}>
+                                            <Image
+                                                resizeMode="contain"
+                                                style={{ borderRadius: 50, width: 50, marginRight: 15 }}
+                                                source={require(imgPath + "genieicon.png")}
+                                            />
+                                        </View>
+                                        <View style={[styles.flexDirectionColumn], { marginVertical: 10 }}>
+                                            <Text
+                                                style={[
+                                                    styles.accountName,
+                                                    { fontWeight: "bold", marginTop: 15, fontSize: 20 },
+                                                ]}
+                                            >
+                                                Guest
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View style={[css.alignSelfC]}>
+                                        {/* <TouchableOpacity
+                                            onPress={() => props.navigation.navigate('NotificationPage')}
+                                        >
+                                            <Image
+                                                resizeMode="contain"
+                                                style={{}}
+                                                source={require(imgPath + "notify.png")}
+                                            />
+                                        </TouchableOpacity> */}
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={[styles.section]}>
+                            <View style={[styles.container]}>
+                                {/* <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('Bookings')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "booking-history.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Bookings
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('Offers')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "offer-icon.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Offers
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('WalletPage')}
+                                >
+                                    <Image
+                                        style={{
+                                            marginRight: 10,
+                                            width: 18,
+                                            height: 18,
+                                            resizeMode: "contain",
+                                        }}
+                                        source={require(imgPath + "wallet.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Wallet
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('SettingPage')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "settings.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Settings
+                                    </Text>
+                                </Pressable> */}
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        {
+                                            borderBottomColor: "#C9C9C920",
+                                            borderBottomWidth: 1,
+                                            paddingTop: 20,
+                                            paddingBottom: 10,
+                                        },
+                                    ]}
+                                    onPress={() => props.navigation.navigate('SupportPage')}
+                                >
+                                    <Image
+                                        style={{ marginRight: 10 }}
+                                        source={require(imgPath + "Support.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Support
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[
+                                        styles.accountLinks,
+                                        styles.flexRow,
+                                        { paddingTop: 20, paddingBottom: 10 },
+                                    ]}
+                                    onPress={() => setLoginModal(true)}
+                                >
+                                    <Image
+                                        style={{
+                                            marginRight: 10,
+                                            width: 18,
+                                            height: 18,
+                                            resizeMode: "contain",
+                                        }}
+                                        source={require(imgPath + "signin.png")}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.accountLinkText,
+                                            { fontSize: 14, justifyContent: "center", flex: 1 },
+                                        ]}
+                                    >
+                                        Login/Signup
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                        <View style={[styles.section]}>
+                            < Whatsapp />
+                        </View>
                     </View>
-                </View>
-                <View style={[styles.section]}>
-                    < Whatsapp />
-                </View>
+                </ScrollView>}
+            <View style={styles.centeredView}>
+                {
+                    loginModal && <LoginModal changeData={loginModal} falseData={(data) => setLoginModal(data)} userData={(data) => setUser(data)} />
+                }
             </View>
-        </ScrollView>}
-        <View style={styles.centeredView}>
-            {
-                loginModal && <LoginModal changeData={loginModal} falseData={(data) => setLoginModal(data)} userData={(data) => setUser(data)} />
-            }
-        </View>
-    </SafeAreaView>
-  );
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -542,7 +546,7 @@ const styles = StyleSheet.create({
     },
     backButton: {
         marginRight: 10,
-        marginTop:17,
+        //marginTop: 17,
         justifyContent: "center",
     },
     bgLiteBlue: {
@@ -682,5 +686,5 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
 });
-  
-  export default Login;
+
+export default Login;

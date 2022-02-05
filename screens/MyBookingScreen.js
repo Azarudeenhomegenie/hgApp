@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -15,6 +14,7 @@ import {
     StatusBar,
     Pressable,
 } from "react-native";
+import Text from "../components/MyText";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import StatusBarAll from "../components/StatusBar";
 import css from "../components/commonCss";
@@ -103,12 +103,12 @@ export default function MyBookingScreen(props) {
                                     </View>
                                     <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
                                         <View style={{ alignItems: 'flex-end' }}>
-                                            <Pressable
+                                            <TouchableOpacity
                                                 style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
                                                 onPress={() => console.log(props.navigation.navigate("JobdetailPage"))}
                                             >
                                                 <Text style={[css.brandC, css.f16]}>View Details</Text>
-                                            </Pressable>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 </View>
@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         color: "#fff",
         fontSize: 18,
+        fontFamily: 'PoppinsSB',
         textTransform: "uppercase",
     },
     flexRow: {

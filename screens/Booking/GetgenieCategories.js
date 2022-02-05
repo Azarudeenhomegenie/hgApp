@@ -174,9 +174,7 @@ export default function GetgenieCategories(props) {
                                                 return item.did;
                                             }}
                                             renderItem={({ item }) => (
-                                                <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                                    props.navigation.navigate("GetgeniePage1")
-                                                }}>
+                                                <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => props.navigation.navigate("GetgeniePage1")}>
                                                     <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={{ uri: item.image }} />
                                                     <Text style={[css.fr, css.f12]}>{item.name}</Text>
                                                 </TouchableOpacity>

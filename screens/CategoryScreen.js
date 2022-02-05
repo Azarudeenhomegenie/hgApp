@@ -2,7 +2,6 @@ import React, { Component, useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -14,6 +13,7 @@ import {
     Dimensions,
     FlatList,
 } from "react-native";
+import Text from "../components/MyText";
 import SocialMedia from "../components/socialMedia";
 import Whatsapp800 from "../components/whtsApp";
 import StatusBarAll from "../components/StatusBar";

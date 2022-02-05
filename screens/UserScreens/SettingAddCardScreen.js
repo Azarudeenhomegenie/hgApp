@@ -19,13 +19,13 @@ import {
     TextInput,
 } from "react-native";
 import Modal from 'react-native-modal';
-import SocialMedia from "../../components/SocialMedia";
-import Whatsapp800 from "../../components/Whatsapp800";
+import SocialMedia from "../../components/socialMedia";
+import Whatsapp800 from "../../components/whtsApp";
 import ModalComingSoon from "../../components/ModalComingSoon";
 import css from '../../components/commonCss';
 import StatusBarAll from "../../components/StatusBar";
-let imgPath = '../../assets/'
-let imgPathImage = '../../assets/images'
+let imgPath = '../../assets/icons/';
+let imgPathImage = '../../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -51,10 +51,10 @@ export default function SettingAddCardScreen({ navigation }) {
                         style={[css.whiteC, css.backButton]}
                         onPress={() => navigation.goBack()}
                     >
-                        <Image source={require("../../assets/backArrow.png")} />
+                        <Image source={require(imgPath + "backArrow.png")} />
                     </TouchableOpacity>
                     <View style={[css.flexDR_ALC]}>
-                        <Image style={[styles.titleIcon]} source={require("../../assets/iconCardWhite.png")} />
+                        <Image style={[styles.titleIcon]} source={require(imgPath + "iconCardWhite.png")} />
                         <Text style={[css.headerTitle, css.marginL10, css.f24,]}>ADD CARD</Text>
                     </View>
                 </View>
