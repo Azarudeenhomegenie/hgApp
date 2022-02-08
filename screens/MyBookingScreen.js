@@ -24,11 +24,12 @@ import SocialMedia from '../components/socialMedia';
 import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
 import css from "../components/commonCss";
+import { connect, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+import { loadBookings } from '../reducers/bookingsReducer'
 let booked = 'no'
-let imgPath = '../assets/icons/';
-let imgPathImage = '../assets/icons/images/';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+let imagePath = '../assets/icons/'
+let imagePathImage = '../assets/icons/images/'
 
 // const getMyBooking = () => {
 //     let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
@@ -78,18 +79,32 @@ const windowHeight = Dimensions.get('window').height;
 //         })
 // }
 
-// useEffect(() => {
-//     getMyBooking();
-// }, []);
-
-//const MyBookingScreen = (props) => {
-const MyBookingScreen = ({ props, route }) => {
-    const [userData, setUserData] = useState();
-    const [index, setIndex] = useState(0);
-    const [routes] = useState([
+const BookingScreen = (props) => {
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
         { key: '1', title: 'Current Bookings' },
         { key: '2', title: 'Past Bookings' },
     ]);
+
+    useEffect(() => {
+        if (!props.bookings) {
+            console.log('noo boking')
+        } else {
+            props.loadBookings(props.token)
+        }
+        console.log('Token :::', props.token);
+    }, []);
+
+    console.log('Propas', props)
+
+    const renderTabBar = (props) => (
+        <TabBar
+            {...props}
+            activeColor={'white'}
+            inactiveColor={'black'}
+            style={{ marginTop: 25, backgroundColor: 'red' }}
+        />
+    );
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -237,6 +252,18 @@ const MyBookingScreen = ({ props, route }) => {
     );
 }
 
+export default connect(
+    state => ({
+        isLoggedIn: state.auth.isLoggedIn,
+        token: useSelector(state => state.auth.token),
+        bookings: state.bookings,
+        
+    }),
+    (dispatch) => ({
+        loadBookings: bindActionCreators(loadBookings, dispatch),
+    })
+)(BookingScreen);
+
 const styles = StyleSheet.create({
     scene: {
         flex: 1,
@@ -297,34 +324,6 @@ const styles = StyleSheet.create({
         padding: 30,
     },
     screen4box: { marginTop: 25, shadowColor: "#000", shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, backgroundColor: '#fff', borderRadius: 10, width: '100%', },
-    bookingFooter: { borderBottomRightRadius: 10, borderBottomLeftRadius: 10 },
-    bookingTabsText: {
-        textAlign: 'center',
-        fontSize: 16,
-        lineHeight: 22,
-        marginVertical: 20,
-        color: '#525252',
-        fontFamily: 'PoppinsM'
-    },
-    button: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 32,
-        borderRadius: 10,
-        elevation: 3,
-        shadowColor: '#000',
-        backgroundColor: '#2eb0e4',
-        marginVertical: 80,
-        width: '90%'
-    },
-    buttonText: {
-        fontSize: 14,
-        lineHeight: 21,
-        fontFamily: 'PoppinsBO',
-        letterSpacing: 0.25,
-        color: 'white',
-    },
+    bookingFooter: { borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }
 });
 
-export default MyBookingScreen;

@@ -27,6 +27,10 @@ import CountryPicker from 'rn-country-picker';
 import { Ionicons } from '@expo/vector-icons';
 import ModalComingSoon from "../components/ModalComingSoon";
 import LoginModal from "../components/loginModal";
+import { connect } from "react-redux";
+import { State } from "react-native-gesture-handler";
+import { bindActionCreators } from "redux";
+import { logout } from '../reducers/authReducer'
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -35,14 +39,14 @@ const windowHeight = Dimensions.get('window').height;
 // const user = 'inn';
 
 
-const AccountScreen = ({ navigation }) => {
+const AccountScreen = ({ navigation, isLoggedIn, logout, userData }) => {
     const [email, setEmail] = useState(null);
     const [userName, setUserName] = useState(null);
     const [nameCheck, setNameCheck] = useState(false);
     const [emailCheck, setEmailCheck] = useState(false);
     const [phone, setPhone] = useState(null);
     const [otp, setOtp] = useState(null);
-    const [user, setUser] = useState('inn');
+    const [user, setUser] = useState(isLoggedIn? 'in' : 'inn');
     const [loginModal, setLoginModal] = useState(false);
     const [registerModal, setRegisterModal] = useState(false);
     const [otpModal, setOtpModal] = useState(false);
@@ -50,8 +54,8 @@ const AccountScreen = ({ navigation }) => {
     const [OtpCodeTwo, setOtpCodeTwo] = useState(null);
     const [OtpCodeThree, setOtpCodeThree] = useState(null);
     const [OtpCodeFour, setOtpCodeFour] = useState(null);
-    const [displayName, setDisplyName] = useState(null);
-    const [displayEmail, setDisplayEmail] = useState(null);
+    const [displayName, setDisplyName] = useState(userData && userData.name ? userData.name : null);
+    const [displayEmail, setDisplayEmail] = useState(userData && userData.email ? userData.email : null);
     const [otpSend, setOtpSend] = useState(true);
     const [modalComingsoon, setModalComingsoon] = useState(false);
 
@@ -64,6 +68,11 @@ const AccountScreen = ({ navigation }) => {
     const secondOtp = useRef();
     const thirdOtp = useRef();
     const fourthOtp = useRef();
+
+    handleLogout = async() => {
+        await logout();
+        setUser('inn')
+    }
 
     const LoginApi = () => {
         let data = new FormData();
@@ -428,7 +437,7 @@ const AccountScreen = ({ navigation }) => {
                                                     styles.accountLinkText,
                                                     { fontSize: 14, justifyContent: "center", flex: 1, color: '#2eb0e4' },
                                                 ]}
-                                                onPress={() => { setUser('inn') }}
+                                                onPress={() => { handleLogout() }}
                                             >
                                                 Logout
                                             </Text>
@@ -706,7 +715,17 @@ const AccountScreen = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-export default AccountScreen;
+export default connect(
+    state => ({
+        isLoggedIn: state.auth.isLoggedIn, 
+        userData: state.auth.user
+    }),
+    (dispatch) => ({
+        logout: bindActionCreators(logout, dispatch)
+    }) 
+
+)(AccountScreen);
+
 const styles = StyleSheet.create({
     screen: {
         flex: 1,

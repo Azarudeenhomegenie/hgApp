@@ -1,5 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component, useState, useEffect, useRef } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from 'redux'
+import { login, verifyOtp } from '../reducers/authReducer'; 
 import {
     StyleSheet,
     View,
@@ -133,7 +136,6 @@ const LoginModal = (props) => {
                 //console.log('userDataLoginModal', res)
                 if (res.message == "Success") {
                     setOtpModal(false)
-                    setUser('in')
                     props.userData(true)
                     setOtpCodeOne(null);
                     setOtpCodeTwo(null);
@@ -147,6 +149,7 @@ const LoginModal = (props) => {
                     props.getPhone(res.data.userDetails.phoneNo);
                     props.getToken(res.data.accessToken);
                     props.falseData(false)
+                    setUser('in')
                 }
             })
             .catch(e => {
@@ -243,13 +246,13 @@ const LoginModal = (props) => {
                                     />
                                 </View>
 
-                                <Pressable
-                                    style={[styles.offerBooknow]}
-                                    //onPress={() => onSubmitLogin()}
-                                    onPress={() => LoginApi()}
-                                >
-                                    <Text style={[styles.offerBooknowText]}>Login/Signup</Text>
-                                </Pressable>
+                        <Pressable
+                            style={[styles.offerBooknow]}
+                            //onPress={() => onSubmitLogin()}
+                            onPress={() => handleLogin()}
+                        >
+                            <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
+                        </Pressable>
 
 
                             </View>
@@ -610,4 +613,13 @@ const styles = StyleSheet.create({
     input: { borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '90%', height: 40, marginTop: 20, padding: 5, fontFamily: 'PoppinsM', fontSize: 14, color: '#525252' },
 });
 
-export default LoginModal;
+export default connect(
+    state => ({
+        isLoggedIn: state.auth.isLoggedIn,
+        isOTPSent: state.auth.isOTPSent,
+    }),
+    (dispatch) => ({
+        login: bindActionCreators(login, dispatch),
+        verifyOtp: bindActionCreators(verifyOtp, dispatch)
+    })
+)(LoginModal);
