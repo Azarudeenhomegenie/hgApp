@@ -16,3 +16,8 @@ city - https://api.homegenie.com/api/webapi/getCity
 catgeories name - https://api.homegenie.com/api/customer/getCategorySubcategoryName
 specialized sevices - https://api.homegenie.com/api/category/getAllCategories
 service categories - https://api.homegenie.com/api/webapi/getServiceGroup?city=Dubai&language=en
+
+
+MyBookings - https://api.homegenie.com/api/customer/getmybookings
+customerDetail - https://api.homegenie.com/api/customer/getcustomerDetails?email=azarudeendanish@gmail.com
+getPendingRating - https://api.homegenie.com/api/customer/getPendingRating

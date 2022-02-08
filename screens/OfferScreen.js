@@ -119,9 +119,7 @@ export default function OfferScreen({ navigation }) {
                                                 style={{ top: -15, right: -10, position: 'absolute', }}
                                                 source={require(imgPath + "trending.png")}
                                             /> : null}
-                                            <Pressable
-                                                onPress={() => setModalTermsandCondition(true)}
-                                            >
+                                            <Pressable onPress={() => setModalTermsandCondition(true)}>
                                                 <Text style={{ color: '#2eb0e4' }}>* Terms & Conditions</Text>
                                             </Pressable>
                                             <Text style={[css.f24, css.fbo, css.brandC]}>{item.name}</Text>

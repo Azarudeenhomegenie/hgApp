@@ -35,10 +35,9 @@ const FirstRoute = () => {
             <View style={[styles.bookingTabsContent,], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                 <View style={{
                     width: 150, height: 150,
-                    marginVertical: 10, borderRadius: 200,
+                    borderRadius: 200,
                     backgroundColor: '#fff', justifyContent: 'center',
-                    alignItems: 'center',
-                    //elevation: 2,
+                    alignItems: 'center', marginTop: 50,
                 }}>
                     <Image
                         style={[styles.bookingTabsImage], { width: 75, height: 75, }}
@@ -74,8 +73,6 @@ const FirstRoute = () => {
 }
 
 const SecondRoute = () => {
-    // const [expanded, setExpanded] = React.useState(true);
-    // const handlePress = () => setExpanded(!expanded);
     const [expanded, setExpanded] = useState(false)
     return (
         <ScrollView style={[styles.scene, styles.bookingTabs]}>
@@ -376,7 +373,7 @@ export default function SupportScreen({ navigation }) {
     //     />
     // );
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff1" }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFBFF" }}>
             <StatusBarAll />
             <View style={css.header}>
                 <View style={styles.flexRow}>
@@ -390,7 +387,7 @@ export default function SupportScreen({ navigation }) {
                             source={require(imgPath + "backArrow.png")}
                         />
                     </TouchableOpacity>
-                    <Text style={[styles.headerTitle]}>Support</Text>
+                    <Text style={[css.headerTitle]}>Support</Text>
                 </View>
             </View>
             <TabView

@@ -6,7 +6,6 @@ import css from './commonCss';
 const MyText = (props) => {
 
     let [fontsLoaded] = useFonts({
-        'Lobster': require('../assets/fonts/Lobster/Lobster.ttf'),
         'PoppinsBL': require('../assets/fonts/Poppins/Poppins-Black.ttf'),
         'PoppinsM': require('../assets/fonts/Poppins/Poppins-Medium.ttf'),
     });

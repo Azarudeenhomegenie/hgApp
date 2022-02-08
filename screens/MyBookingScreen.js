@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
@@ -14,8 +14,14 @@ import {
     StatusBar,
     Pressable,
 } from "react-native";
-import Text from "../components/MyText";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { connect } from "react-redux";
+import axios from "axios";
+import { getLogin } from "../actions/hgAction";
+import Whatsapp from "../components/whtsApp";
+import Text from "../components/MyText";
+import SocialMedia from '../components/socialMedia';
+import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
 import css from "../components/commonCss";
 let booked = 'yes'
@@ -25,21 +31,14 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
-export default function MyBookingScreen(props) {
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
+const MyBookingScreen = (props) => {
+    const [userData, setUserData] = useState();
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
         { key: '1', title: 'Current Bookings' },
         { key: '2', title: 'Past Bookings' },
     ]);
 
-    const renderTabBar = (props) => (
-        <TabBar
-            {...props}
-            activeColor={'white'}
-            inactiveColor={'black'}
-            style={{ marginTop: 25, backgroundColor: 'red' }}
-        />
-    );
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -48,24 +47,23 @@ export default function MyBookingScreen(props) {
                     <View style={[styles.scene, styles.bookingTabs]}>
                         {booked != 'yes' ?
                             <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                                <Image
-                                    style={[styles.bookingTabsImage], { width: 150, height: 150, marginVertical: 40 }}
-                                    source={require(imgPath + 'empty-ongoing.png')}
-                                />
-                                <Text style={[styles.bookingTabsText], { textAlign: 'center', fontSize: 16, lineHeight: 22, marginVertical: 20, color: '#303030' }} >No Bookings yet. {"\n"}start Booking and {"\n"} Enjoy HomeGenie Services</Text>
-                                <Pressable style={[styles.button], {
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    paddingVertical: 12,
-                                    paddingHorizontal: 32,
-                                    borderRadius: 10,
-                                    elevation: 3,
-                                    backgroundColor: '#f6b700',
-                                    marginVertical: 80,
-                                    width: '90%'
-                                }}
+                                <View style={{
+                                    width: 150, height: 150,
+                                    borderRadius: 200,
+                                    backgroundColor: '#fff', justifyContent: 'center',
+                                    alignItems: 'center', marginTop: 50,
+                                }}>
+                                    <Image
+                                        style={[styles.bookingTabsImage], { width: 100, height: 100, }}
+                                        source={require(imgPath + 'empty-ongoing.png')}
+                                    />
+                                </View>
+                                <Text style={[styles.bookingTabsText]} >No Bookings yet. {"\n"}start Booking and {"\n"} Enjoy HomeGenie Services</Text>
+                                <Pressable
+                                    style={[styles.button, { backgroundColor: '#f6b700', }]}
+                                    onPress={() => props.navigation.navigate('GetgenieScreen')}
                                 >
-                                    <Text style={[styles.text], {
+                                    <Text style={[styles.buttonText], {
                                         fontSize: 16,
                                         lineHeight: 21,
                                         fontWeight: 'bold',
@@ -121,31 +119,23 @@ export default function MyBookingScreen(props) {
                 return (
                     <View style={[styles.scene, styles.bookingTabs]}>
                         <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                            <Image
-                                style={[styles.bookingTabsImage], { width: 150, height: 150, marginVertical: 40 }}
-                                source={require(imgPath + 'empty-past.png')}
-                            />
-                            <Text style={[styles.bookingTabsText], { textAlign: 'center', fontSize: 16, lineHeight: 22, marginVertical: 20, color: '#303030' }} >No Past Bookings yet. {"\n"}start your journey by {"\n"} Booking a services {"\n"} @ HomeGenie</Text>
-                            <Pressable style={[styles.button], {
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                paddingVertical: 12,
-                                paddingHorizontal: 32,
-                                borderRadius: 10,
-                                elevation: 3,
-                                backgroundColor: '#f6b700',
-                                marginVertical: 80,
-                                width: '90%'
-                            }}
-                            //onPress={() => props.navigation.navigate('BookingPage')} 
+
+                            <View style={{
+                                width: 150, height: 150,
+                                borderRadius: 200,
+                                backgroundColor: '#fff', justifyContent: 'center',
+                                alignItems: 'center', marginTop: 50,
+                            }}>
+                                <Image
+                                    style={[styles.bookingTabsImage], { width: 100, height: 100, }}
+                                    source={require(imgPath + 'empty-past.png')}
+                                />
+                            </View>
+                            <Text style={[styles.bookingTabsText]} >No Past Bookings yet. {"\n"}start your journey by {"\n"} Booking a services {"\n"} @ HomeGenie</Text>
+                            <Pressable style={[styles.button]}
+                                onPress={() => props.navigation.navigate('GetgenieScreen')}
                             >
-                                <Text style={[styles.text], {
-                                    fontSize: 16,
-                                    lineHeight: 21,
-                                    fontWeight: 'bold',
-                                    letterSpacing: 0.25,
-                                    color: 'white',
-                                }}>Book Now</Text>
+                                <Text style={[styles.buttonText]}>Book Now</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -180,19 +170,19 @@ export default function MyBookingScreen(props) {
                     <TabBar
                         {...props}
                         renderLabel={({ route, color }) => (
-                            <Text style={{ color: 'black', margin: 8 }}>
+                            <Text style={[css.fr, css.f14, css.blackC]}>
                                 {route.title}
                             </Text>
                         )}
                         activeColor={{ color: 'green', backgroundColor: 'yellow' }}
                         indicatorStyle={{ backgroundColor: 'rgba(46,176,228,.2)', height: 4 }}
-                        style={{ backgroundColor: 'transparent' }}
+                        style={{ backgroundColor: 'transparent', width: '80%', alignSelf: 'center', elevation: 0 }}
                     />
                 )}
                 onIndexChange={(index) => setIndex(index)}
-                style={[styles.container]}
+                style={[styles.container, css.marginT20]}
             />
-        </SafeAreaView >
+        </SafeAreaView>
     );
 }
 
@@ -256,5 +246,34 @@ const styles = StyleSheet.create({
         padding: 30,
     },
     screen4box: { marginTop: 25, shadowColor: "#000", shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, backgroundColor: '#fff', borderRadius: 10, width: '100%', },
-    bookingFooter: { borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }
+    bookingFooter: { borderBottomRightRadius: 10, borderBottomLeftRadius: 10 },
+    bookingTabsText: {
+        textAlign: 'center',
+        fontSize: 16,
+        lineHeight: 22,
+        marginVertical: 20,
+        color: '#525252',
+        fontFamily: 'PoppinsM'
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 10,
+        elevation: 3,
+        shadowColor: '#000',
+        backgroundColor: '#2eb0e4',
+        marginVertical: 80,
+        width: '90%'
+    },
+    buttonText: {
+        fontSize: 14,
+        lineHeight: 21,
+        fontFamily: 'PoppinsBO',
+        letterSpacing: 0.25,
+        color: 'white',
+    },
 });
+
+export default MyBookingScreen;

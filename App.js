@@ -9,7 +9,6 @@ import Text from "./components/MyText";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
-    'Lobster': require('./assets/fonts/Lobster/Lobster.ttf'),
     'PoppinsBL': require('./assets/fonts/Poppins/Poppins-Black.ttf'),
     'PoppinsBO': require('./assets/fonts/Poppins/Poppins-Bold.ttf'),
     'PoppinsEB': require('./assets/fonts/Poppins/Poppins-ExtraBold.ttf'),
@@ -26,13 +25,7 @@ export default function App() {
     return (
       <StoreProvider store={store}>
         <Navigation />
-        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}><Text>test</Text></View> */}
       </StoreProvider>
     );
   }
-  // return (
-  //   <StoreProvider store={store}>
-  //     <Navigation />
-  //   </StoreProvider>
-  // );
 }

@@ -3,7 +3,6 @@ import React, { Component, useState, useEffect, useRef } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -18,7 +17,9 @@ import {
     TextInput
 } from "react-native";
 import Modal from 'react-native-modal';
-import css from '../components/commonCss';
+import axios from "axios";
+import Text from "./MyText";
+import css from './commonCss';
 import CountryPicker from 'rn-country-picker';
 
 const LoginModal = (props) => {
@@ -36,8 +37,9 @@ const LoginModal = (props) => {
     const [OtpCodeTwo, setOtpCodeTwo] = useState(null);
     const [OtpCodeThree, setOtpCodeThree] = useState(null);
     const [OtpCodeFour, setOtpCodeFour] = useState(null);
-    const [displayName, setDisplyName] = useState(null);
+    const [displayName, setDisplayName] = useState(null);
     const [displayEmail, setDisplayEmail] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [otpSend, setOtpSend] = useState(true);
     const [modalComingsoon, setModalComingsoon] = useState(false);
 
@@ -58,7 +60,7 @@ const LoginModal = (props) => {
         data.append('countryCode', countryPlus + countryCodeNew)
         console.log(countryPlus + countryCodeNew);
         console.log(phone);
-    
+
         fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
             method: 'POST',
             headers: {
@@ -70,14 +72,14 @@ const LoginModal = (props) => {
             .then(res => {
                 console.log(res.data.isRegistered)
                 if (res.data.isRegistered) {
-                    
+
                     setOtpCodeOne(null);
                     setOtpCodeTwo(null);
                     setOtpCodeThree(null);
                     setOtpCodeFour(null);
                     setOtpModal(true);
                 } else {
-                    
+
                     setOtpCodeOne(null);
                     setOtpCodeTwo(null);
                     setOtpCodeThree(null);
@@ -102,7 +104,7 @@ const LoginModal = (props) => {
             .then(res => {
                 console.log(res)
                 setOtpSend(false)
-            
+
             })
     }
 
@@ -127,7 +129,7 @@ const LoginModal = (props) => {
         })
             .then(response => response.json())
             .then(res => {
-                console.log(res)
+                console.log('userDataLoginModal', res)
                 if (res.message == "Success") {
                     setOtpModal(false)
                     setUser('in')
@@ -137,9 +139,17 @@ const LoginModal = (props) => {
                     setOtpCodeThree(null);
                     setOtpCodeFour(null);
                     setDisplayEmail(res.data.userDetails.email);
-                    setDisplyName(res.data.userDetails.name);
+                    setDisplayName(res.data.userDetails.name);
+                    props.getName(res.data.userDetails.name);
+                    props.getEmail(res.data.userDetails.email);
+                    props.getPhone(res.data.userDetails.phoneNo);
                     props.falseData(false)
                 }
+                console.log('userDataEmail', res.data.userDetails.email)
+                console.log('userDataName', res.data.userDetails.name)
+                console.log('userId', res.data.userDetails._id);
+                //setUserData(res.data);
+                //localStorage.setItem("user", JSON.stringify(res.data));
             })
             .catch(e => {
                 console.log(e)
@@ -185,261 +195,232 @@ const LoginModal = (props) => {
                 })
         }
     }
-    
+
     return (
         <>
-        <Modal
-        animationType="fade"
-        isVisible={props.changeData} hasBackdrop={true}
-        >
-        <View >
-            <View style={[styles.modalView], { padding: 15 }}>
-                <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                    <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
-                        <Pressable
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() =>props.falseData(false)}
-                        >
-                            <Image
-                                resizeMode="contain"
-                                style={{ width: 20, height: 20 }}
-                                source={require("../assets/icons/backArrowBlack.png")}
-                            />
-                        </Pressable>
-                        <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 24, marginTop: 20 }}>Login/Signup to HomeGenie</Text>
-                        <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e', marginTop: 10 }}>Login/Signup to access your stored addressess and service booking details.</Text>
-                        {/* <CountryPicker
-                                show={show}
-                                pickerButtonOnPress={(item) => {
-                                    console.log(item)
-                                    setCountryCode(item.dial_code);
-                                    setShow(false);
-                                }}
-                                style={{
-                                    modal: {
-                                        height: 500,
-                                    },
-                                    textInput: {
-                                        height: 80,
-                                        borderRadius: 0,
-                                    },
-                                    countryButtonStyles: {
-                                        height: 80
-                                    },
-                                }}
-                            /> */}
+            <Modal
+                animationType="fade"
+                isVisible={props.changeData} hasBackdrop={true}
+            >
+                <View >
+                    <View style={[styles.modalView], { padding: 15 }}>
+                        <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
+                            <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                                <Pressable
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={() => props.falseData(false)}
+                                >
+                                    <Image
+                                        //resizeMode="contain"
+                                        //style={{ width: 20, height: 20 }}
+                                        source={require("../assets/icons/backArrowBlack.png")}
+                                    />
+                                </Pressable>
+                                <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>Login/Signup to HomeGenie</Text>
+                                <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Login/Signup to access your stored addressess and service booking details.</Text>
+                            </View>
+                            <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                                <View style={[styles.flexRow, css.alignItemsC, { width: '90%' }]}>
+                                    <CountryPicker
+                                        disable={false}
+                                        animationType={'fade'}
+                                        containerStyle={styles.pickerStyle}
+                                        pickerTitleStyle={styles.pickerTitleStyle}
+                                        selectedCountryTextStyle={styles.selectedCountryTextStyle}
+                                        countryNameTextStyle={styles.countryNameTextStyle}
+                                        pickerTitle={'Country Picker'}
+                                        searchBarPlaceHolder={'Search......'}
+                                        hideCountryFlag={false}
+                                        hideCountryCode={false}
+                                        searchBarStyle={styles.searchBarStyle}
+                                        countryCode={countryCodeNew}
+                                        selectedValue={(index) => setCountryCodeNew(index)}
+                                    />
+                                    <TextInput
+                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '100%', padding: 10, height: 60, paddingLeft: '33%', fontFamily: 'PoppinsR' }}
+                                        placeholder="Enter Mobile number"
+                                        keyboardType="numeric"
+                                        value={phone}
+                                        onChange={(text) => setPhone(text.nativeEvent.text)}
+                                    />
+                                </View>
 
-                    </View>
-                    <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
-                        <View style={[styles.flexRow]}>
-                            <CountryPicker
-                                disable={false}
-                                animationType={'slide'}
-                                containerStyle={styles.pickerStyle}
-                                pickerTitleStyle={styles.pickerTitleStyle}
-                                selectedCountryTextStyle={styles.selectedCountryTextStyle}
-                                countryNameTextStyle={styles.countryNameTextStyle}
-                                pickerTitle={'Country Picker'}
-                                searchBarPlaceHolder={'Search......'}
-                                hideCountryFlag={false}
-                                hideCountryCode={false}
-                                searchBarStyle={styles.searchBarStyle}
-                                countryCode={countryCodeNew}
-                                //selectedValue={(index) => setCountryCodeNew('+' + index)}
-                                selectedValue={(index) => setCountryCodeNew(index)}
-                            />
-                            <TextInput
-                                style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '60%', padding: 10, height: 60 }}
-                                placeholder="Enter Mobile number"
-                                keyboardType="numeric"
-                                value={phone}
-                                onChange={(text) => setPhone(text.nativeEvent.text)}
-                            />
-                        </View>
-
-                        <Pressable
-                            style={[styles.offerBooknow]}
-                            //onPress={() => onSubmitLogin()}
-                            onPress={() => LoginApi()}
-                        >
-                            <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
-                        </Pressable>
+                                <Pressable
+                                    style={[styles.offerBooknow]}
+                                    //onPress={() => onSubmitLogin()}
+                                    onPress={() => LoginApi()}
+                                >
+                                    <Text style={[styles.offerBooknowText]}>Login/Signup</Text>
+                                </Pressable>
 
 
-                    </View>
-                    {/* <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+                            </View>
+                            {/* <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
                         <Pressable
                             onPress={() => { setLoginModal(false), setRegisterModal(true) }}
                         ><Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e' }}>Don't have an account? <Text style={{ color: '#2eb0e4' }}>Signup</Text></Text></Pressable>
                     </View> */}
+                        </View>
+                    </View>
                 </View>
-            </View>
-        </View>
-    </Modal>
+            </Modal>
             <Modal
-                    animationType="fade"
-                    isVisible={registerModal} hasBackdrop={true}
-                >
-                    <View>
-                        <View style={[styles.modalView], { padding: 15 }}>
-                            <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                                <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
-                                    <Pressable
-                                        style={[styles.button, styles.buttonClose]}
-                                        onPress={() => setRegisterModal(!registerModal)}
-                                    >
-                                        <Image
-                                            resizeMode="contain"
-                                            style={{ width: 20, height: 20 }}
-                                            source={require("../assets/icons/backArrowBlack.png")}
-                                        />
-                                    </Pressable>
-                                    <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 24, marginTop: 20 }}>SIGNUP</Text>
-                                    <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e', marginTop: 10 }}>Signup and enjoy all the features including our amazing offers.</Text>
-                                </View>
-                                <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
-                                    <TextInput
-                                        style={[styles.input], { borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '90%', height: 40, marginBottom: 20, padding: 5 }}
-                                        id="Name"
-                                        placeholder="Name"
-                                        keyboardType="default"
-                                        required
-                                        autoCapitalize="none"
-                                        errorMessage="please enter your name."
-                                        onChange={(text) => setUserName(text.nativeEvent.text)}
-                                        value={userName}
+                animationType="fade"
+                isVisible={registerModal} hasBackdrop={true}
+            >
+                <View>
+                    <View style={[styles.modalView], { padding: 15 }}>
+                        <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
+                            <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                                <Pressable
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={() => setRegisterModal(!registerModal)}
+                                >
+                                    <Image source={require("../assets/icons/backArrowBlack.png")} />
+                                </Pressable>
+                                <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>SIGNUP</Text>
+                                <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Signup and enjoy all the features including our amazing offers.</Text>
+                            </View>
+                            <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                                <TextInput
+                                    style={[styles.input]}
+                                    id="Name"
+                                    placeholder="Name"
+                                    keyboardType="default"
+                                    required
+                                    autoCapitalize="none"
+                                    errorMessage="please enter your name."
+                                    onChange={(text) => setUserName(text.nativeEvent.text)}
+                                    value={userName}
+                                />
+                                {nameCheck && <Text style={[css.errorText]}>Please enter your name</Text>}
+                                <TextInput
+                                    style={[styles.input]}
+                                    id="Email"
+                                    placeholder="Email"
+                                    keyboardType="email-address"
+                                    required
+                                    autoCapitalize="none"
+                                    errorMessage="please enter your email-id."
+                                    onChange={(text) => setEmail(text.nativeEvent.text)}
+                                    value={email}
+                                />
+                                {emailCheck && <Text style={[css.errorText]}>Please enter your Email</Text>}
+                                <Pressable
+                                    style={[styles.offerBooknow]}
+                                    onPress={() => signUpApi()}
+                                >
+                                    <Text style={[styles.offerBooknowText]}>SIGNUP</Text>
+                                </Pressable>
+                            </View>
+                            <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+                                <Pressable
+                                    onRequestClose={() => {
+                                        Alert.alert("Modal has been closed.");
+                                        props.falseData(false)
+                                    }}
+                                    onPress={() => { setRegisterModal(!registerModal), props.falseData(true) }}
+                                >
+                                    <Text style={[css.text, css.textCenter, { color: '#7e7e7e', fontSize: 12 }]}>Already have an account? <Text style={[css.brandC, css.fm, css.f12]}>Login</Text></Text></Pressable>
+                            </View>
+
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="fade"
+                isVisible={otpModal} hasBackdrop={true}
+            >
+                <View >
+                    <View style={[styles.modalView], { padding: 15 }}>
+                        <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
+                            <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                                <Pressable
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={() => setOtpModal(!otpModal)}
+                                >
+                                    <Image
+                                        //resizeMode="contain"
+                                        //style={{ width: 20, height: 20 }}
+                                        source={require("../assets/icons/backArrowBlack.png")}
                                     />
-                                    {nameCheck && <Text style={{ color: 'red' }}>Please enter your name</Text>}
+                                </Pressable>
+                                <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>ONE TIME PASSCODE (OTP)</Text>
+                                <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Please enter 4 digit code sent via SMS</Text>
+                            </View>
+                            <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                                <View style={styles.flexRow}>
                                     <TextInput
-                                        style={[styles.input], { borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '90%', height: 40, marginBottom: 20, padding: 5 }}
-                                        id="Email"
-                                        placeholder="Email"
-                                        keyboardType="email-address"
-                                        required
-                                        autoCapitalize="none"
-                                        errorMessage="please enter your email-id."
-                                        onChange={(text) => setEmail(text.nativeEvent.text)}
-                                        value={email}
-                                    />
-                                    {emailCheck && <Text style={{ color: 'red' }}>Please enter your Email</Text>}
-                                    <Pressable
-                                        style={[styles.offerBooknow]}
-                                        onPress={() => signUpApi()}
-                                    >
-                                        <Text style={[styles.textStyle, styles.offerBooknowText]}>SIGNUP</Text>
-                                    </Pressable>
-                                </View>
-                                <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
-                                    <Pressable
-                                        onRequestClose={() => {
-                                            Alert.alert("Modal has been closed.");
-                                            props.falseData(false)
+                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        placeholder=""
+                                        keyboardType="numeric"
+                                        value={OtpCodeOne}
+                                        maxLength={1}
+                                        onChange={(text) => {
+                                            setOtpCodeOne(text.nativeEvent.text);
+                                            secondOtp.current.focus();
                                         }}
-                                        onPress={() => { setRegisterModal(!registerModal), props.falseData(true) }}
-                                    >
-                                        <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e' }}>Already have an account? <Text style={{ color: '#2eb0e4' }}>Login</Text></Text></Pressable>
+                                    />
+                                    <TextInput
+                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        placeholder=""
+                                        keyboardType="numeric"
+                                        value={OtpCodeTwo}
+                                        maxLength={1}
+                                        onChange={(text) => {
+                                            setOtpCodeTwo(text.nativeEvent.text);
+                                            thirdOtp.current.focus();
+                                        }}
+                                        ref={secondOtp}
+                                    />
+                                    <TextInput
+                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        placeholder=""
+                                        keyboardType="numeric"
+                                        value={OtpCodeThree}
+                                        maxLength={1}
+                                        onChange={(text) => {
+                                            setOtpCodeThree(text.nativeEvent.text);
+                                            fourthOtp.current.focus();
+                                        }}
+                                        ref={thirdOtp}
+                                    />
+                                    <TextInput
+                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        placeholder=""
+                                        keyboardType="numeric"
+                                        value={OtpCodeFour}
+                                        maxLength={1}
+                                        onChange={(text) => setOtpCodeFour(text.nativeEvent.text)}
+                                        ref={fourthOtp}
+                                    />
                                 </View>
 
+                                <Pressable
+                                    style={[styles.offerBooknow]}
+                                    //onPress={() => onSubmitLogin()}
+                                    onPress={() => OtpVrifyApi()}
+                                >
+                                    <Text style={[styles.textStyle, styles.offerBooknowText]}>CONFIRM</Text>
+                                </Pressable>
+                                {/* <Text style={{ color: 'green' }}>{otpSend ? 'OTP Sent' : 'OTP Sent Again'}</Text> */}
+                                <Text style={[css.fm, css.f14, { color: 'green' }]}>{otpSend ? 'OTP Sent' : 'OTP Sent Again'}</Text>
+                            </View>
+                            <View style={[styles.modalFooter], { paddingBottom: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+                                <Pressable
+                                    style={[styles.brand]}
+                                    onPress={() => ResetOtpApi()}
+                                >
+                                    <Text style={[css.fm, css.f14, css.brandC, css.textCenter]}>Resend OTP</Text>
+                                </Pressable>
                             </View>
                         </View>
                     </View>
-                </Modal>
-                <Modal
-                    animationType="fade"
-                    isVisible={otpModal} hasBackdrop={true}
-                >
-                    <View >
-                        <View style={[styles.modalView], { padding: 15 }}>
-                            <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                                <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
-                                    <Pressable
-                                        style={[styles.button, styles.buttonClose]}
-                                        onPress={() => setOtpModal(!otpModal)}
-                                    >
-                                        <Image
-                                            resizeMode="contain"
-                                            style={{ width: 20, height: 20 }}
-                                            source={require("../assets/icons/backArrowBlack.png")}
-                                        />
-                                    </Pressable>
-                                    <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 24, marginTop: 20 }}>ONE TIME PASSCODE (OTP)</Text>
-                                    <Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e', marginTop: 10 }}>Please enter 4 digit code sent via SMS</Text>
-                                </View>
-                                <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
-                                    <View style={styles.flexRow}>
-                                        <TextInput
-                                            style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
-                                            placeholder=""
-                                            keyboardType="numeric"
-                                            value={OtpCodeOne}
-                                            maxLength={1}
-                                            onChange={(text) => {
-                                                setOtpCodeOne(text.nativeEvent.text);
-                                                secondOtp.current.focus();
-                                            }}
-                                        />
-                                        <TextInput
-                                            style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
-                                            placeholder=""
-                                            keyboardType="numeric"
-                                            value={OtpCodeTwo}
-                                            maxLength={1}
-                                            onChange={(text) => {
-                                                setOtpCodeTwo(text.nativeEvent.text);
-                                                thirdOtp.current.focus();
-                                            }}
-                                            ref={secondOtp}
-                                        />
-                                        <TextInput
-                                            style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
-                                            placeholder=""
-                                            keyboardType="numeric"
-                                            value={OtpCodeThree}
-                                            maxLength={1}
-                                            onChange={(text) => {
-                                                setOtpCodeThree(text.nativeEvent.text);
-                                                fourthOtp.current.focus();
-                                            }}
-                                            ref={thirdOtp}
-                                        />
-                                        <TextInput
-                                            style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
-                                            placeholder=""
-                                            keyboardType="numeric"
-                                            value={OtpCodeFour}
-                                            maxLength={1}
-                                            onChange={(text) => setOtpCodeFour(text.nativeEvent.text)}
-                                            ref={fourthOtp}
-                                        />
-                                    </View>
-
-                                    <Pressable
-                                        style={[styles.offerBooknow]}
-                                        //onPress={() => onSubmitLogin()}
-                                        onPress={() => OtpVrifyApi()}
-                                    >
-                                        <Text style={[styles.textStyle, styles.offerBooknowText]}>CONFIRM</Text>
-                                    </Pressable>
-                                    {/* <Text style={{ color: 'green' }}>{otpSend ? 'OTP Sent' : 'OTP Sent Again'}</Text> */}
-                                    <Text style={{ color: 'green' }}>{otpSend ? 'OTP Sent' : 'OTP Sent Again'}</Text>
-
-
-                                </View>
-                                <View style={[styles.modalFooter], { padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
-                                    <Pressable
-                                        style={[styles.brand]}
-                                        //onPress={() => onSubmitLogin()}
-                                        onPress={() => ResetOtpApi()}
-                                    >
-                                        <Text style={[styles.brand, styles.textCenter]}>Resend OTP</Text>
-                                    </Pressable>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
+                </View>
+            </Modal>
         </>
-        
+
     );
 };
 
@@ -537,14 +518,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: '90%',
         height: 40,
-        marginTop: 10,
+        marginTop: 20,
         marginBottom: 15,
     },
     offerBooknowText: {
-        fontSize: 16,
-        lineHeight: 16,
-        fontWeight: 'bold',
-        letterSpacing: 1,
+        fontSize: 14,
+        fontFamily: 'PoppinsM',
         color: '#fff',
     },
     //ModalCss
@@ -580,7 +559,7 @@ const styles = StyleSheet.create({
     },
     //country picker style
     titleText: {
-        color: '#000',
+        color: '#525252',
         fontSize: 25,
         marginBottom: 25,
         fontWeight: 'bold',
@@ -589,32 +568,37 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         alignSelf: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PoppinsM',
         flex: 1,
         marginLeft: 10,
-        fontSize: 16,
-        color: '#000',
+        fontSize: 14,
+        color: '#525252',
     },
     pickerStyle: {
         height: 60,
-        width: '30%',
+        fontSize: 10,
+        width: '32%',
         marginBottom: 10,
         justifyContent: 'center',
         padding: 10,
-        borderWidth: 1,
+        borderRightWidth: 1,
+        borderRadius: 0,
         borderColor: '#ccc',
         backgroundColor: 'white',
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        top: 0, left: 0, zIndex: 4,
+        fontSize: 10, fontFamily: 'PoppinsR'
     },
     selectedCountryTextStyle: {
         paddingLeft: 5,
         paddingRight: 5,
-        color: '#000',
-        textAlign: 'right',
+        fontSize: 12, fontFamily: 'PoppinsR', color: '#525252',
     },
 
     countryNameTextStyle: {
         paddingLeft: 10,
-        color: '#000',
+        fontSize: 12, fontFamily: 'PoppinsR', color: '#525252',
         textAlign: 'right',
     },
 
@@ -625,6 +609,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         marginRight: 10,
     },
+    input: { borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '90%', height: 40, marginTop: 20, padding: 5, fontFamily: 'PoppinsM', fontSize: 14, color: '#525252' },
 });
 
 export default LoginModal;
