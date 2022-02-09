@@ -146,16 +146,8 @@ const LoginModal = (props) => {
                     props.getEmail(res.data.userDetails.email);
                     props.getPhone(res.data.userDetails.phoneNo);
                     props.getToken(res.data.accessToken);
-                    //getMyBooking();
                     props.falseData(false)
                 }
-                // console.log('accessToken', res.data.accessToken);
-                // console.log('userDataEmail', res.data.userDetails.email)
-                // props.getToken(res.data.accessToken);
-                // console.log('userDataName', res.data.userDetails.name)
-                // console.log('userId', res.data.userDetails._id);
-                //setUserData(res.data);
-                //localStorage.setItem("user", JSON.stringify(res.data));
             })
             .catch(e => {
                 console.log(e)

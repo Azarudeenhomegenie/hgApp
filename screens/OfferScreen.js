@@ -68,7 +68,7 @@ export default function OfferScreen({ navigation }) {
         }
     }
     const getTermsandCondition = async (id) => {
-        console.log('id', id);
+        //console.log('id', id);
         try {
             const response = await fetch('https://api.homegenie.com/api/Webapi/offers?city=Dubai&language=en');
             const json = await response.json();
@@ -83,7 +83,7 @@ export default function OfferScreen({ navigation }) {
             }
             //termArray = termArray[0].termsCondition;
             setTermsData(termArray);
-            console.log('terms', termArray);
+            //console.log('terms', termArray);
         } catch (error) {
             console.error(error);
         } finally {
