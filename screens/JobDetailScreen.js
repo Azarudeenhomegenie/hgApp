@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -17,12 +16,15 @@ import {
     TextInput,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import Text from "../components/MyText";
 import StatusBarAll from "../components/StatusBar";
 import { List } from 'react-native-paper';
 import { connect } from "react-redux";
 import css, { justifyContentC, padding10 } from '../components/commonCss';
-let imgPath = "../assets/";
-let imgPathImages = "../assets/images/"
+let imgPath = '../assets/icons/';
+let imgPathImage = '../assets/icons/images/';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function JobDetailScreen(props) {
     return (
@@ -32,7 +34,7 @@ export default function JobDetailScreen(props) {
                 <View style={[css.container, css.liteBlueBG, styles.fixedHeader, css.line]}>
                     <View style={[css.flexDR]}>
                         <Pressable onPress={() => props.navigation.goBack()} style={[css.alignSelfC]}><Image style={[css.marginR20]} source={require(imgPath + 'backArrowBlack.png')} /></Pressable>
-                        <View><Image style={[css.img40, css.marginR10]} source={require(imgPathImages + 'acBooking.png')} /></View>
+                        <View><Image style={[css.img40, css.marginR10]} source={require(imgPathImage + 'acBooking.png')} /></View>
                         <View><Text style={[css.f24]}>AC</Text></View>
                     </View>
                     <View style={[css.flexDR,]}>
@@ -49,7 +51,7 @@ export default function JobDetailScreen(props) {
                 <View style={[css.section]}>
                     <View style={css.container}>
                         <View>
-                            <Image style={{ width: '100%', height: 120, borderRadius: 10 }} source={require(imgPathImages + 'Ac_service.png')} />
+                            <Image style={{ width: '100%', height: 120, borderRadius: 10 }} source={require(imgPathImage + 'Ac_service.png')} />
                         </View>
                         <View style={[css.spaceT10]}><Text style={[css.f18, css.blackC]}>AC service (preventive)</Text></View>
                         <View style={[css.spaceT10]}><Text style={[css.f18, css.blackC]}>Genie has been assigned to you.</Text></View>

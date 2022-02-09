@@ -7,11 +7,27 @@ import { AntDesign } from "@expo/vector-icons";
 
 import homeScreen from '../screens/Dashboard/homeScreen';
 import login from '../screens/Dashboard/login';
-import BookingScreen from '../screens/BookingScreen';
-//import GetgenieScreen from '../screens/GetgenieScreen';
+import MyBookingScreen from '../screens/MyBookingScreen';
+import GetgenieScreen from '../screens/GetgenieScreen';
 import CategoryScreen from '../screens/CategoryScreen';
+//import LoginScreen from '../screens/LoginScreen';
 import OfferScreen from '../screens/OfferScreen';
-import AccountScreen from '../screens/AccountScreen';
+//import AccountScreen from '../screens/AccountScreen';
+import SupportScreen from '../screens/SupportScreen';
+import WalletScreen from '../screens/WalletScreen';
+import SettingScreen from '../screens/SettingScreen';
+import NotificationScreen from '../screens/NotificationScreen';
+import ReferEarnScreen from '../screens/ReferEarnScreen';
+import SettingAddCardScreen from '../screens/UserScreens/SettingAddCardScreen';
+import SettingAddAddressScreen from '../screens/UserScreens/SettingAddAddressScreen';
+import SettingAddInfoScreen from '../screens/UserScreens/SettingAddInfoScreen';
+import JobDetailScreen from '../screens/JobDetailScreen';
+import GetgenieCategories from '../screens/Booking/GetgenieCategories';
+import Getgeniescreen1 from '../screens/Booking/Getgeniescreen1';
+import Getgeniescreen2 from '../screens/Booking/Getgeniescreen2';
+import Getgeniescreen3 from '../screens/Booking/Getgeniescreen3';
+import Getgeniescreen4 from '../screens/Booking/Getgeniescreen4';
+import Getgeniescreen5 from '../screens/Booking/Getgeniescreen5';
 
 let imagePath = '../assets/icons/'
 let imagePathImage = '../assets/icons/images/'
@@ -19,23 +35,105 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 LogBox.ignoreAllLogs(true);
 
-const HomeScreenStack = ({ navigation }) => {
+const StackScreen = ({ navigation }) => {
     return (
+        // <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomePage">
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomePage">
-            {/* <Stack.Screen name="Home" component={homeScreen} options={{ gestureEnabled: false }} /> */}
-            <Stack.Screen name="HomePage" component={BottomTab} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="HomePage" component={HomeTab} options={{ gestureEnabled: false }} screenOptions={{ headerShown: false }} />
+            <Stack.Screen name="MyBookingPage" component={HomeTab} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="OfferPage" component={HomeTab} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="AccountPage" component={HomeTab} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingAddCardPage" component={SettingAddCardScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingAddAddressPage" component={SettingAddAddressScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingAddInfoPage" component={SettingAddInfoScreen} options={{ gestureEnabled: false }} />
+            {/*<Stack.Screen name="GetgeniePage1" component={Getgeniescreen1} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage2" component={Getgeniescreen2} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage3" component={Getgeniescreen3} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage4" component={Getgeniescreen4} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage5" component={Getgeniescreen5} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingAddCardPage" component={SettingAddCardScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingAddAddressPage" component={SettingAddAddressScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingAddInfoPage" component={SettingAddInfoScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="ReferEarnPage" component={ReferEarnScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SupportPage" component={SupportScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="WalletPage" component={WalletScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="NotificationPage" component={NotificationScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="JobdetailPage" component={JobDetailScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingPage" component={SettingScreen} options={{ gestureEnabled: false }} /> 
+            <Stack.Screen name="LoginPage" component={login} options={{ gestureEnabled: false }} /> */}
         </Stack.Navigator>
     )
 }
+const HomeStackScreen = ({ navigation }) => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="MyBookingPage">
+            <Stack.Screen name="HomePage" component={homeScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="CategoryPage" component={CategoryScreen} options={{ gestureEnabled: false }} />
+        </Stack.Navigator>
+    );
+}
+const MyBookingStackScreen = ({ navigation }) => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="MyBookingPage">
+            <Stack.Screen name="MyBookingPage" component={MyBookingScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="JobdetailPage" component={JobDetailScreen} options={{ gestureEnabled: false }} />
+        </Stack.Navigator>
+    );
+}
 
-const BottomTab = ({ navigation }) => {
+const GetgenieStackScreen = ({ navigation }) => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="GetgeniePage">
+            <Stack.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgenieCategories" component={GetgenieCategories} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage1" component={Getgeniescreen1} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage2" component={Getgeniescreen2} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage3" component={Getgeniescreen3} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage4" component={Getgeniescreen4} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage5" component={Getgeniescreen5} options={{ gestureEnabled: false }} />
+        </Stack.Navigator>
+    );
+}
+const OfferStackScreen = ({ navigation }) => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="OfferScreen">
+            <Stack.Screen name="OfferScreen" component={OfferScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="ReferEarnPage" component={ReferEarnScreen} options={{ gestureEnabled: false }} />
+        </Stack.Navigator>
+    );
+}
+const AccountStackScreen = ({ navigation }) => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="AccountPage">
+            <Stack.Screen name="AccountPage" component={login} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SupportPage" component={SupportScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="WalletPage" component={WalletScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="NotificationPage" component={NotificationScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="SettingPage" component={SettingScreen} options={{ gestureEnabled: false }} />
+        </Stack.Navigator>
+    );
+}
+const HomeTab = ({ navigation }) => {
     return (
         <Tab.Navigator screenOptions={({ route }) => ({
             headerShown: false,
             tabBarStyle: {
-                height: 70,
+                height: 80,
                 borderTopLeftRadius: 30,
                 borderTopRightRadius: 30,
+                paddingTop: 10,
+                paddingBottom: 10,
+                shadowColor: "#000000",
+                shadowOpacity: 0.5,
+                shadowRadius: 2,
+                shadowOffset: {
+                    height: -80,
+                    width: 2
+                },
+                elevation: 10,
+                marginTop: 20,
+                backgroundColor: '#fff'
             },
             tabBarOptions: {
                 style: {
@@ -43,10 +141,9 @@ const BottomTab = ({ navigation }) => {
                 },
             },
             tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
                 if (route.name === "Home") {
                     return (
-                        <Image
+                        <Image style={{ borderColor: '#ccc', borderRightWidth: 1 }}
                             source={require(imagePath + "homeIcon.png")}
                         />
                     );
@@ -56,118 +153,59 @@ const BottomTab = ({ navigation }) => {
                             source={require(imagePath + "bookings.png")}
                         />
                     );
-                } else if (route.name === "GetGenie") {
+                } else if (route.name === "GetgenieScreen") {
                     return (
                         <Image
+                            style={{ width: 70, height: 70, marginTop: -15 }}
                             source={require(imagePath + "genieNavbar.png")}
                         />
                     );
                 } else if (route.name === "Offers") {
                     return (
                         <Image
-                            source={require(imagePath + "bookings.png")}
+                            source={require(imagePath + "offers-menu.png")}
                         />
                     );
                 } else if (route.name === "Account") {
                     return (
                         <Image
-                            source={require(imagePath + "bookings.png")}
+                            source={require(imagePath + "userInfo.png")}
                         />
                     );
                 }
-                return <AntDesign name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: "#2EB0E4",
             tabBarInactiveTintColor: "#525252",
             tabBarLabelStyle: {
-                fontSize: 14,
-                color: "#2eb0e4",
+                fontSize: 11, color: "#2EB0E4",
                 fontFamily: 'PoppinsM',
+                //borderColor: '#ccc', borderRightWidth: 1,
             },
         })}>
-            <Tab.Screen
-                name="Home"
-                component={homeScreen}
-                style={[styles.tabMenu, styles.homeMenu]}
-            // options={{
-            //     title: "Home",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 source={require(imagePath + "homeIcon.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
-            />
-            <Tab.Screen
-                name="Bookings"
-                component={BookingScreen}
-                style={[styles.tabMenu, styles.bookingMenu]}
-            // options={{
-            //     title: "Booking",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 source={require(imagePath + "bookings.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
-            />
-            {/* <Tab.Screen name="GetGenie" component={GetgenieScreen} style={[styles.tabMenu, styles.getGenieMenu]}
-            // options={{
-            //     title: "",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 style={{ width: 70, height: 70 }}
-            //                 source={require("../assets/new_images/genieNavbar.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
-            /> */}
-            <Tab.Screen
-                name="Offers"
-                component={OfferScreen}
-                style={[styles.tabMenu, styles.offerMenu]}
-            // options={{
-            //     title: "",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 style={{ width: 70, height: 70 }}
-            //                 source={require("../assets/new_images/genieNavbar.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
-            />
-            <Tab.Screen
-                name="Account"
-                component={AccountScreen}
-                style={[styles.tabMenu, styles.accountMenu]}
-            // options={{
-            //     title: "",
-            //     tabBarIcon: ({ size, focused, color }) => {
-            //         return (
-            //             <Image
-            //                 style={{ width: 70, height: 70 }}
-            //                 source={require("../assets/new_images/genieNavbar.png")}
-            //             />
-            //         );
-            //     },
-            // }} 
-            />
+            <Tab.Screen name="Home" component={HomeStackScreen} />
+            <Tab.Screen name="Bookings" component={MyBookingStackScreen} />
+            <Tab.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ title: "", }} />
+            <Tab.Screen name="Offers" component={OfferStackScreen} />
+            <Tab.Screen name="Account" component={AccountStackScreen} />
         </Tab.Navigator>
     )
 }
 
 const MainDrawer = ({ navigation }) => {
     return (
-        <NavigationContainer>
-            <HomeScreenStack />
+        <NavigationContainer style={{
+            backgroundColor: '#fff',
+            shadowColor: "#000000",
+            shadowOpacity: 0.5,
+            shadowRadius: 2,
+            shadowOffset: {
+                height: -80,
+                width: 2
+            },
+            elevation: 10,
+            marginTop: 20,
+        }}>
+            <StackScreen />
         </NavigationContainer>
     )
 }

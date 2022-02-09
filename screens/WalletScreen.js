@@ -2,7 +2,6 @@ import React, { Component, useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -20,16 +19,15 @@ import {
 import moment from 'moment';
 import 'moment-timezone';
 import Modal from 'react-native-modal';
-import SocialMedia from "../components/SocialMedia";
-import Whatsapp800 from "../components/Whatsapp800";
+import Text from "../components/MyText";
+import SocialMedia from "../components/socialMedia";
+import Whatsapp800 from "../components/whtsApp";
 import StatusBarAll from "../components/StatusBar";
 import css from "../components/commonCss";
-
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-let imgPath = "../assets/";
-let imgPathImages = "../assets/images/"
+let imgPath = "../assets/icons/";
+let imgPathImages = "../assets/icons/images/"
 export default function WalletScreen({ navigation }) {
     const [isLoading, setLoading] = useState(true);
     const [addcreditModal, setAddcreditModal] = useState(false);
@@ -92,9 +90,9 @@ export default function WalletScreen({ navigation }) {
             </ScrollView>
             <Modal
                 isVisible={addcreditModal}
-                animationIn='flipInX'
+                animationIn='fadeIn'
                 animationInTiming={700}
-                animationOut='flipOutX'
+                animationOut='fadeOut'
                 animationOutTiming={700}
                 coverScreen={true}
                 useNativeDriver={true}

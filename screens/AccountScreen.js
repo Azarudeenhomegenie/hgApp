@@ -2,7 +2,6 @@ import React, { Component, useState, useRef, useEffect } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -17,6 +16,7 @@ import {
     PixelRatio,
     Dimensions,
 } from "react-native";
+import Text from "../components/MyText";
 import { useForm } from 'react-hook-form';
 import Modal from 'react-native-modal';
 import SocialMedia from "../components/socialMedia";
@@ -33,12 +33,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 // const user = 'inn';
-const size = 50;
-const cat = {
-    uri: "https://reactnative.dev/docs/assets/p_cat1.png",
-    width: size,
-    height: size
-};
+
 
 const AccountScreen = ({ navigation }) => {
     const [email, setEmail] = useState(null);
@@ -624,19 +619,6 @@ const AccountScreen = ({ navigation }) => {
                                             Settings
                                         </Text>
                                     </Pressable> */}
-                                    <View style={styles.container}>
-                                        <Text>Current Pixel Ratio is:</Text>
-                                        <Text style={styles.value}>{PixelRatio.get()}</Text>
-                                    </View>
-                                    <View style={styles.container}>
-                                        <Text style={styles.value}>
-                                            {PixelRatio.getPixelSizeForLayoutSize(size)} px
-                                        </Text>
-                                    </View>
-                                    <View style={styles.container}>
-                                        <Text>Current Font Scale is:</Text>
-                                        <Text style={styles.value}>{PixelRatio.getFontScale()}</Text>
-                                    </View>
                                     <Pressable
                                         style={[
                                             styles.accountLinks,

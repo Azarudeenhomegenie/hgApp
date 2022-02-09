@@ -2,7 +2,6 @@ import React, { Component, useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -19,34 +18,26 @@ import {
 } from "react-native";
 import moment from 'moment';
 import 'moment-timezone';
+import { WebView } from 'react-native-webview';
 import SocialMedia from "../components/socialMedia";
+import Text from "../components/MyText";
 import Modal from 'react-native-modal';
 import Whatsapp800 from "../components/whtsApp";
 import StatusBarAll from "../components/StatusBar";
-import css from "../components/commonCss";
+import css, { marginT20 } from "../components/commonCss";
 import Clipboard from '@react-native-clipboard/clipboard';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-
 export default function OfferScreen({ navigation }) {
     const [isLoading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalTermsandCondition, setModalTermsandCondition] = useState(false);
     const [offerData, setOfferData] = useState([]);
-
-    // const [copiedText, setCopiedText] = useState('');
-
-    // const copyToClipboard = () => {
-    //     Clipboard.setString('hello world');
-    // };
-
-    // const fetchCopiedText = async () => {
-    //     const text = await Clipboard.getString();
-    //     setCopiedText(text);
-    // };
+    const [termsData, setTermsData] = useState([]);
+    const [termHtml, setTermHtml] = useState([]);
 
     const getOffers = async () => {
         try {
@@ -66,11 +57,33 @@ export default function OfferScreen({ navigation }) {
                     trending: obj.trending,
                     soldCount: obj.soldCount,
                     categoryName: obj.categoryName,
+                    //termsCondition: obj.tnc
+                })
+            }
+            setOfferData(array);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    const getTermsandCondition = async (id) => {
+        //console.log('id', id);
+        try {
+            const response = await fetch('https://api.homegenie.com/api/Webapi/offers?city=Dubai&language=en');
+            const json = await response.json();
+            let datas = json.data.data;
+            datas = datas.filter(x => x._id === id);
+            //console.log('idCheck', datas);
+            let termArray = [];
+            for (obj of datas) {
+                termArray.push({
                     termsCondition: obj.tnc
                 })
             }
-            //console.log(array);
-            setOfferData(array);
+            //termArray = termArray[0].termsCondition;
+            setTermsData(termArray);
+            //console.log('terms', termArray);
         } catch (error) {
             console.error(error);
         } finally {
@@ -79,6 +92,7 @@ export default function OfferScreen({ navigation }) {
     }
     useEffect(() => {
         getOffers();
+        //getTermsandCondition();
     }, []);
 
     return (
@@ -109,7 +123,7 @@ export default function OfferScreen({ navigation }) {
                     <View style={[styles.screen]}>
                         <View style={[styles.section]}>
                             <View style={[css.boxShadow, css.borderRadius10, { backgroundColor: '#fff', padding: 20 }]}>
-                                <Text>Current Offer you should not miss!</Text>
+                                <Text style={[css.fr, css.f12, css.blackC]}>Current Offer you should not miss!</Text>
                                 <FlatList
                                     data={offerData}
                                     keyExtractor={(item, index) => {
@@ -119,36 +133,34 @@ export default function OfferScreen({ navigation }) {
                                         <View style={[styles.offerBoxEach], { borderBottomWidth: 1, borderColor: '#ccc', marginTop: 15 }}>
                                             <Image
                                                 resizeMode="contain"
-                                                style={[styles.OfferImage], { height: 200, borderRadius: 5, }}
+                                                style={[styles.OfferImage], { height: 175, borderRadius: 10, marginBottom: 10 }}
                                                 source={{
                                                     uri: item.image,
                                                 }}
                                             />
-                                            <View style={{ position: 'absolute', top: 10, left: 15, width: '35%', height: 25, backgroundColor: '#f6b700', alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ color: '#fff', fontSize: 11, fontFamily: "PoppinsM" }}>{item.soldCount} claimed already! </Text>
+                                            <View style={{ position: 'absolute', top: 0, left: 15, width: 130, height: 25, backgroundColor: '#f6b700', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Text style={{ color: '#fff', fontSize: 10, fontFamily: "PoppinsR" }}>{item.soldCount} claimed already! </Text>
                                             </View>
                                             {item.trending ? <Image
-                                                style={{ top: -10, right: -10, position: 'absolute', }}
+                                                style={{ top: -15, right: -10, position: 'absolute', }}
                                                 source={require(imgPath + "trending.png")}
                                             /> : null}
-                                            <Pressable
-                                                onPress={() => setModalTermsandCondition(true)}
-                                            >
+                                            <Pressable onPress={() => { getTermsandCondition(item._id); setModalTermsandCondition(true) }}>
                                                 <Text style={{ color: '#2eb0e4' }}>* Terms & Conditions</Text>
                                             </Pressable>
-                                            <Text style={{ color: '#2eb0e4', fontSize: 24, fontWeight: 'bold' }}>{item.name}</Text>
-                                            <Text style={{ color: '#2eb0e4', fontSize: 14, fontWeight: 'bold', marginTop: 5, marginBottom: 5 }}>{item.promoName}</Text>
-                                            <Text>{item.name} </Text>
-                                            <Text>Valid till date {item.validDate}</Text>
-                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginBottom: 20 }}>
+                                            <Text style={[css.f24, css.fbo, css.brandC]}>{item.name}</Text>
+                                            <Text style={[css.f14, css.brandC, css.fbo]}>{item.promoName}</Text>
+                                            <Text style={[css.f12, css.fr, css.blackC]}>{item.name}</Text>
+                                            <Text style={[css.f12, css.fr, css.blackC]}>Valid till date {item.validDate}</Text>
+                                            <View style={[css.flexDRSB, css.marginB20, css.marginT20]}>
                                                 <TouchableOpacity
-                                                    style={[styles.offerCopyCode, { height: 40 }]}
+                                                    style={[styles.offerCopyCode, { height: 35 }]}
                                                     onPress={() => setModalVisible(true)}
                                                 >
-                                                    <Text style={[css.brandC, css.f16, css.fm]}>Copy Code</Text>
+                                                    <Text style={[css.brandC, css.f14, css.fm]}>Copy Code</Text>
                                                 </TouchableOpacity>
-                                                <TouchableOpacity style={[css.yellowBtn, css.borderRadius30, { height: 40, width: '40%' }]} onPress={() => navigation.navigate('GetgeniePage')}>
-                                                    <Text style={[css.fsb, css.whiteC, css.f18]}> Book Now</Text>
+                                                <TouchableOpacity style={[css.yellowBtn, css.borderRadius30, { height: 35, width: '35%' }]} onPress={() => navigation.navigate('GetgeniePage')}>
+                                                    <Text style={[css.fm, css.whiteC, css.f14]}> Book Now</Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
@@ -167,9 +179,9 @@ export default function OfferScreen({ navigation }) {
             }
             <Modal
                 isVisible={modalVisible}
-                animationIn='flipInX'
+                animationIn='fadeIn'
                 animationInTiming={700}
-                animationOut='flipOutX'
+                animationOut='fadeOut'
                 animationOutTiming={700}
             // coverScreen={true}
             // useNativeDriver={true}
@@ -186,6 +198,43 @@ export default function OfferScreen({ navigation }) {
                             >
                                 <View style={[css.alignCenter, { height: 50 }]}><Text style={[css.whiteC, css.fm, css.f18,]}>Continue</Text></View>
                             </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                isVisible={modalTermsandCondition}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+            // coverScreen={true}
+            // useNativeDriver={true}
+            // useNativeDriver={true}
+            // hideModalContentWhileAnimating={true}
+            >
+                <View style={css.centeredView}>
+                    <View style={css.modalNewView}>
+                        <View style={[css.modalNewHeader]}>
+                            <TouchableOpacity
+                                style={[css.flexDR,]}
+                                onPress={() => setModalTermsandCondition(!modalTermsandCondition)}
+                            >
+                                <Image source={require(imgPath + 'backArrowBlack.png')} />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[css.modalNewBody, css.alignItemsC, css.justifyContentC]}>
+                            <FlatList
+                                data={termsData}
+                                keyExtractor={(item, index) => {
+                                    return item._id;
+                                }}
+                                renderItem={({ item }) => (
+                                    <View>
+                                        <Text>{item.termsCondition}</Text>
+                                    </View>
+                                )}
+                            />
                         </View>
                     </View>
                 </View>
@@ -258,10 +307,10 @@ const styles = StyleSheet.create({
     offerCopyCode: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
+        borderRadius: 5,
         borderColor: '#2eb0e4',
         borderWidth: 1,
-        width: '40%',
+        width: '35%',
     },
     offerCopyCodeText: {
         letterSpacing: 0.25,

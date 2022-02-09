@@ -139,6 +139,8 @@ module.exports = {
     img40: { width: 40, height: 40 },
     img30: { width: 30, height: 30 },
     img20: { width: 20, height: 20 },
+    img15: { width: 15, height: 15 },
+    img10: { width: 10, height: 10 },
     img150: { width: 150, height: 150 },
     imgBR50: { width: 50, height: 50, borderRadius: 50 / 2 },
     imgBR100: { width: 100, height: 100, borderRadius: 100 / 2 },
@@ -239,9 +241,9 @@ module.exports = {
         color: '#60604E',
         fontSize: 18
     },
-    Text: {
-        fontFamily: 'PoppinsR'
-    },
+    text: { fontFamily: 'PoppinsM', color: '#525252', fontSize: 14 },
+    textWhite: { fontFamily: 'PoppinsM', color: '#fff', fontSize: 14 },
+    errorText: { fontFamily: 'PoppinsR', color: 'red', fontSize: 12 },
     //modal-css-ends
     //modal-new-starts
     modalNewView: {
@@ -255,6 +257,7 @@ module.exports = {
     modalNewBody: { padding: 20, fontFamily: 'PoppinsR' },
     //modal-new-ends
     //extra-css
+
     header: {
         width: "100%",
         height: 70,

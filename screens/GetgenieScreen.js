@@ -2,7 +2,6 @@ import React, { Component, useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
-    Text,
     SafeAreaView,
     ScrollView,
     Button,
@@ -17,6 +16,7 @@ import {
     FlatList,
     SafeAreaViewDecider,
     VirtualizedList,
+    StatusBar,
 } from "react-native";
 import Modal from 'react-native-modal';
 import { Searchbar } from 'react-native-paper';
@@ -26,16 +26,17 @@ import SocialMedia from "../components/socialMedia";
 import Whatsapp800 from "../components/whtsApp";
 import ModalComingSoon from "../components/ModalComingSoon";
 import css from '../components/commonCss';
+import Text from "../components/MyText";
 import StatusBarAll from "../components/StatusBar";
-import GetgenieCategories from "../components/GetgenieScreens/GetgenieCategories";
-import Getgeniescreen1 from "../components/GetgenieScreens/Getgeniescreen1";
-import Getgeniescreen2 from "../components/GetgenieScreens/Getgeniescreen2";
-import Getgeniescreen3 from "../components/GetgenieScreens/Getgeniescreen3";
-import Getgeniescreen4 from "../components/GetgenieScreens/Getgeniescreen4";
-import Getgeniescreen5 from "../components/GetgenieScreens/Getgeniescreen5";
+import GetgenieCategories from "./Booking/GetgenieCategories";
+import Getgeniescreen1 from "./Booking/Getgeniescreen1";
+import Getgeniescreen2 from "./Booking/Getgeniescreen2";
+import Getgeniescreen3 from "./Booking/Getgeniescreen3";
+import Getgeniescreen4 from "./Booking/Getgeniescreen4";
+import Getgeniescreen5 from "./Booking/Getgeniescreen5";
 let categoryShowAll = 'categoryScreen4';
 export default function GetgenieScreen({ navigation }) {
-    const [searchQuery, setSearchQuery] = React.useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const onChangeSearch = query => setSearchQuery(query);
     const [categoryShow, setCategoryShow] = useState(true);
     const [categoryScreen1, setCategoryScreen1] = useState(false);
@@ -49,8 +50,8 @@ export default function GetgenieScreen({ navigation }) {
     return (
         <SafeAreaView>
             <StatusBarAll />
+            <GetgenieCategories />
             {
-
                 global.gen == 1 ?
                     <GetgenieCategories />
                     : global.gen == 2 ?

@@ -3,34 +3,20 @@ import React from "react";
 import {
   StyleSheet,
   View,
-  Text,
   Image,
   Linking,
   Button,
   TouchableOpacity,
 } from "react-native";
-
+import Text from "./MyText";
+import css from './commonCss';
 const SocialMedia = (props) => {
   return (
     <View style={styles.socialMedia}>
-      <Text
-        style={[
-          styles.socialMediaTitle,
-          styles.textCenter,
-          { marginBottom: 15, fontSize: 12 },
-        ]}
-      >
+      <Text style={[css.textCenter, css.fm, css.f14, css.blackC, css.marginB10]}>
         Follow us on social media
       </Text>
-      <View
-        style={[
-          styles.test,
-          {
-            flexDirection: "row",
-            justifyContent: "center",
-          },
-        ]}
-      >
+      <View style={[css.flexDR, css.justifyContentC]} >
         <View style={[styles.flexRowSpace, { width: "60%" }]}>
           <TouchableOpacity
             onPress={() =>
