@@ -43,6 +43,8 @@ const LoginModal = (props) => {
     const [otpSend, setOtpSend] = useState(true);
     const [modalComingsoon, setModalComingsoon] = useState(false);
 
+    const [accessToken, setAccessToken] = useState(null);
+
     const [show, setShow] = useState(true);
     const [countryCode, setCountryCode] = useState('');
     const [selectedCallingCode, setSelectedCallingCode] = useState('');
@@ -53,13 +55,14 @@ const LoginModal = (props) => {
     const thirdOtp = useRef();
     const fourthOtp = useRef();
 
+
     const LoginApi = () => {
         // https://api.homegenie.com/api/customer/validatePhoneNo
         let data = new FormData();
         data.append('phoneNo', phone);
         data.append('countryCode', countryPlus + countryCodeNew)
-        console.log(countryPlus + countryCodeNew);
-        console.log(phone);
+        // console.log(countryPlus + countryCodeNew);
+        // console.log(phone);
 
         fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
             method: 'POST',
@@ -72,14 +75,12 @@ const LoginModal = (props) => {
             .then(res => {
                 console.log(res.data.isRegistered)
                 if (res.data.isRegistered) {
-
                     setOtpCodeOne(null);
                     setOtpCodeTwo(null);
                     setOtpCodeThree(null);
                     setOtpCodeFour(null);
                     setOtpModal(true);
                 } else {
-
                     setOtpCodeOne(null);
                     setOtpCodeTwo(null);
                     setOtpCodeThree(null);
@@ -89,7 +90,7 @@ const LoginModal = (props) => {
             })
     }
     const ResetOtpApi = () => {
-        console.log('resend Api call')
+        //console.log('resend Api call')
         let data = new FormData();
         data.append('phoneNo', phone);
         data.append('countryCode', countryPlus + countryCodeNew)
@@ -102,7 +103,7 @@ const LoginModal = (props) => {
         })
             .then(response => response.json())
             .then(res => {
-                console.log(res)
+                //console.log(res)
                 setOtpSend(false)
 
             })
@@ -129,7 +130,7 @@ const LoginModal = (props) => {
         })
             .then(response => response.json())
             .then(res => {
-                console.log('userDataLoginModal', res)
+                //console.log('userDataLoginModal', res)
                 if (res.message == "Success") {
                     setOtpModal(false)
                     setUser('in')
@@ -138,16 +139,21 @@ const LoginModal = (props) => {
                     setOtpCodeTwo(null);
                     setOtpCodeThree(null);
                     setOtpCodeFour(null);
+                    setAccessToken(res.data.accessToken);
                     setDisplayEmail(res.data.userDetails.email);
                     setDisplayName(res.data.userDetails.name);
                     props.getName(res.data.userDetails.name);
                     props.getEmail(res.data.userDetails.email);
                     props.getPhone(res.data.userDetails.phoneNo);
+                    props.getToken(res.data.accessToken);
+                    //getMyBooking();
                     props.falseData(false)
                 }
-                console.log('userDataEmail', res.data.userDetails.email)
-                console.log('userDataName', res.data.userDetails.name)
-                console.log('userId', res.data.userDetails._id);
+                // console.log('accessToken', res.data.accessToken);
+                // console.log('userDataEmail', res.data.userDetails.email)
+                // props.getToken(res.data.accessToken);
+                // console.log('userDataName', res.data.userDetails.name)
+                // console.log('userId', res.data.userDetails._id);
                 //setUserData(res.data);
                 //localStorage.setItem("user", JSON.stringify(res.data));
             })
@@ -185,7 +191,7 @@ const LoginModal = (props) => {
             })
                 .then(response => response.json())
                 .then(res => {
-                    console.log(res)
+                    //console.log(res)
                     if (res.message == 'Success') {
                         setRegisterModal(false);
                         setOtpModal(true);

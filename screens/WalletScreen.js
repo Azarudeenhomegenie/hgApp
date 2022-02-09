@@ -90,9 +90,9 @@ export default function WalletScreen({ navigation }) {
             </ScrollView>
             <Modal
                 isVisible={addcreditModal}
-                animationIn='flipInX'
+                animationIn='fadeIn'
                 animationInTiming={700}
-                animationOut='flipOutX'
+                animationOut='fadeOut'
                 animationOutTiming={700}
                 coverScreen={true}
                 useNativeDriver={true}

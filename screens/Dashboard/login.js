@@ -18,9 +18,12 @@ const Login = (props) => {
     const [user, setUser] = useState(false)
     const [displayName, setDisplayName] = useState(null);
     const [displayEmail, setDisplayEmail] = useState(null);
+    const [token, setToken] = useState(null);
     const [dispalyPhone, setDisplayPhone] = useState(null);
     const [loginModal, setLoginModal] = useState(false);
     const [addcardModal, setAddcardModal] = useState(false);
+
+
     const toggleAddcardModal = () => { setAddcardModal(!addcardModal) };
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -76,7 +79,9 @@ const Login = (props) => {
                             <View style={[styles.container]}>
                                 <Pressable
                                     style={[css.flexDR, css.line10, styles.accountLinks,]}
-                                    onPress={() => props.navigation.navigate('Bookings')}
+                                    onPress={() => props.navigation.navigate('Bookings', {
+                                        paramKey: token,
+                                    })}
                                 >
                                     <Image
                                         style={[css.marginR10, css.img20]}
@@ -211,6 +216,7 @@ const Login = (props) => {
                         getEmail={(e) => setDisplayEmail(e)}
                         getName={(e) => setDisplayName(e)}
                         getPhone={(e) => setDisplayPhone(e)}
+                        getToken={(e) => setToken(e)}
                         userData={(data) => setUser(data)}
                     />
                 }

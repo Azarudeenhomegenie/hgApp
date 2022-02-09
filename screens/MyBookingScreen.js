@@ -24,21 +24,72 @@ import SocialMedia from '../components/socialMedia';
 import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
 import css from "../components/commonCss";
-let booked = 'yes'
+let booked = 'no'
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+// const getMyBooking = () => {
+//     let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
+//     let data = new FormData();
+//     data.append("deviceType", "WEBSITE");
+//     data.append("deviceToken", "151");
+//     data.append("phoneNo", phone);
+//     data.append("OTPCode", otpData);
+//     data.append('countryCode', countryPlus + countryCodeNew)
+//     data.append("timezone", "Asia/Calcutta");
+//     data.append("latitude", "17.3753");
+//     data.append("longitude", "78.4744");
+//     //console.log(data)
+//     fetch('https://api.homegenie.com/api/customer/verifyOTP1', {
+//         method: 'PUT',
+//         headers: {
+//             Accept: 'application/json',
+//         },
+//         body: data
+//     })
+//         .then(response => response.json())
+//         .then(res => {
+//             console.log('userDataLoginModal', res)
+//             if (res.message == "Success") {
+//                 setOtpModal(false)
+//                 setUser('in')
+//                 props.userData(true)
+//                 setOtpCodeOne(null);
+//                 setOtpCodeTwo(null);
+//                 setOtpCodeThree(null);
+//                 setOtpCodeFour(null);
+//                 setDisplayEmail(res.data.userDetails.email);
+//                 setDisplayName(res.data.userDetails.name);
+//                 props.getName(res.data.userDetails.name);
+//                 props.getEmail(res.data.userDetails.email);
+//                 props.getPhone(res.data.userDetails.phoneNo);
+//                 props.falseData(false)
+//             }
+//             console.log('userDataEmail', res.data.userDetails.email)
+//             console.log('userDataName', res.data.userDetails.name)
+//             console.log('userId', res.data.userDetails._id);
+//             //setUserData(res.data);
+//             //localStorage.setItem("user", JSON.stringify(res.data));
+//         })
+//         .catch(e => {
+//             console.log(e)
+//         })
+// }
 
-const MyBookingScreen = (props) => {
+// useEffect(() => {
+//     getMyBooking();
+// }, []);
+
+//const MyBookingScreen = (props) => {
+const MyBookingScreen = ({ props, route }) => {
     const [userData, setUserData] = useState();
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: '1', title: 'Current Bookings' },
         { key: '2', title: 'Past Bookings' },
     ]);
-
 
     const renderScene = ({ route }) => {
         switch (route.key) {
