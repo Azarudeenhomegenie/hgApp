@@ -1,8 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component, useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux'
-import { login, verifyOtp } from '../reducers/authReducer'; 
+import { login, verifyOTP } from '../reducers/authReducer'; 
 import {
     StyleSheet,
     View,
@@ -26,6 +26,8 @@ import css from './commonCss';
 import CountryPicker from 'rn-country-picker';
 
 const LoginModal = (props) => {
+    const dispatch = useDispatch();
+
     const [email, setEmail] = useState(null);
     const [userName, setUserName] = useState(null);
     const [nameCheck, setNameCheck] = useState(false);
@@ -58,6 +60,46 @@ const LoginModal = (props) => {
     const thirdOtp = useRef();
     const fourthOtp = useRef();
 
+
+    const handleLogin = async() => {
+        console.log('login pressed', props);
+        const data = await dispatch(login(phone, countryPlus + countryCodeNew));
+        console.log(data)
+        if (data.isRegistered) {
+            setOtpModal(true);
+        } else {
+            setRegisterModal(true);
+        }
+    };
+
+    const handleOtpVerification = async() => {
+        console.log('verifying otp');
+
+        let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
+        const data = {
+            deviceType: "WEBSITE",
+            deviceToken: "151",
+            phoneNo: phone,
+            countryCode: countryPlus + countryCodeNew,
+            timezone: "Asia/Calcutta",
+            latitude: "17.3753",
+            longitude: "78.4744",
+            OTPCode: otpData
+        };
+
+        const resp = await dispatch(verifyOTP(data));
+        console.log(resp);
+        setOtpModal(false)
+        setUser('in')
+        props.userData(true)
+        setOtpCodeOne(null);
+        setOtpCodeTwo(null);
+        setOtpCodeThree(null);
+        setOtpCodeFour(null);
+        setDisplayEmail(resp.userDetails.email);
+        setDisplayName(resp.userDetails.name);
+        props.falseData(false)
+    };
 
     const LoginApi = () => {
         // https://api.homegenie.com/api/customer/validatePhoneNo
@@ -401,7 +443,7 @@ const LoginModal = (props) => {
                                 <Pressable
                                     style={[styles.offerBooknow]}
                                     //onPress={() => onSubmitLogin()}
-                                    onPress={() => OtpVrifyApi()}
+                                    onPress={() => handleOtpVerification()}
                                 >
                                     <Text style={[styles.textStyle, styles.offerBooknowText]}>CONFIRM</Text>
                                 </Pressable>
@@ -613,13 +655,4 @@ const styles = StyleSheet.create({
     input: { borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '90%', height: 40, marginTop: 20, padding: 5, fontFamily: 'PoppinsM', fontSize: 14, color: '#525252' },
 });
 
-export default connect(
-    state => ({
-        isLoggedIn: state.auth.isLoggedIn,
-        isOTPSent: state.auth.isOTPSent,
-    }),
-    (dispatch) => ({
-        login: bindActionCreators(login, dispatch),
-        verifyOtp: bindActionCreators(verifyOtp, dispatch)
-    })
-)(LoginModal);
+export default LoginModal;

@@ -1,22 +1,11 @@
 import axios from 'axios'
-import path from 'ramda/src/path'
 import { BASE_URL } from "../base_file";
-import * as SecureStore from 'expo-secure-store';
+import { setItem, getItem, removeItem } from '../helpers/localStorage'
 
+const USER_TOKEN  = 'token';
+const IS_LOGGEDIN = 'loggedin';
+const USER        = 'user';
 
-async function save(key, value) {
-  await SecureStore.setItemAsync(key, value);
-}
-  
-async function getData(key) {
-    let result = await SecureStore.getItemAsync(key);
-    console.log('key', result, typeof result)
-    return result ? result : false;
-}
-
-async function removeData(key) {
-  await SecureStore.deleteItemAsync(key);
-}
 
 //Login
 export const LOGIN              = 'hg/auth/user/LOGIN'
@@ -37,17 +26,15 @@ export const LOGOUT              = 'hg/auth/user/LOGOUT'
 export const LOGOUT_SUCCESS      = 'hg/auth/user/LOGOUT_SUCCESS'
 export const LOGOUT_FAIL         = 'hg/auth/user/LOGOUT_FAIL'
 
-const USER = getData('user')
-console.log(typeof USER)
+export const LOAD_LOCAL_DATA     = 'hg/auth/user/LOAD_LOCAL_DATA'
+
 const initialState = {
-    token: getData('token'),
+    token: null,
     isOTPSent: false,
-    isLoggedIn: getData('isLoggedIn'),
-    user: USER
+    isLoggedIn: false,
+    user: null
 }
-console.log('INIT', initialState);
-
-
+console.log('INITIAL STATE:', initialState);
 
 export default function (state = initialState, action = {}) {
     switch (action.type) {
@@ -73,8 +60,10 @@ export default function (state = initialState, action = {}) {
           loginError: action.error,
         }
       case LOGOUT:
-        removeData('token');
-        removeData('isLoggedIn');
+        removeItem(USER_TOKEN);
+        removeItem(USER);
+        removeItem(IS_LOGGEDIN)
+  
         return {
           ...state,
           loggingOut: true,
@@ -102,10 +91,11 @@ export default function (state = initialState, action = {}) {
             }
           case VERIFY_OTP_SUCCESS:
             
-            console.log("PAYload", action.payload)
-            save('token', action.payload.token);
-            save('isLoggedIn', true);
-            // save('user', JSON.stringify(action.payload.user));
+            setItem(USER_TOKEN, action.payload.token);
+            setItem(IS_LOGGEDIN, true);
+            setItem(USER, action.payload.user);
+            console.log(action.payload.token);
+           
             return {
               ...state,
               isLoggedIn: true,
@@ -118,70 +108,81 @@ export default function (state = initialState, action = {}) {
               ...state,
               isOTPVerifying: false,
             }
+          case LOAD_LOCAL_DATA:
+            console.log('UPDATE::', action.payload);
+            return {
+              ...state,
+              ...action.payload
+            }
       default:
         return state
     }
   }
 
+export const init = () => async dispatch => {
+  console.log('INIIIIIIIIII');
+  const token = await getItem(USER_TOKEN);
+  const isLoggedIn = token ? true : false//await getItem(IS_LOGGEDIN);
+  const user = await getItem(USER);
+
+  const payload = {
+    token,
+    isLoggedIn,
+    user
+  };
+  dispatch({ type: LOAD_LOCAL_DATA, payload });
+  console.log('paayyy', payload)
+
+}
 
 export const login = (phone, countryCode) => async dispatch => {
 
-    try {   
-        // console.log('req', `${BASE_URL}customer/validatePhoneNo`, phone)
-        const res = await axios.post(`${BASE_URL}customer/validatePhoneNo`,
-            { 
-                phoneNo: phone,
-                countryCode: countryCode,
-            }
-        );
-        // console.log('response', res.data);
-        dispatch({ 
-            type: LOGIN_SUCCESS,
-            payload: res.data
-        });
-        return res.data.data;
-    } catch(e) {
-        console.log(e)
-        dispatch({ 
-            type: LOGIN_FAIL,
-            payload: e
-        });
-    }
+  try {   
+    const res = await axios.post(
+      `${BASE_URL}customer/validatePhoneNo`,
+      { 
+        phoneNo: phone,
+        countryCode: countryCode,
+      }
+    );
+      
+    dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+    return res.data.data;
+  } catch(e) {
+    console.log(e)
+    dispatch({ type: LOGIN_FAIL, payload: e });
+  }
 };
 
 
-export const verifyOtp = (params) => async dispatch =>  {
+export const verifyOTP = (params) => async dispatch =>  {
 
-
-    try {   
-      console.log(params, `${BASE_URL}customer/verifyOTP1`)
-      const res = await axios.put(`${BASE_URL}customer/verifyOTP1`, params);
-      console.log(res);
-      const data = res.data.data;
-      const payload = {
-        token: data.accessToken,
-        user: {
-          name: data.userDetails.name,
-          email: data.userDetails.email
-        }
+  try {   
+   
+    const res = await axios.put(`${BASE_URL}customer/verifyOTP1`, params);
+    const data = res.data.data;
+    const payload = {
+      token: data.accessToken,
+      user: {
+        name: data.userDetails.name,
+        email: data.userDetails.email
       }
-    
-      dispatch({ 
-        type: VERIFY_OTP_SUCCESS,
-        payload
-      });
-      return res.data.data;
-    } catch(e) {
-        console.log(e)
-        dispatch({ 
-            type: VERIFY_OTP_FAIL,
-            payload: e
-        });
     }
+    console.log('Pay Load');
+    dispatch({ type: VERIFY_OTP_SUCCESS, payload });
+    return res.data.data;
+  } catch(e) {
+    console.log(e)
+    dispatch({ type: VERIFY_OTP_FAIL, payload: e });
+  }
 }
 
 export const logout = () => async dispatch =>  {
-  dispatch({ 
-    type: LOGOUT
-  });
+  await dispatch({ type: LOGOUT });
 }
+
+//Selectore
+
+export const getAccessToken = state => state.auth.token;
+export const getLoggedInStatus = state => state.auth.isLoggedIn;
+export const getUser = state => state.auth.user;

@@ -27,19 +27,29 @@ import CountryPicker from 'rn-country-picker';
 import { Ionicons } from '@expo/vector-icons';
 import ModalComingSoon from "../components/ModalComingSoon";
 import LoginModal from "../components/loginModal";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { State } from "react-native-gesture-handler";
-import { bindActionCreators } from "redux";
 import { logout } from '../reducers/authReducer'
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+//Selectors
+import { getLoggedInStatus, getUser} from '../reducers/authReducer';
+
 // const user = 'inn';
 
 
-const AccountScreen = ({ navigation, isLoggedIn, logout, userData }) => {
+const AccountScreen = ({ navigation }) => {
+
+
+    const isLoggedIn = useSelector(getLoggedInStatus);
+    const userData = useSelector(getUser);
+    const dispatch = useDispatch();
+
+    console.log(isLoggedIn, userData, 'test');
+
     const [email, setEmail] = useState(null);
     const [userName, setUserName] = useState(null);
     const [nameCheck, setNameCheck] = useState(false);
@@ -70,100 +80,8 @@ const AccountScreen = ({ navigation, isLoggedIn, logout, userData }) => {
     const fourthOtp = useRef();
 
     handleLogout = async() => {
-        await logout();
-        setUser('inn')
-    }
-
-    const LoginApi = () => {
-        let data = new FormData();
-        data.append('phoneNo', phone);
-        data.append('countryCode', countryPlus + countryCodeNew)
-        console.log(countryPlus + countryCodeNew);
-        console.log(phone);
-
-        fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-            },
-            body: data
-        })
-            .then(response => response.json())
-            .then(res => {
-                console.log(res.data.isRegistered)
-                if (res.data.isRegistered) {
-                    setLoginModal(false)
-                    setOtpCodeOne(null);
-                    setOtpCodeTwo(null);
-                    setOtpCodeThree(null);
-                    setOtpCodeFour(null);
-                    setOtpModal(true);
-                } else {
-                    setLoginModal(false)
-                    setOtpCodeOne(null);
-                    setOtpCodeTwo(null);
-                    setOtpCodeThree(null);
-                    setOtpCodeFour(null);
-                    setRegisterModal(true);
-                }
-            })
-    }
-
-    const ResetOtpApi = () => {
-        console.log('resend Api call')
-        let data = new FormData();
-        data.append('phoneNo', phone);
-        data.append('countryCode', countryPlus + countryCodeNew)
-        fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-            },
-            body: data
-        })
-            .then(response => response.json())
-            .then(res => {
-                console.log(res)
-                setOtpSend(false)
-            })
-    }
-
-    const OtpVrifyApi = () => {
-        let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
-        let data = new FormData();
-        data.append("deviceType", "WEBSITE");
-        data.append("deviceToken", "151");
-        data.append("phoneNo", phone);
-        data.append("OTPCode", otpData);
-        data.append('countryCode', countryPlus + countryCodeNew)
-        data.append("timezone", "Asia/Calcutta");
-        data.append("latitude", "17.3753");
-        data.append("longitude", "78.4744");
-        //console.log(data)
-        fetch('https://api.homegenie.com/api/customer/verifyOTP1', {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-            },
-            body: data
-        })
-            .then(response => response.json())
-            .then(res => {
-                console.log(res)
-                if (res.message == "Success") {
-                    setOtpModal(false)
-                    setUser('in')
-                    setOtpCodeOne(null);
-                    setOtpCodeTwo(null);
-                    setOtpCodeThree(null);
-                    setOtpCodeFour(null);
-                    setDisplayEmail(res.data.userDetails.email);
-                    setDisplyName(res.data.userDetails.name);
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
+        await dispatch(logout);
+        setUser('inn');
     }
 
     const signUpApi = () => {
@@ -715,16 +633,7 @@ const AccountScreen = ({ navigation, isLoggedIn, logout, userData }) => {
         </SafeAreaView>
     );
 };
-export default connect(
-    state => ({
-        isLoggedIn: state.auth.isLoggedIn, 
-        userData: state.auth.user
-    }),
-    (dispatch) => ({
-        logout: bindActionCreators(logout, dispatch)
-    }) 
-
-)(AccountScreen);
+export default AccountScreen;
 
 const styles = StyleSheet.create({
     screen: {

@@ -12,15 +12,16 @@ async function getData(key) {
 }
 
 //Login
-export const LOAD_BOOKINGS         = 'hg/auth/user/LOAD_BOOKINGS'
-export const LOAD_BOOKINGS_SUCCESS = 'hg/auth/user/LOAD_BOOKINGS_SUCCESS'
-export const LOAD_BOOKINGS_FAIL    = 'hg/auth/user/LOAD_BOOKINGS_FAIL'
+export const LOAD_BOOKINGS         = 'hg/bookings/LOAD_BOOKINGS'
+export const LOAD_BOOKINGS_SUCCESS = 'hg/bookings/LOAD_BOOKINGS_SUCCESS'
+export const LOAD_BOOKINGS_FAIL    = 'hg/bookings/LOAD_BOOKINGS_FAIL'
 
 const initialState = {
+    currentBookings: null,
+    pastBookings: null
+};
 
-}
-
-export default function (state = initialState, action = {}, payload) {
+export default function (state = initialState, action = {}) {
     switch (action.type) {
       
         case LOAD_BOOKINGS:
@@ -30,13 +31,16 @@ export default function (state = initialState, action = {}, payload) {
             isBookingsLoadError: null,
             }
         case LOAD_BOOKINGS_SUCCESS:
+            // console.log('HEllo', action.payload)
             return {
                 ...state,
                 isBookingsLoading: false,
                 isBookingsLoadError: null,
-                ...payload
+                currentBookings: action.payload.currentBookings,
+                pastBookings: action.payload.pastBookings
+                // ...action.payload
             }
-        case LOAD_BOOKINGS_SUCCESS:
+        case LOAD_BOOKINGS_FAIL:
             return {
                 ...state,
                 isBookingsLoading: false,
@@ -50,17 +54,20 @@ export default function (state = initialState, action = {}, payload) {
 
 export const loadBookings = (token) => async dispatch => {
     try {   
-       
-        console.log('req', `${BASE_URL}customer/getmybookings`, { headers: { Authorization: `Bearer ${token}` }});
+        console.log('URL', `${BASE_URL}customer/getmybookings`)
         const res = await axios.get(`${BASE_URL}customer/getmybookings`, { headers: { Authorization: `Bearer ${token}` } });
-        console.log('response ');
-        return;
-        dispatch({ 
-            type: LOAD_BOOKINGS_SUCCESS,
-            payload: res.data
-        });
+        // console.log('response ', res.data);
+        const data = res.data.data;
+        const payload = {
+            pastBookings: data.pastBooking,
+            currentBookings: data.upcomingAppointment
+        };
+        console.log('LOAded');
+        dispatch({ type: LOAD_BOOKINGS_SUCCESS, payload });
+
         return res.data.data;
     } catch(e) {
+        console.log('CATCH');
         console.log(e)
         dispatch({ 
             type: LOAD_BOOKINGS_FAIL,
@@ -68,3 +75,8 @@ export const loadBookings = (token) => async dispatch => {
         });
     }
 };
+
+
+//Selectors
+export const getCurrentBookings = state => state.currentBookings
+export const getPastBookings = state => state.pastBookings

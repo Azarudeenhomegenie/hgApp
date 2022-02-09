@@ -6,9 +6,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from "@expo/vector-icons";
 
 import homeScreen from '../screens/Dashboard/homeScreen';
-// import login from '../screens/Dashboard/login';
-import BookingScreen from '../screens/BookingScreen';
-//import GetgenieScreen from '../screens/GetgenieScreen';
+import login from '../screens/Dashboard/login';
+import MyBookingScreen from '../screens/MyBookingScreen';
+import GetgenieScreen from '../screens/GetgenieScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 //import LoginScreen from '../screens/LoginScreen';
 import OfferScreen from '../screens/OfferScreen';
