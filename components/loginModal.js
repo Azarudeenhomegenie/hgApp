@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { Component, useState, useEffect, useRef } from "react";
 import { connect, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux'
-import { login, verifyOTP } from '../reducers/authReducer'; 
+import { login, verifyOTP } from '../reducers/authReducer';
 import {
     StyleSheet,
     View,
@@ -61,7 +61,7 @@ const LoginModal = (props) => {
     const fourthOtp = useRef();
 
 
-    const handleLogin = async() => {
+    const handleLogin = async () => {
         console.log('login pressed', props);
         const data = await dispatch(login(phone, countryPlus + countryCodeNew));
         console.log(data)
@@ -72,7 +72,7 @@ const LoginModal = (props) => {
         }
     };
 
-    const handleOtpVerification = async() => {
+    const handleOtpVerification = async () => {
         console.log('verifying otp');
 
         let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
@@ -99,6 +99,7 @@ const LoginModal = (props) => {
         setDisplayEmail(resp.userDetails.email);
         setDisplayName(resp.userDetails.name);
         props.falseData(false)
+        console.log('accessToken', resp.accessToken);
     };
 
     const LoginApi = () => {
@@ -288,13 +289,13 @@ const LoginModal = (props) => {
                                     />
                                 </View>
 
-                        <Pressable
-                            style={[styles.offerBooknow]}
-                            //onPress={() => onSubmitLogin()}
-                            onPress={() => handleLogin()}
-                        >
-                            <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
-                        </Pressable>
+                                <Pressable
+                                    style={[styles.offerBooknow]}
+                                    //onPress={() => onSubmitLogin()}
+                                    onPress={() => handleLogin()}
+                                >
+                                    <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
+                                </Pressable>
 
 
                             </View>

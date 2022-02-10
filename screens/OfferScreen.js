@@ -159,7 +159,7 @@ export default function OfferScreen({ navigation }) {
                                                 >
                                                     <Text style={[css.brandC, css.f14, css.fm]}>Copy Code</Text>
                                                 </TouchableOpacity>
-                                                <TouchableOpacity style={[css.yellowBtn, css.borderRadius30, { height: 35, width: '35%' }]} onPress={() => navigation.navigate('GetgeniePage')}>
+                                                <TouchableOpacity style={[css.yellowBtn, css.borderRadius30, { height: 35, width: '35%' }]} onPress={() => navigation.navigate('GetgenieScreen')}>
                                                     <Text style={[css.fm, css.whiteC, css.f14]}> Book Now</Text>
                                                 </TouchableOpacity>
                                             </View>

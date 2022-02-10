@@ -39,7 +39,7 @@ import { getCurrentBookings, loadBookings } from '../reducers/bookingsReducer'
 import { getLoggedInStatus, getUser, getAccessToken } from '../reducers/authReducer';
 // import { FlatList } from "-";
 
-const MyBookingScreen = ({ props, route, currentBookings, pastBookings, token }) => {
+const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookings, token }) => {
 
     console.log('Props', token)
 
@@ -57,7 +57,7 @@ const MyBookingScreen = ({ props, route, currentBookings, pastBookings, token })
         { key: '2', title: 'Past Bookings' },
     ]);
 
-    
+
 
     useEffect(async () => {
         if (token) {
@@ -106,48 +106,48 @@ const MyBookingScreen = ({ props, route, currentBookings, pastBookings, token })
                                     keyExtractor={(item, index) => {
                                         return item._id;
                                     }}
-                                    renderItem={({ item }) => (  
-                                       
-                                    <View style={[styles.screen4box]}>
-                                        <View style={[styles.bookingHead, css.line10, css.padding10]}>
-                                            <View style={[css.flexDR]}>
-                                                <Image style={[css.img30, css.marginR10]} source={require(imgPathImage + 'acBooking.png')} />
-                                                <Text style={[css.f18]}>AC</Text>
+                                    renderItem={({ item }) => (
+
+                                        <View style={[styles.screen4box]}>
+                                            <View style={[styles.bookingHead, css.line10, css.padding10]}>
+                                                <View style={[css.flexDR]}>
+                                                    {/* <Image style={[css.img30, css.marginR10]} source={require(imgPathImage + 'acBooking.png')} /> */}
+                                                    <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
+                                                    <Text style={[css.f18]}>{item.category.name}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.bookingBody, css.padding10]}>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.f16, css.liteBlackC]}>Job ID</Text>
+                                                    <Text style={[css.f16, css.fbo]}>{item.uniqueCode}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.liteBlackC]}>Service</Text>
+                                                    <Text>{item.references.subcategoryID.subCategoryName}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.liteBlackC]}>Location</Text>
+                                                    <Text>{item.references.addressID.nickName}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.liteBlackC]}>Status</Text>
+                                                    <Text>{item.status}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
+                                                <View style={{ alignItems: 'flex-end' }}>
+                                                    <TouchableOpacity
+                                                        style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
+                                                        onPress={() => console.log(navigation.navigate("JobdetailPage"))}
+                                                    >
+                                                        <Text style={[css.brandC, css.f16]}>View Details</Text>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </View>
-                                        <View style={[styles.bookingBody, css.padding10]}>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.f16, css.liteBlackC]}>Job ID</Text>
-                                                <Text style={[css.f16, css.fbo]}>221014926</Text>
-                                            </View>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.liteBlackC]}>Service</Text>
-                                                <Text>AC service (preventive)</Text>
-                                            </View>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.liteBlackC]}>Location</Text>
-                                                <Text>Azarudeen</Text>
-                                            </View>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.liteBlackC]}>Status</Text>
-                                                <Text>ASSIGNED</Text>
-                                            </View>
-                                        </View>
-                                        <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
-                                            <View style={{ alignItems: 'flex-end' }}>
-                                                <TouchableOpacity
-                                                    style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
-                                                    onPress={() => console.log(props.navigation.navigate("JobdetailPage"))}
-                                                >
-                                                    <Text style={[css.brandC, css.f16]}>View Details</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    </View>
-                                )} />
+                                    )} />
                             </View>
                         }
-
                     </View>
                 )
             case '2':
@@ -187,45 +187,45 @@ const MyBookingScreen = ({ props, route, currentBookings, pastBookings, token })
                                     keyExtractor={(item, index) => {
                                         return item._id;
                                     }}
-                                    renderItem={({ item }) => (  
-                                       
-                                    <View style={[styles.screen4box]}>
-                                        <View style={[styles.bookingHead, css.line10, css.padding10]}>
-                                            <View style={[css.flexDR]}>
-                                                <Image style={[css.img30, css.marginR10]} source={require(imgPathImage + 'acBooking.png')} />
-                                                <Text style={[css.f18]}>AC</Text>
+                                    renderItem={({ item }) => (
+
+                                        <View style={[styles.screen4box]}>
+                                            <View style={[styles.bookingHead, css.line10, css.padding10]}>
+                                                <View style={[css.flexDR]}>
+                                                    <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
+                                                    <Text style={[css.f18]}>{item.category.name}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.bookingBody, css.padding10]}>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.f16, css.liteBlackC]}>Job ID</Text>
+                                                    <Text style={[css.f16, css.fbo]}>{item.uniqueCode}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.liteBlackC]}>Service</Text>
+                                                    <Text>{item.subcategory.subCategoryName}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.liteBlackC]}>Location</Text>
+                                                    <Text>{item.nickName}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.width30, css.liteBlackC]}>Status</Text>
+                                                    <Text>{item.status}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
+                                                <View style={{ alignItems: 'flex-end' }}>
+                                                    <TouchableOpacity
+                                                        style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
+                                                        onPress={() => console.log(navigation.navigate("JobdetailPage"))}
+                                                    >
+                                                        <Text style={[css.brandC, css.f16]}>View Details</Text>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </View>
-                                        <View style={[styles.bookingBody, css.padding10]}>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.f16, css.liteBlackC]}>Job ID</Text>
-                                                <Text style={[css.f16, css.fbo]}>221014926</Text>
-                                            </View>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.liteBlackC]}>Service</Text>
-                                                <Text>AC service (preventive)</Text>
-                                            </View>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.liteBlackC]}>Location</Text>
-                                                <Text>Azarudeen</Text>
-                                            </View>
-                                            <View style={[css.flexDR]}>
-                                                <Text style={[css.width30, css.liteBlackC]}>Status</Text>
-                                                <Text>ASSIGNED</Text>
-                                            </View>
-                                        </View>
-                                        <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
-                                            <View style={{ alignItems: 'flex-end' }}>
-                                                <TouchableOpacity
-                                                    style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
-                                                    onPress={() => console.log(props.navigation.navigate("JobdetailPage"))}
-                                                >
-                                                    <Text style={[css.brandC, css.f16]}>View Details</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    </View>
-                                )} />
+                                    )} />
                             </View>
                         }
 
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     padding30: {
         padding: 30,
     },
-    screen4box: { marginTop: 25, shadowColor: "#000", shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, backgroundColor: '#fff', borderRadius: 10, width: '100%', },
+    screen4box: { marginTop: 25, shadowColor: "#000", shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, backgroundColor: '#fff', borderRadius: 10, width: '100%' },
     bookingFooter: { borderBottomRightRadius: 10, borderBottomLeftRadius: 10 },
     bookingTabsText: {
         textAlign: 'center',
