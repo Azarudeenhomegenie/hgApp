@@ -1,4 +1,4 @@
-import { View, } from "react-native";
+import { View, AppRegistry } from "react-native";
 import Navigation from './navigation/navigation';
 import { Provider as StoreProvider } from 'react-redux';
 import store from './store';
@@ -29,3 +29,5 @@ export default function App() {
     );
   }
 }
+
+AppRegistry.registerComponent('main', () => App);

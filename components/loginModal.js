@@ -1,5 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component, useState, useEffect, useRef } from "react";
+import { connect, useDispatch } from "react-redux";
+import { bindActionCreators } from 'redux'
+import { login, verifyOTP } from '../reducers/authReducer';
 import {
     StyleSheet,
     View,
@@ -23,6 +26,8 @@ import css from './commonCss';
 import CountryPicker from 'rn-country-picker';
 
 const LoginModal = (props) => {
+    const dispatch = useDispatch();
+
     const [email, setEmail] = useState(null);
     const [userName, setUserName] = useState(null);
     const [nameCheck, setNameCheck] = useState(false);
@@ -55,6 +60,47 @@ const LoginModal = (props) => {
     const thirdOtp = useRef();
     const fourthOtp = useRef();
 
+
+    const handleLogin = async () => {
+        console.log('login pressed', props);
+        const data = await dispatch(login(phone, countryPlus + countryCodeNew));
+        console.log(data)
+        if (data.isRegistered) {
+            setOtpModal(true);
+        } else {
+            setRegisterModal(true);
+        }
+    };
+
+    const handleOtpVerification = async () => {
+        console.log('verifying otp');
+
+        let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
+        const data = {
+            deviceType: "WEBSITE",
+            deviceToken: "151",
+            phoneNo: phone,
+            countryCode: countryPlus + countryCodeNew,
+            timezone: "Asia/Calcutta",
+            latitude: "17.3753",
+            longitude: "78.4744",
+            OTPCode: otpData
+        };
+
+        const resp = await dispatch(verifyOTP(data));
+        console.log(resp);
+        setOtpModal(false)
+        setUser('in')
+        props.userData(true)
+        setOtpCodeOne(null);
+        setOtpCodeTwo(null);
+        setOtpCodeThree(null);
+        setOtpCodeFour(null);
+        setDisplayEmail(resp.userDetails.email);
+        setDisplayName(resp.userDetails.name);
+        props.falseData(false)
+        console.log('accessToken', resp.accessToken);
+    };
 
     const LoginApi = () => {
         // https://api.homegenie.com/api/customer/validatePhoneNo
@@ -133,7 +179,6 @@ const LoginModal = (props) => {
                 //console.log('userDataLoginModal', res)
                 if (res.message == "Success") {
                     setOtpModal(false)
-                    setUser('in')
                     props.userData(true)
                     setOtpCodeOne(null);
                     setOtpCodeTwo(null);
@@ -147,6 +192,7 @@ const LoginModal = (props) => {
                     props.getPhone(res.data.userDetails.phoneNo);
                     props.getToken(res.data.accessToken);
                     props.falseData(false)
+                    setUser('in')
                 }
             })
             .catch(e => {
@@ -246,9 +292,9 @@ const LoginModal = (props) => {
                                 <Pressable
                                     style={[styles.offerBooknow]}
                                     //onPress={() => onSubmitLogin()}
-                                    onPress={() => LoginApi()}
+                                    onPress={() => handleLogin()}
                                 >
-                                    <Text style={[styles.offerBooknowText]}>Login/Signup</Text>
+                                    <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
                                 </Pressable>
 
 
@@ -398,7 +444,7 @@ const LoginModal = (props) => {
                                 <Pressable
                                     style={[styles.offerBooknow]}
                                     //onPress={() => onSubmitLogin()}
-                                    onPress={() => OtpVrifyApi()}
+                                    onPress={() => handleOtpVerification()}
                                 >
                                     <Text style={[styles.textStyle, styles.offerBooknowText]}>CONFIRM</Text>
                                 </Pressable>
