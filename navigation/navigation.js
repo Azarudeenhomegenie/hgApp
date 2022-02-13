@@ -179,7 +179,6 @@ const HomeTab = ({ navigation }) => {
             tabBarLabelStyle: {
                 fontSize: 11, color: "#2EB0E4",
                 fontFamily: 'PoppinsM',
-                //borderColor: '#ccc', borderRightWidth: 1,
             },
         })}>
             <Tab.Screen name="Home" component={HomeStackScreen} />
@@ -204,7 +203,8 @@ const MainDrawer = ({ navigation }) => {
             },
             elevation: 10,
             marginTop: 20,
-        }}>
+        }}
+        >
             <StackScreen />
         </NavigationContainer>
     )

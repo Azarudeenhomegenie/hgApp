@@ -24,9 +24,7 @@ import Text from "../components/MyText";
 import SocialMedia from '../components/socialMedia';
 import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
-import css from "../components/commonCss";
-let booked = 'no'
-let pastbook = 'no'
+import css, { brandC } from "../components/commonCss";
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -39,10 +37,9 @@ import { getCurrentBookings, loadBookings } from '../reducers/bookingsReducer'
 import { getLoggedInStatus, getUser, getAccessToken } from '../reducers/authReducer';
 // import { FlatList } from "-";
 
-const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookings, token }) => {
-
-    console.log('Props', token)
-
+const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, token }) => {
+    const [userName, setUserName] = useState(token);
+    //console.log('Props', token)
     // const isLoggedIn = useSelector(getLoggedInStatus);
     // const user = useSelector(getUser);
     // const token = useSelector(getAccessToken);
@@ -58,10 +55,9 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
     ]);
 
 
-
     useEffect(async () => {
         if (token) {
-            console.log('TKN:', token)
+            //console.log('TKN:', token)
             dispatch(loadBookings(token));
         }
     }, []);
@@ -72,7 +68,7 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
             case '1':
                 return (
                     <View style={[styles.scene, styles.bookingTabs]}>
-                        {booked != 'no' ?
+                        {currentBookings == '' ?
                             <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                                 <View style={{
                                     width: 150, height: 150,
@@ -88,7 +84,7 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
                                 <Text style={[styles.bookingTabsText]} >No Bookings yet. {"\n"}start Booking and {"\n"} Enjoy HomeGenie Services</Text>
                                 <Pressable
                                     style={[styles.button, { backgroundColor: '#f6b700', }]}
-                                    onPress={() => props.navigation.navigate('GetgenieScreen')}
+                                    onPress={() => navigation.navigate('GetgenieScreen')}
                                 >
                                     <Text style={[styles.buttonText], {
                                         fontSize: 16,
@@ -107,41 +103,59 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
                                         return item._id;
                                     }}
                                     renderItem={({ item }) => (
-
                                         <View style={[styles.screen4box]}>
                                             <View style={[styles.bookingHead, css.line10, css.padding10]}>
                                                 <View style={[css.flexDR]}>
-                                                    {/* <Image style={[css.img30, css.marginR10]} source={require(imgPathImage + 'acBooking.png')} /> */}
                                                     <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
-                                                    <Text style={[css.f18]}>{item.category.name}</Text>
+                                                    <Text style={[css.f16, css.blackC, css.fsb,]}>{item.category.name}</Text>
                                                 </View>
                                             </View>
                                             <View style={[styles.bookingBody, css.padding10]}>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.f16, css.liteBlackC]}>Job ID</Text>
-                                                    <Text style={[css.f16, css.fbo]}>{item.uniqueCode}</Text>
+                                                    <Text style={[css.width25, css.f14, css.liteBlackC, css.fm]}>Job ID</Text>
+                                                    <Text style={[css.width75, css.f14, css.blackC, css.fbo]}>{item.uniqueCode}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.liteBlackC]}>Service</Text>
-                                                    <Text>{item.references.subcategoryID.subCategoryName}</Text>
+                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Service</Text>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.subcategory.subCategoryName}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.liteBlackC]}>Location</Text>
-                                                    <Text>{item.references.addressID.nickName}</Text>
+                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Location</Text>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.nickName}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.liteBlackC]}>Status</Text>
-                                                    <Text>{item.status}</Text>
+                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
+                                                    <View style={[css.flexDR]}>
+                                                        <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
+                                                            {item.status === 'PAYMENT_PENDING' ?
+                                                                <Text onPress={() => navigation.navigate('JobdetailPage')} style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                                : null}
+                                                            {item.status === 'INSPECTION' ?
+                                                                <Text onPress={() => navigation.navigate('JobdetailPage')} style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                                : null}
+                                                        </Text>
+                                                    </View>
                                                 </View>
                                             </View>
                                             <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
-                                                <View style={{ alignItems: 'flex-end' }}>
-                                                    <TouchableOpacity
-                                                        style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
-                                                        onPress={() => console.log(navigation.navigate("JobdetailPage"))}
+                                                <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
+                                                    {item.status === 'PAYMENT_PENDING' ?
+                                                        <Pressable
+                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
+                                                            onPress={() => navigation.navigate("JobdetailPage")}
+                                                        >
+                                                            <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
+                                                        </Pressable>
+                                                        : null
+                                                    }
+                                                    <Pressable
+                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: 100, height: 40 }]}
+                                                        onPress={() => navigation.navigate("JobdetailPage", {
+                                                            token: token, jobId: item._id
+                                                        })}
                                                     >
-                                                        <Text style={[css.brandC, css.f16]}>View Details</Text>
-                                                    </TouchableOpacity>
+                                                        <Text style={[css.brandC, css.f14, css.fm]}>View Details</Text>
+                                                    </Pressable>
                                                 </View>
                                             </View>
                                         </View>
@@ -153,7 +167,7 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
             case '2':
                 return (
                     <View style={[styles.scene, styles.bookingTabs]}>
-                        {pastbook != 'no' ?
+                        {pastBookings == '' ?
                             <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                                 <View style={{
                                     width: 150, height: 150,
@@ -169,7 +183,7 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
                                 <Text style={[styles.bookingTabsText]} >No Bookings yet. {"\n"}start Booking and {"\n"} Enjoy HomeGenie Services</Text>
                                 <Pressable
                                     style={[styles.button, { backgroundColor: '#f6b700', }]}
-                                    onPress={() => props.navigation.navigate('GetgenieScreen')}
+                                    onPress={() => navigation.navigate('GetgenieScreen')}
                                 >
                                     <Text style={[styles.buttonText], {
                                         fontSize: 16,
@@ -193,35 +207,37 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
                                             <View style={[styles.bookingHead, css.line10, css.padding10]}>
                                                 <View style={[css.flexDR]}>
                                                     <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
-                                                    <Text style={[css.f18]}>{item.category.name}</Text>
+                                                    <Text style={[css.f16, css.blackC, css.fsb,]}>{item.category.name}</Text>
                                                 </View>
                                             </View>
                                             <View style={[styles.bookingBody, css.padding10]}>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.f16, css.liteBlackC]}>Job ID</Text>
-                                                    <Text style={[css.f16, css.fbo]}>{item.uniqueCode}</Text>
+                                                    <Text style={[css.width25, css.f14, css.liteBlackC, css.fr]}>Job ID</Text>
+                                                    <Text style={[css.width75, css.f14, css.blackC, css.fbo]}>{item.uniqueCode}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.liteBlackC]}>Service</Text>
-                                                    <Text>{item.subcategory.subCategoryName}</Text>
+                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Service</Text>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.subcategory.subCategoryName}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.liteBlackC]}>Location</Text>
-                                                    <Text>{item.nickName}</Text>
+                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Location</Text>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.nickName}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width30, css.liteBlackC]}>Status</Text>
-                                                    <Text>{item.status}</Text>
+                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.status}</Text>
                                                 </View>
                                             </View>
                                             <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
-                                                <View style={{ alignItems: 'flex-end' }}>
-                                                    <TouchableOpacity
-                                                        style={{ borderWidth: 1, borderColor: '#2eb0e4', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 10, }}
-                                                        onPress={() => console.log(navigation.navigate("JobdetailPage"))}
+                                                <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
+                                                    <Pressable
+                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: 100, height: 40 }]}
+                                                        onPress={() => navigation.navigate("JobdetailPage", {
+                                                            token: token, jobId: item._id
+                                                        })}
                                                     >
-                                                        <Text style={[css.brandC, css.f16]}>View Details</Text>
-                                                    </TouchableOpacity>
+                                                        <Text style={[css.brandC, css.f14, css.fm]}>View Details</Text>
+                                                    </Pressable>
                                                 </View>
                                             </View>
                                         </View>
@@ -243,7 +259,7 @@ const MyBookingScreen = ({ props, route, navigation, currentBookings, pastBookin
                 <View style={styles.flexRow}>
                     <TouchableOpacity
                         style={[styles.textWhite, styles.backButton]}
-                        onPress={() => props.navigation.goBack()}
+                        onPress={() => navigation.goBack()}
                     >
                         <Image
                             resizeMode="contain"

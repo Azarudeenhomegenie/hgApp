@@ -46,8 +46,8 @@ export default function OfferScreen({ navigation }) {
             let datas = json.data.data;
             let array = [];
             for (obj of datas) {
-                var d = new Date(obj.promo.endTime);
-                var dm = moment(d).format("DD MMM,  YY");
+                //var d = new Date(obj.promo.endTime);
+                var dm = moment(new Date(obj.promo.endTime)).format("DD MMM,  YY");
                 array.push({
                     _id: obj._id,
                     validDate: dm,
@@ -78,12 +78,13 @@ export default function OfferScreen({ navigation }) {
             let termArray = [];
             for (obj of datas) {
                 termArray.push({
+                    _id: obj._id,
                     termsCondition: obj.tnc
                 })
             }
             //termArray = termArray[0].termsCondition;
             setTermsData(termArray);
-            //console.log('terms', termArray);
+            console.log('terms', termArray);
         } catch (error) {
             console.error(error);
         } finally {
@@ -230,8 +231,9 @@ export default function OfferScreen({ navigation }) {
                                     return item._id;
                                 }}
                                 renderItem={({ item }) => (
-                                    <View>
-                                        <Text>{item.termsCondition}</Text>
+                                    <View style={[css.imgFull]}>
+                                        <WebView source={{ html: item.termsCondition }} style={{ flex: 1, minWidth: '100%', height: windowHeight, }} />
+                                        <Text style={{ minWidth: windowWidth }}></Text>
                                     </View>
                                 )}
                             />
@@ -239,7 +241,7 @@ export default function OfferScreen({ navigation }) {
                     </View>
                 </View>
             </Modal>
-        </SafeAreaView >
+        </SafeAreaView>
     );
 };
 

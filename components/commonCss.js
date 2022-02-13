@@ -38,6 +38,7 @@ module.exports = {
     ltGrayBG: { backgroundColor: '#d1d1d150' },
     lGreyBG: { backgroundColor: '#60604E' },
     whiteBG: { backgroundColor: '#fff' },
+    maroonBG: { backgroundColor: '#d36565' },
     //bg-ends
     section: {
         fontFamily: 'PoppinsR',
@@ -103,6 +104,7 @@ module.exports = {
     textRight: {
         textAlign: "right",
     },
+    borderRadius5: { borderRadius: 5, },
     borderRadius10: {
         borderRadius: 10,
     },
@@ -112,7 +114,9 @@ module.exports = {
     borderRadius30: {
         borderRadius: 30,
     },
-    //borderR100: { borderRadius: '100%' },
+    borderRadius50: { borderRadius: 50 },
+    borderGrey1: { borderWidth: 1, borderColor: '#ccc', },
+    borderBlack1: { borderWidth: 1, borderColor: '#525252', },
     imgFull: { width: "100%", },
     img95: { width: "95%" },
     img90: { width: "90%" },
@@ -128,6 +132,7 @@ module.exports = {
     width50: { width: "50%" },
     width40: { width: "40%" },
     width30: { width: "30%" },
+    width25: { width: "25%" },
     width20: { width: "20%" },
     width10: { width: "10%" },
     img100: { width: 100, height: 100 },
@@ -212,6 +217,12 @@ module.exports = {
     transform90: { transform: [{ rotate: "90deg" }] },
     transform45: { transform: [{ rotate: "45deg" }] },
     transform180: { transform: [{ rotate: "180deg" }] },
+    //zIndex starts
+    zIndex1: { zIndex: 1 },
+    zIndex2: { zIndex: 2 },
+    zIndex3: { zIndex: 3 },
+    zIndex4: { zIndex: 4 },
+    zIndex5: { zIndex: 5 },
     //modal-css-start
     centeredView: {
         flex: 1,
@@ -276,6 +287,7 @@ module.exports = {
         color: '#fff',
         textTransform: "uppercase",
     },
+    cButtonWH: { width: 100, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 5 },
     backButton: {
         marginRight: 10,
         justifyContent: "center",
@@ -299,9 +311,5 @@ module.exports = {
     fixedContainer: { flex: 1 },
     fixedHeader: { position: 'absolute', top: 0, marginBottom: 200 },
     boxShadow: { shadowColor: "#00000050", shadowOffset: { width: 0, height: 2, }, shadowOpacity: 0.7, shadowRadius: 2.84, elevation: 5, },
-    zIndex1: { zIndex: 1 },
-    zIndex2: { zIndex: 2 },
-    zIndex3: { zIndex: 3 },
-    zIndex4: { zIndex: 4 },
-    zIndex5: { zIndex: 5 },
+
 }

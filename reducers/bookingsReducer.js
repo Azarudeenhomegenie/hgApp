@@ -5,16 +5,16 @@ import { BASE_URL } from "../base_file";
 async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
 }
-  
+
 async function getData(key) {
     let result = await SecureStore.getItemAsync(key);
-    return result? result : false;
+    return result ? result : false;
 }
 
 //Login
-export const LOAD_BOOKINGS         = 'hg/bookings/LOAD_BOOKINGS'
+export const LOAD_BOOKINGS = 'hg/bookings/LOAD_BOOKINGS'
 export const LOAD_BOOKINGS_SUCCESS = 'hg/bookings/LOAD_BOOKINGS_SUCCESS'
-export const LOAD_BOOKINGS_FAIL    = 'hg/bookings/LOAD_BOOKINGS_FAIL'
+export const LOAD_BOOKINGS_FAIL = 'hg/bookings/LOAD_BOOKINGS_FAIL'
 
 const initialState = {
     currentBookings: null,
@@ -23,12 +23,12 @@ const initialState = {
 
 export default function (state = initialState, action = {}) {
     switch (action.type) {
-      
+
         case LOAD_BOOKINGS:
             return {
-            ...state,
-            isBookingsLoading: true,
-            isBookingsLoadError: null,
+                ...state,
+                isBookingsLoading: true,
+                isBookingsLoadError: null,
             }
         case LOAD_BOOKINGS_SUCCESS:
             // console.log('HEllo', action.payload)
@@ -53,7 +53,7 @@ export default function (state = initialState, action = {}) {
 
 
 export const loadBookings = (token) => async dispatch => {
-    try {   
+    try {
         console.log('URL', `${BASE_URL}customer/getmybookings`)
         const res = await axios.get(`${BASE_URL}customer/getmybookings`, { headers: { Authorization: `Bearer ${token}` } });
         // console.log('response ', res.data);
@@ -62,14 +62,14 @@ export const loadBookings = (token) => async dispatch => {
             pastBookings: data.pastBooking,
             currentBookings: data.upcomingAppointment
         };
-        console.log('LOAded');
+        console.log('Loaded');
         dispatch({ type: LOAD_BOOKINGS_SUCCESS, payload });
 
         return res.data.data;
-    } catch(e) {
+    } catch (e) {
         console.log('CATCH');
         console.log(e)
-        dispatch({ 
+        dispatch({
             type: LOAD_BOOKINGS_FAIL,
             payload: e
         });
