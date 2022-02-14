@@ -165,6 +165,7 @@ module.exports = {
     line5: { borderBottomColor: '#ccc', borderBottomWidth: 1, paddingBottom: 5, marginBottom: 5 },
     line10: { borderBottomColor: '#ccc', borderBottomWidth: 1, paddingBottom: 10, marginBottom: 10 },
     line20: { borderBottomColor: '#ccc', borderBottomWidth: 1, paddingBottom: 20, marginBottom: 20 },
+    padding0: { padding: 0 },
     padding5: { padding: 5 },
     padding10: { padding: 10 },
     padding20: { padding: 20 },

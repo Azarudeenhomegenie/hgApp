@@ -1,6 +1,6 @@
 import { View, Text, } from "react-native";
 import AllFonts from './AllFonts';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import css from './commonCss';
 const MyText = (props) => {
@@ -10,7 +10,7 @@ const MyText = (props) => {
         'PoppinsM': require('../assets/fonts/Poppins/Poppins-Medium.ttf'),
     });
     if (!fontsLoaded) {
-        return <AppLoading />;
+        return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text></Text></View>;
     } else {
         return (
             <Text style={[css.blackC, css.fm, css.f14]} {...props} >{props.children}</Text>

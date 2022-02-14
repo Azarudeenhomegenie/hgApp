@@ -64,7 +64,7 @@ const LoginModal = (props) => {
     const handleLogin = async () => {
         console.log('login pressed', props);
         const data = await dispatch(login(phone, countryPlus + countryCodeNew));
-        console.log(data)
+        //console.log(data)
         if (data.isRegistered) {
             setOtpModal(true);
         } else {
@@ -74,7 +74,6 @@ const LoginModal = (props) => {
 
     const handleOtpVerification = async () => {
         console.log('verifying otp');
-
         let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
         const data = {
             deviceType: "WEBSITE",

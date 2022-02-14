@@ -124,15 +124,15 @@ const HomeTab = ({ navigation }) => {
                 borderTopRightRadius: 30,
                 paddingTop: 10,
                 paddingBottom: 10,
-                shadowColor: "#000000",
+                shadowColor: "#000",
                 shadowOpacity: 0.5,
                 shadowRadius: 2,
                 shadowOffset: {
-                    height: -80,
-                    width: 2
+                    height: -4,
+                    width: 0
                 },
-                elevation: 10,
-                marginTop: 20,
+                elevation: 5,
+                zIndex: 3,
                 backgroundColor: '#fff'
             },
             tabBarOptions: {
@@ -212,7 +212,6 @@ const MainDrawer = ({ navigation }) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        fontFamily: 'PoppinsM',
     },
 });
 export default MainDrawer;

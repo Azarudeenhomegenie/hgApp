@@ -15,7 +15,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 //Selectors
-import { getLoggedInStatus, getUser, logout, verifyOTP, login} from '../../reducers/authReducer';
+import { getLoggedInStatus, getUser, logout, verifyOTP, login } from '../../reducers/authReducer';
 
 const Login = (props) => {
 
@@ -24,16 +24,16 @@ const Login = (props) => {
     const dispatch = useDispatch();
 
     const [user, setUser] = useState(isLoggedIn)
-    const [displayName, setDisplayName] = useState(userData? userData.name : null);
-    const [displayEmail, setDisplayEmail] = useState(userData? userData.email : null);
+    const [displayName, setDisplayName] = useState(userData ? userData.name : null);
+    const [displayEmail, setDisplayEmail] = useState(userData ? userData.email : null);
     const [token, setToken] = useState(null);
     const [dispalyPhone, setDisplayPhone] = useState(null);
     const [loginModal, setLoginModal] = useState(false);
     const [addcardModal, setAddcardModal] = useState(false);
 
-    const handleLogout = async() => {
+    const handleLogout = async () => {
         await dispatch(logout());
-        setUser(false); 
+        setUser(false);
         toggleAddcardModal();
     }
 

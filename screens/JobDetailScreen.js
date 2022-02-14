@@ -52,7 +52,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
             });
             const jsonData = await response.json();
             let array = jsonData.data;
-            console.log('jobDetail', array);
+            // console.log('jobDetail', array);
             setJobdetailsData(array);
         } catch (error) {
             console.error(error);
@@ -109,9 +109,9 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                 <View>
                                     <Image style={[css.imgFull, css.borderRadius10, { height: 120 }]} source={{ uri: item.subCategory.image }} />
                                     <View style={[css.spaceT10]}><Text style={[css.f18, css.blackC, css.fr]}>{item.subCategory.subCategoryName}</Text></View>
-                                    {Genie == 'no' ? null : <View style={[css.spaceT10]}><Text style={[css.f16, css.blackC, css.fr]}>Genie has been assigned to you.</Text></View>}
+                                    {item.driverData == '' ? null : <View style={[css.spaceT10]}><Text style={[css.f16, css.blackC, css.fr]}>Genie has been assigned to you.</Text></View>}
                                     <View style={[css.spaceT10]}><Text style={[css.f20, css.blackC, css.fsb]}>Your HomeGenie</Text></View>
-                                    {Genie == 'no' ?
+                                    {item.driverData == '' ?
                                         <View style={[styles.genieNotAssigned]}>
                                             <View style={[css.imgFull, css.alignCenter, css.liteBlueBG, css.padding10, css.borderRadius10]}>
                                                 <View style={[css.flexDR, css.imgFull]}>
@@ -128,7 +128,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         <View style={[styles.genieAssigned, css.borderGrey1, css.borderRadius10, css.imgFull]}>
                                             <View style={[css.flexDR, styles.genieHeader, css.padding20]}>
                                                 <View style={[css.flexDC, css.marginR20, css.width30]}>
-                                                    <Image style={[styles.genieLogo, css.img100, css.borderBlack1, { borderRadius: 50, }]} source={{ uri: item.driverData.profilePicURL.original }} />
+                                                    < Image style={[styles.genieLogo, css.img100, css.borderBlack1, { borderRadius: 50, }]} source={{ uri: item.driverData.profilePicURL.original }} />
                                                     <Pressable style={[css.alignCenter, css.marginT5]}><Text style={[css.brandC, css.f12, css.fm]}>View Profile</Text></Pressable>
                                                 </View>
                                                 <View style={[css.width60]}>
@@ -162,7 +162,12 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                 }}
                                 renderItem={({ item }) => (
                                     <View>
-                                        <List.Accordion title="Booking Summary" id="1">
+                                        <List.Accordion title="Booking Summary" id="1"
+                                            titleStyle={[css.blackC, css.fsb, css.f14]}
+                                            style={[css.whiteBG, css.padding10]}
+                                            right={props => <Image style={{ position: 'absolute', right: -20, top: -35, transform: [{ rotate: "0deg" }] }}
+                                                source={require(imgPath + 'arrowDown_hg.png')} />}
+                                        >
                                             <View style={[css.line5, css.spaceT20]}>
                                                 <View style={[css.flexDRSB]}>
                                                     <View><Text style={[css.f18, css.fm, css.brandC]}>Service</Text></View>
@@ -222,7 +227,12 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 <Text>{item.problemDetails}</Text>
                                             </View>
                                         </List.Accordion>
-                                        <List.Accordion title="Payment Summary" id="2">
+                                        <List.Accordion title="Payment Summary" id="2"
+                                            titleStyle={[css.blackC, css.fsb, css.f14]}
+                                            style={[css.whiteBG, css.padding10]}
+                                            right={props => <Image style={{ position: 'absolute', right: -20, top: -35, transform: [{ rotate: "0deg" }] }}
+                                                source={require(imgPath + 'arrowDown_hg.png')} />}
+                                        >
                                             <View style={[css.line5, css.spaceT20]}>
                                                 <View style={[css.flexDRSB]}>
                                                     <View><Text style={[css.f18, css.fm, css.brandC]}>Pricing</Text></View>
@@ -310,6 +320,21 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 </View>
             </ScrollView>
+            {/* <FlatList
+                data={jobdetailsData}
+                keyExtractor={(item, index) => {
+                    return item._id;
+                }}
+                renderItem={({ item }) => (
+                    <View>
+                        {item.status == "CANCELLED" ?
+                            <View style={[styles.cancelButtonContainer]}><Pressable style={[styles.cancelButton]}><Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text></Pressable></View>
+                            :
+                            <View style={[styles.cancelButtonContainer]}><Pressable style={[styles.cancelButton]}><Text style={[css.blackC, css.fbo, css.f18]}>No</Text></Pressable></View>
+                        }
+                    </View>
+                )}
+            /> */}
             {Genie == 'no' ? null :
                 <View style={[styles.cancelButtonContainer]}><Pressable style={[styles.cancelButton]}><Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text></Pressable></View>
             }

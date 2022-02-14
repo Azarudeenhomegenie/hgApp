@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { useFonts } from 'expo-font';
-import AppLoading from 'expo-app-loading';
+//import AppLoading from 'expo-app-loading';
 
 export default function AllFonts() {
     let [fontsLoaded, error] = useFonts({
