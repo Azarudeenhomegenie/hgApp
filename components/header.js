@@ -3,9 +3,9 @@ import React, { useState, useEffect, Fragment, useRef, useCallback } from 'react
 import RNPickerSelect, { defaultStyles } from "react-native-picker-select";
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown'
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import css from './commonCss';
-import { getCity, getPopularService, getOffers } from "../actions/hgAction";
+import { getCity, getPopularServices, getOffers } from "../redux/reducers/appSlice";
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -21,8 +21,6 @@ const items = [
   { id: 7, name: 'Go', },
   { id: 8, name: 'Swift', },
 ];
-
-
 
 const Header = (props) => {
   const [isLoading, setLoading] = useState(true);
@@ -97,12 +95,12 @@ const Header = (props) => {
       {/* <StatusBar backgroundColor={'#2eb0e4'} /> */}
       <View style={styles.searchBoxFull}>
         <View style={styles.headerDropDown}>
-          <RNPickerSelect
+          {props.data && <RNPickerSelect
             placeholder={{}}
             items={props.data}
             onValueChange={(value) => {
-              props.getPopularService(value, 'en');
-              props.getOffers(value, 'en')
+              getPopularServices(value, 'en');
+              getOffers(value, 'en')
             }}
             style={{
               inputAndroid: {
@@ -131,7 +129,7 @@ const Header = (props) => {
                 right: -5,
               },
             }}
-          />
+          />}
         </View>
         <View style={styles.headerSearchInput}>
           <Image source={require(imgPath + "searchIcon.png")} />
@@ -307,9 +305,5 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  hg: state.hg,
-  error: state.error
-})
 
-export default connect(mapStateToProps, { getOffers, getPopularService, getCity })(Header);
+export default Header;

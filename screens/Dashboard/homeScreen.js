@@ -17,8 +17,9 @@ import Swiper from "react-native-swiper";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import Text from "../../components/MyText";
 import Header from '../../components/header';
-import { connect } from "react-redux";
-import { getCity, getPopularService, getOffers, getSearch, getSpecialized } from "../../actions/hgAction";
+import { connect, useDispatch, useSelector } from "react-redux";
+// import { getCity, getPopularService, getOffers, getSearch, getSpecialized } from "../../actions/hgAction";
+import { getCity, getPopularServices, getOffers, getSpecializedServices } from "../../redux/reducers/appSlice";
 import css from '../../components/commonCss';
 import StatusBar from '../../components/StatusBar';
 import Whatsapp from "../../components/whtsApp";
@@ -39,34 +40,44 @@ const HomeScreen = (props) => {
     const toggleoverlaySpecial2 = () => { setOverlaySpecial2(!overlaySpecial2) };
     const [overlaySpecial3, setOverlaySpecial3] = useState(false);
     const toggleoverlaySpecial3 = () => { setOverlaySpecial3(!overlaySpecial3) };
+    const dispatch = useDispatch();
+
+    const offers = useSelector(state => state.app.offers) || null;
+    const cities = useSelector(state => state.app.cities) || [];
+    const popularServices = useSelector(state => state.app.popularServices) || null;
+    const specializedServices = useSelector(state => state.app.specializedServices);
+
     useLayoutEffect(() => {
-        props.getCity();
-        props.getPopularService('Dubai', 'en');
-        props.getOffers('Dubai', 'en')
-        props.getSpecialized();
+        dispatch(getCity());
+        dispatch(getPopularServices('Dubai', 'en'));
+        dispatch(getOffers('Dubai', 'en'));
+        dispatch(getSpecializedServices());
     }, [])
 
     useEffect(() => {
         try {
-            setSpecializedData(props.hg.getSpecialized[0][0])
-            setSpecializedData2(props.hg.getSpecialized[0][1])
-            setSpecializedData3(props.hg.getSpecialized[0][2])
+            if (specializedServices) {
+                setSpecializedData(specializedServices[0])
+                setSpecializedData2(specializedServices[1])
+                setSpecializedData3(specializedServices.slice(2))
+                console.log('VALUE SETT')
+            }
         } catch (e) {
             console.log(e)
         }
-    }, [props.hg.getSpecialized])
+    }, [specializedServices])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar />
-            <Header data={props.hg.getCity} navigation={props.navigation} />
-            <ScrollView
+            <Header data={cities} />
+            {/* <ScrollView
                 style={styles.ScrollView}
                 nestedScrollEnabled={true}
                 keyboardShouldPersistTaps="handled"
-            >
+            > */}
                 <View>
-                    <Swiper
+                    {/* <Swiper
                         style={styles.wrapper}
                         height={200}
                         dot={<View style={{ elevation: 1, zIndex: 9, backgroundColor: "#fff", width: 20, height: 2, borderRadius: 0, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, bottom: -6, }} />}
@@ -127,7 +138,7 @@ const HomeScreen = (props) => {
                         >
                             <Image resizeMode="contain" style={{ width: windowWidth, height: 200 }} source={require(imgPath + "home_slider3.jpg")} />
                         </View>
-                    </Swiper>
+                    </Swiper> */}
                 </View>
                 {infoBar ? (
                     <View style={([styles.infoBar])}>
@@ -148,11 +159,11 @@ const HomeScreen = (props) => {
                 </View>
                 <View style={[styles.section]}>
                     <View style={[styles.mostPopular]}><Text style={[styles.mostPopularText]}>MOST POPULAR</Text></View>
-                    <SwiperFlatList
+                    {/* {popularServices && <SwiperFlatList
                         autoplay={true}
                         autoplayDelay={3}
                         autoplayLoop={true}
-                        data={props.hg.getPopularService}
+                        data={popularServices}
                         keyExtractor={(item, index) => { return item._id; }}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={[styles.child]} onPress={() => props.navigation.navigate('GetgenieScreen')}>
@@ -161,7 +172,7 @@ const HomeScreen = (props) => {
                             </TouchableOpacity>
                         )}
                     >
-                    </SwiperFlatList>
+                    </SwiperFlatList>} */}
                 </View>
                 <View style={styles.screen}>
                     <View style={styles.section}>
@@ -220,12 +231,12 @@ const HomeScreen = (props) => {
                     </View>
                     <View style={styles.section}>
                         <Text style={[styles.homeTitles, styles.textLeft]}>Offers & Promos</Text>
-                        <SwiperFlatList
+                        {/* {offers && <SwiperFlatList
                             autoplay={true}
                             style={{ width: windowWidth, height: 210 }}
                             autoplayDelay={3}
                             autoplayLoop={true}
-                            data={props.hg.getOffers}
+                            data={offers}
                             keyExtractor={(item, index) => {
                                 return item._id;
                             }}
@@ -250,7 +261,7 @@ const HomeScreen = (props) => {
                                     /> : null}
                                 </TouchableOpacity>
                             )}
-                        />
+                        />} */}
 
                     </View>
                     <View style={styles.section}>
@@ -261,7 +272,7 @@ const HomeScreen = (props) => {
                             Handpicked services from innovated brands. Now available!
                         </Text>
                         <View style={[styles.specialServiceAll]}>
-                            <FlatList
+                            {specializedData && <FlatList
                                 data={specializedData}
                                 keyExtractor={(item, index) => {
                                     return item._id;
@@ -314,7 +325,8 @@ const HomeScreen = (props) => {
                                         </Text>
                                     </View>
                                 )}
-                            />
+                            />}
+                            {specializedData2 && 
                             <FlatList
                                 data={specializedData2}
                                 keyExtractor={(item, index) => {
@@ -364,9 +376,9 @@ const HomeScreen = (props) => {
                                         </Text>
                                     </Pressable>
                                 )}
-                            />
+                            />}
                             <View style={[styles.specialserviceThird, { alignItems: 'center', justifyContent: 'space-between' }]}>
-                                <SwiperFlatList
+                                {/* {specializedData3 && <SwiperFlatList
                                     autoplay={true}
                                     autoplayDelay={3}
                                     autoplayLoop={true}
@@ -426,7 +438,7 @@ const HomeScreen = (props) => {
                                         </Pressable>
                                     )}
                                 >
-                                </SwiperFlatList>
+                                </SwiperFlatList>} */}
                             </View>
                         </View>
                     </View>
@@ -524,7 +536,7 @@ const HomeScreen = (props) => {
                         </View>
                     </View>
                 </View>
-            </ScrollView>
+            {/* </ScrollView> */}
         </SafeAreaView>
     );
 }
@@ -845,4 +857,4 @@ const mapStateToProps = (state) => ({
     error: state.error
 })
 
-export default connect(mapStateToProps, { getOffers, getPopularService, getCity, getSearch, getSpecialized })(HomeScreen);
+export default HomeScreen;

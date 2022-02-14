@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     StyleSheet,
     View,
@@ -157,7 +157,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                             <Pressable style={[styles.genieFooter, css.brandBG, css.alignCenter, css.imgFull, { height: 60, borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }]}>
-                                                <Text onPress={() => Linking.openURL('tel:+971' + item.driverData.phoneNo)} style={[css.feb, css.f18, css.whiteC]}><Image source={require(imgPath + 'call-white.png')} />{' '} CALL NOW</Text>
+                                                <Text 
+                                                    onPress={() => Linking.openURL(`tel:+971${item.driverData.phoneNo}`)} 
+                                                    style={[css.feb, css.f18, css.whiteC]}
+                                                >
+                                                    <Image source={require(`${imgPath}call-white.png`)} />
+                                                    <Text>CALL NOW</Text>
+                                                </Text>
                                             </Pressable>
                                         </View>
                                         :

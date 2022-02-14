@@ -10,7 +10,8 @@ const MyText = (props) => {
         'PoppinsM': require('../assets/fonts/Poppins/Poppins-Medium.ttf'),
     });
     if (!fontsLoaded) {
-        return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text></Text></View>;
+        // return <AppLoading />;
+        return <View />;
     } else {
         return (
             <Text style={[css.blackC, css.fm, css.f14]} {...props} >{props.children}</Text>

@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { Component, useState, useEffect, useRef } from "react";
 import { connect, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux'
-import { login, verifyOTP } from '../reducers/authReducer';
+import { sendOTP, verifyOTP } from '../redux/reducers/userSlice';
 import {
     StyleSheet,
     View,
