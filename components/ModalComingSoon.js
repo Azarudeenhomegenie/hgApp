@@ -29,7 +29,7 @@ const ModalComingSoon = (props) => {
         >
             <View style={css.centeredView}>
                 <View style={css.modalView}>
-                    <Text style={css.modalText}>Coming soon - stay tuned new</Text>
+                    <Text style={css.modalText}>Coming soon - stay tuned</Text>
                     <Pressable
                         style={[css.yellowBtn]}
                         onPress={() => setModalComingsoon(false)}

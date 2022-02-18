@@ -25,7 +25,6 @@ import Modal from 'react-native-modal';
 import Whatsapp800 from "../components/whtsApp";
 import StatusBarAll from "../components/StatusBar";
 import css, { marginT20 } from "../components/commonCss";
-import Clipboard from '@react-native-clipboard/clipboard';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -47,7 +46,7 @@ export default function OfferScreen({ navigation }) {
             let array = [];
             for (obj of datas) {
                 //var d = new Date(obj.promo.endTime);
-                var dm = moment(new Date(obj.promo.endTime)).format("DD MMM,  YY");
+                var dm = moment(new Date(obj.promo.endTime)).format("DD MMM, YY");
                 array.push({
                     _id: obj._id,
                     validDate: dm,
@@ -232,7 +231,7 @@ export default function OfferScreen({ navigation }) {
                                 }}
                                 renderItem={({ item }) => (
                                     <View style={[css.imgFull]}>
-                                        <WebView source={{ html: item.termsCondition }} style={{ flex: 1, minWidth: '100%', height: windowHeight, }} />
+                                        <WebView source={{ html: item.termsCondition }} style={{ minWidth: '100%', height: 300, }} />
                                         <Text style={{ minWidth: windowWidth }}></Text>
                                     </View>
                                 )}

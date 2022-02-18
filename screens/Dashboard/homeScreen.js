@@ -59,7 +59,7 @@ const HomeScreen = (props) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar />
-            <Header data={props.hg.getCity} />
+            <Header data={props.hg.getCity} navigation={props.navigation} />
             <ScrollView
                 style={styles.ScrollView}
                 nestedScrollEnabled={true}

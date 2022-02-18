@@ -1,7 +1,8 @@
-import { View, StatusBar, StyleSheet, Image, Dimensions, Platform, Pressable, } from 'react-native';
-import React, { useState, useEffect, Fragment } from 'react';
+import { View, StatusBar, StyleSheet, Image, Dimensions, Platform, Pressable, Feather } from 'react-native';
+import React, { useState, useEffect, Fragment, useRef, useCallback } from 'react';
 import RNPickerSelect, { defaultStyles } from "react-native-picker-select";
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown'
 import { connect } from "react-redux";
 import css from './commonCss';
 import { getCity, getPopularService, getOffers } from "../actions/hgAction";
@@ -27,7 +28,37 @@ const Header = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [searchData, setSearchData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const addItem = (item) => { setSelectedItems(item) }
+  //const addItem = (item) => { setSelectedItems(item) }
+  //   onPress={() => navigation.navigate("JobdetailPage", {
+  //     token: token, jobId: item._id
+  // })}
+  const addItem = (item) => {
+    console.log(props.navigation)
+    props.navigation.navigate("MyBookingPage", item)
+  }
+
+
+  const [loading, setSearchLoading] = useState(false)
+  const [suggestionsList, setSuggestionsList] = useState(null)
+  const [selectedItem, setSelectedItem] = useState(null)
+  const dropdownController = useRef(null)
+  const searchRef = useRef(null)
+
+  const getSuggestions = useCallback(async (q) => {
+    if (typeof q !== "string" || q.length < 3) {
+      setSuggestionsList(null)
+      return
+    }
+    setSearchLoading(true)
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts")
+    const items = await response.json()
+    const suggestions = items.map((item) => ({
+      id: item.id,
+      title: item.title
+    }))
+    setSuggestionsList(suggestions)
+    setSearchLoading(false)
+  }, [])
 
 
   const getSearchData = async () => {
@@ -109,7 +140,6 @@ const Header = (props) => {
               containerStyle={{ padding: 5 }}
               onTextChange={(text) => console.log(text)}
               onItemSelect={item => alert(JSON.stringify(item))}
-              onItemSelect={addItem}
               items={searchData}
               defaultIndex={1}
               textInputStyle={{ color: '#525252', fontFamily: 'PoppinsM', fontSize: 11, textTransform: 'uppercase', }}
@@ -142,6 +172,62 @@ const Header = (props) => {
             >
             </SearchableDropdown>
           </Fragment>
+          {/* <AutocompleteDropdown
+            ref={searchRef}
+            controller={(controller) => {
+              dropdownController.current = controller
+            }}
+            dataSet={suggestionsList}
+            onChangeText={getSuggestions}
+            onSelectItem={(item) => {
+              item && setSelectedItem(item.id)
+            }}
+            debounce={600}
+            suggestionsListMaxHeight={Dimensions.get("window").height * 0.4}
+            // onClear={onClearPress}
+            //  onSubmit={(e) => onSubmitSearch(e.nativeEvent.text)}
+            // onOpenSuggestionsList={onOpenSuggestionsList}
+            loading={loading}
+            useFilter={false} // prevent rerender twice
+            textInputProps={{
+              placeholder: "Type 3+ letters",
+              autoCorrect: false,
+              autoCapitalize: "none",
+              style: {
+                borderRadius: 25,
+                backgroundColor: "#fff",
+                color: "#fff",
+                paddingLeft: 18
+              }
+            }}
+            rightButtonsContainerStyle={{
+              borderRadius: 25,
+              right: 8,
+              height: 30,
+              top: 10,
+              alignSelfs: "center",
+              backgroundColor: "#383b42"
+            }}
+            inputContainerStyle={{
+              backgroundColor: "transparent"
+            }}
+            suggestionsListContainerStyle={{
+              backgroundColor: "#383b42"
+            }}
+            containerStyle={{ flexGrow: 1, flexShrink: 1 }}
+            renderItem={(item, text) => (
+              <Text style={{ color: "#fff", padding: 15 }}>{item.title}</Text>
+            )}
+            ChevronIconComponent={
+              <Feather name="x-circle" size={18} color="#fff" />
+            }
+            ClearIconComponent={
+              <Feather name="chevron-down" size={20} color="#fff" />
+            }
+            inputHeight={50}
+            showChevron={false}
+          //  showClear={false}
+          /> */}
         </View>
       </View>
     </View >

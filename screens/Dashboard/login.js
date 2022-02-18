@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect, useDispatch, useSelector } from "react-redux";
 import Modal from 'react-native-modal';
 import axios from "axios";
-import { getLogin } from "../../actions/hgAction";
+// import { getLogin } from "../../actions/hgAction";
 import Whatsapp from "../../components/whtsApp";
 import Text from "../../components/MyText";
 import SocialMedia from '../../components/socialMedia';
@@ -15,68 +15,27 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 //Selectors
-import { getLoggedInStatus, getUser, logout, verifyOTP, login} from '../../reducers/authReducer';
+import { getLoggedInStatus, getUser, logout, verifyOTP, login } from '../../reducers/authReducer';
 
 const Login = (props) => {
 
     const isLoggedIn = useSelector(getLoggedInStatus);
     const userData = useSelector(getUser);
     const dispatch = useDispatch();
-
     const [user, setUser] = useState(isLoggedIn)
-    const [displayName, setDisplayName] = useState(userData? userData.name : null);
-    const [displayEmail, setDisplayEmail] = useState(userData? userData.email : null);
+    const [displayName, setDisplayName] = useState(userData ? userData.name : null);
+    const [displayEmail, setDisplayEmail] = useState(userData ? userData.email : null);
+    const [displayProfilePic, setDisplayProfilePic] = useState(userData ? userData.profilePicURL : '')
     const [token, setToken] = useState(null);
     const [dispalyPhone, setDisplayPhone] = useState(null);
     const [loginModal, setLoginModal] = useState(false);
     const [addcardModal, setAddcardModal] = useState(false);
-
-    const handleLogout = async() => {
+    console.log('userDataLogin', userData);
+    const handleLogout = async () => {
         await dispatch(logout());
-        setUser(false); 
+        setUser(false);
         toggleAddcardModal();
     }
-
-
-    // const handleLogin = async() => {
-    //     console.log('login pressed', props);
-    //     const data = await dispatch(login(phone, countryPlus + countryCodeNew));
-    //     console.log(data)
-    //     if (data.isRegistered) {
-    //         setOtpModal(true);
-    //     } else {
-    //         setRegisterModal(true);
-    //     }
-    // };
-
-    // const handleOtpVerification = async() => {
-    //     console.log('verifying otp');
-
-    //     let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
-    //     const data = {
-    //         deviceType: "WEBSITE",
-    //         deviceToken: "151",
-    //         phoneNo: phone,
-    //         countryCode: countryPlus + countryCodeNew,
-    //         timezone: "Asia/Calcutta",
-    //         latitude: "17.3753",
-    //         longitude: "78.4744",
-    //         OTPCode: otpData
-    //     };
-
-    //     const resp = await dispatch(verifyOTP(data));
-    //     console.log(resp);
-    //     setOtpModal(false)
-    //     setUser('in')
-    //     props.userData(true)
-    //     setOtpCodeOne(null);
-    //     setOtpCodeTwo(null);
-    //     setOtpCodeThree(null);
-    //     setOtpCodeFour(null);
-    //     setDisplayEmail(resp.userDetails.email);
-    //     setDisplyName(resp.userDetails.name);
-    //     props.falseData(false)
-    // };
 
     const toggleAddcardModal = () => { setAddcardModal(!addcardModal) };
     return (
@@ -103,18 +62,25 @@ const Login = (props) => {
                             <View style={[css.flexDRSB, { padding: 15, paddingTop: 5, paddingBottom: 5 }]} >
                                 <View style={[css.flexDR]}>
                                     <View>
-                                        <Image
-                                            resizeMode="contain"
-                                            style={{ borderRadius: 50, width: 50, marginRight: 15 }}
-                                            source={require(imgPath + "genieicon.png")}
-                                        />
+                                        {displayProfilePic ?
+                                            <Image
+                                                resizeMode="cover"
+                                                style={[{ borderRadius: 500, width: 60, height: 60, marginRight: 15 }]}
+                                                source={{ uri: displayProfilePic }} />
+                                            :
+                                            <Image
+                                                resizeMode="contain"
+                                                style={[css.img50, { borderRadius: 50, marginRight: 15 }]}
+                                                source={require(imgPath + "guest-icon.png")}
+                                            />
+                                        }
                                     </View>
                                     <View style={[css.flexDC, css.alignSelfC]}>
                                         <Text style={[css.fbo, css.f16, css.blackC,]}>
-                                            {displayName}
+                                            {userData ? userData.name : ''}
                                         </Text>
                                         <Text style={[css.fm, css.f12, css.blackC,]}>
-                                            {displayEmail}
+                                            {userData ? userData.email : ''}
                                         </Text>
                                     </View>
                                 </View>

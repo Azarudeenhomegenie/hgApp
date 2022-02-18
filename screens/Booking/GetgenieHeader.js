@@ -31,7 +31,7 @@ let imgPathImage = '../../assets/icons/images/';
 
 
 
-export default function GetgenieHeader({ navigation }) {
+export default function GetgenieHeader({ props, navigation }) {
     const [cancelModal, setCancelModal] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('ac-cooling-repair');

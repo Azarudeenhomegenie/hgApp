@@ -321,7 +321,8 @@ const SecondRoute = () => {
                             </View>
                         </View>
                     </List.Accordion>
-                    <List.Accordion title="19. What Is The HomeGenie Warranty Policy?" id="19" titleStyle={[css.brandC, css.fsb, css.f14]}
+                    <List.Accordion title="19. What Is The HomeGenie Warranty Policy?" id="19"
+                        titleStyle={[css.brandC, css.fsb, css.f14]}
                         style={[css.whiteBG, css.line, { paddingLeft: 0, paddingRight: 0, paddingTop: 10, paddingBottom: 10 }]}
                         right={props => <Image style={{ position: 'absolute', right: -20, top: -35, transform: [{ rotate: "0deg" }] }} source={require(imgPath + 'arrowDown_hg.png')} />}
                     >

@@ -2,7 +2,7 @@ import { View, AppRegistry } from "react-native";
 import Navigation from './navigation/navigation';
 import { Provider as StoreProvider } from 'react-redux';
 import store from './store';
-import AppLoading from 'expo-app-loading';
+import SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import Text from "./components/MyText";
 
@@ -20,7 +20,7 @@ export default function App() {
     'PoppinsT': require('./assets/fonts/Poppins/Poppins-Thin.ttf'),
   });
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text></Text></View>;
   } else {
     return (
       <StoreProvider store={store}>

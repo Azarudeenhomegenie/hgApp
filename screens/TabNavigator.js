@@ -3,7 +3,7 @@ import { Button, View, Text, Image, SafeAreaView, StyleSheet } from 'react-nativ
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFonts } from "expo-font";
-import AppLoading from 'expo-app-loading';
+//import AppLoading from 'expo-app-loading';
 import { AntDesign } from "@expo/vector-icons";
 
 import Header from "../components/Header";
