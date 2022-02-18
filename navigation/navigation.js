@@ -28,8 +28,8 @@ import Getgeniescreen3 from '../screens/Booking/Getgeniescreen3';
 import Getgeniescreen4 from '../screens/Booking/Getgeniescreen4';
 import Getgeniescreen5 from '../screens/Booking/Getgeniescreen5';
 
-let imagePath = '../assets/icons/'
-let imagePathImage = '../assets/icons/images/'
+const imagePath = '../assets/icons/';
+// const imagePathImage = '../assets/icons/images/';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 LogBox.ignoreAllLogs(true);
@@ -188,7 +188,10 @@ const HomeTab = ({ navigation }) => {
     )
 }
 
-const MainDrawer = ({ navigation }) => {
+const MainDrawer = ({ navigation, onLayout }) => {
+    React.useEffect(() => {
+        onLayout();
+    }, []);
     return (
         <NavigationContainer style={{
             backgroundColor: '#fff',
