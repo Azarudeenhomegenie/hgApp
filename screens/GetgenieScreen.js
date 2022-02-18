@@ -23,10 +23,10 @@ import { Searchbar } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SocialMedia from "../components/socialMedia";
+import Text from "../components/MyText";
 import Whatsapp800 from "../components/whtsApp";
 import ModalComingSoon from "../components/ModalComingSoon";
 import css from '../components/commonCss';
-import Text from "../components/MyText";
 import StatusBarAll from "../components/StatusBar";
 import GetgenieCategories from "./Booking/GetgenieCategories";
 import Getgeniescreen1 from "./Booking/Getgeniescreen1";
@@ -51,7 +51,7 @@ export default function GetgenieScreen({ navigation }) {
         <SafeAreaView>
             <StatusBarAll />
             <GetgenieCategories />
-            {
+            {/* {
                 global.gen == 1 ?
                     <GetgenieCategories />
                     : global.gen == 2 ?
@@ -66,8 +66,11 @@ export default function GetgenieScreen({ navigation }) {
                                         <Getgeniescreen5 />
                                         : null
 
-            }
-
+            } */}
+            {/* <View style={[css.centeredView, css.padding30, { flex: 1 }]}>
+                <Text style={[css.fm, css.f24, css.blackC]}>Working in progress</Text>
+                <Pressable><Text>Go Back</Text></Pressable>
+            </View> */}
         </SafeAreaView >
     );
 }

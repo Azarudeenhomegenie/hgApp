@@ -1,18 +1,17 @@
 import * as React from 'react';
 import { Image, StyleSheet, LogBox } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from "@expo/vector-icons";
-
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getLoggedInStatus, getUser, logout, verifyOTP, login } from '../reducers/authReducer';
 import homeScreen from '../screens/Dashboard/homeScreen';
-import login from '../screens/Dashboard/login';
+import AccountScreen from '../screens/Dashboard/login';
 import MyBookingScreen from '../screens/MyBookingScreen';
 import GetgenieScreen from '../screens/GetgenieScreen';
 import CategoryScreen from '../screens/CategoryScreen';
-//import LoginScreen from '../screens/LoginScreen';
 import OfferScreen from '../screens/OfferScreen';
-//import AccountScreen from '../screens/AccountScreen';
 import SupportScreen from '../screens/SupportScreen';
 import WalletScreen from '../screens/WalletScreen';
 import SettingScreen from '../screens/SettingScreen';
@@ -60,8 +59,7 @@ const StackScreen = ({ navigation }) => {
             <Stack.Screen name="WalletPage" component={WalletScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="NotificationPage" component={NotificationScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="JobdetailPage" component={JobDetailScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="SettingPage" component={SettingScreen} options={{ gestureEnabled: false }} /> 
-            <Stack.Screen name="LoginPage" component={login} options={{ gestureEnabled: false }} /> */}
+            <Stack.Screen name="SettingPage" component={SettingScreen} options={{ gestureEnabled: false }} /> */}
         </Stack.Navigator>
     )
 }
@@ -106,7 +104,7 @@ const OfferStackScreen = ({ navigation }) => {
 const AccountStackScreen = ({ navigation }) => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="AccountPage">
-            <Stack.Screen name="AccountPage" component={login} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="AccountPage" component={AccountScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="SupportPage" component={SupportScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="WalletPage" component={WalletScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="NotificationPage" component={NotificationScreen} options={{ gestureEnabled: false }} />
@@ -182,7 +180,7 @@ const HomeTab = ({ navigation }) => {
             },
         })}>
             <Tab.Screen name="Home" component={HomeStackScreen} />
-            <Tab.Screen name="Bookings" component={MyBookingStackScreen} />
+            {login ? <Tab.Screen name="Bookings" component={MyBookingStackScreen} /> : navigation.navigate('Account')}
             <Tab.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ title: "", }} />
             <Tab.Screen name="Offers" component={OfferStackScreen} />
             <Tab.Screen name="Account" component={AccountStackScreen} />

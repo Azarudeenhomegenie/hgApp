@@ -27,7 +27,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 let imgPath = '../../assets/icons/';
 let imgPathImage = '../../assets/icons/images/';
-export default function GetgenieCategories(props) {
+export default function GetgenieCategories({ props, navigation }) {
     const [isLoading, setLoading] = useState(true);
     const [helpModal, setHelpModal] = useState(false);
     const toggleHelpModal = () => { setHelpModal(!helpModal) };
@@ -89,7 +89,8 @@ export default function GetgenieCategories(props) {
     }, []);
     return (
         <View>
-            <View style={[css.section]}>
+            <View style={[css.justifyContentC, css.alignItemsC,]}><Text>Working in progress</Text></View>
+            {/* <View style={[css.section]}>
                 <View style={[css.container, css.liteBlueBG]}>
                     <View style={[css.flexDRSB]}>
                         <View style={[css.flexDRSB, css.img90]}>
@@ -131,33 +132,14 @@ export default function GetgenieCategories(props) {
                                     }}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity onPress={() => setCategoryShow(!categoryShow) && setCategoryScreen5(true)} style={{ backgroundColor: '#fff', flexDirection: 'row', padding: 5, paddingTop: 10, paddingBottom: 10, borderBottomColor: '#d1d1d150', borderBottomWidth: 1 }}>
-                                            {/* <Image style={{ width: 20, height: 20, marginRight: 5 }} source={require(imgPathImage + 'acBooking.png')} /> */}
+                                             
                                             <Image style={{ width: 20, height: 20, marginRight: 5 }} source={{ uri: item.image, }} />
                                             <Text style={{ fontFamily: 'PoppinsR', color: '#525252' }}>{item.name}</Text>
                                         </TouchableOpacity>
                                     )}
                                 />
                             }
-                            {/* <TouchableOpacity onPress={() => setCategoryShow(!categoryShow) && setCategoryScreen5(true)} style={{ backgroundColor: '#fff', flexDirection: 'row', padding: 5, paddingTop: 10, paddingBottom: 10, borderBottomColor: '#d1d1d150', borderBottomWidth: 1 }}>
-                                <Image style={{ width: 20, height: 20, marginRight: 5 }} source={require(imgPathImage + 'acBooking.png')} />
-                                <Text style={{ fontFamily: 'PoppinsR', color: '#525252' }}>AC</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setCategoryShow(!categoryShow) && setCategoryScreen1(true)} style={{ flexDirection: 'row', padding: 5, paddingTop: 10, paddingBottom: 10, borderBottomColor: '#d1d1d150', borderBottomWidth: 1 }}>
-                                <Image style={{ width: 20, height: 20, marginRight: 5 }} source={require(imgPathImage + 'acBooking.png')} />
-                                <Text style={{ fontFamily: 'PoppinsR', color: '#525252' }}>AC</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setCategoryShow(!categoryShow) && setCategoryScreen1(true)} style={{ flexDirection: 'row', padding: 5, paddingTop: 10, paddingBottom: 10, borderBottomColor: '#d1d1d150', borderBottomWidth: 1 }}>
-                                <Image style={{ width: 20, height: 20, marginRight: 5 }} source={require(imgPathImage + 'acBooking.png')} />
-                                <Text style={{ fontFamily: 'PoppinsR', color: '#525252' }}>AC</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 5, paddingTop: 10, paddingBottom: 10, borderBottomColor: '#d1d1d150', borderBottomWidth: 1 }}>
-                                <Image style={{ width: 20, height: 20, marginRight: 5 }} source={require(imgPathImage + 'acBooking.png')} />
-                                <Text style={{ fontFamily: 'PoppinsR', color: '#525252' }}>AC</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 5, paddingTop: 10, paddingBottom: 10, borderBottomColor: '#d1d1d150', borderBottomWidth: 1 }}>
-                                <Image style={{ width: 20, height: 20, marginRight: 5 }} source={require(imgPathImage + 'acBooking.png')} />
-                                <Text style={{ fontFamily: 'PoppinsR', color: '#525252' }}>AC</Text>
-                            </TouchableOpacity> */}
+
                         </View>
                         <ScrollView>
                             <View style={{ backgroundColor: '#fafafa', padding: 10, marginBottom: 300 }}>
@@ -181,60 +163,6 @@ export default function GetgenieCategories(props) {
                                             )}
                                         />
                                     }
-                                    {/* <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ marginBottom: 25, width: 100, marginRight: 20 }} onPress={() => {
-                                        props.navigation.navigate("GetgeniePage1")
-                                    }}>
-                                        <Image style={{ width: 110, height: 70, borderRadius: 10, marginBottom: 5 }} source={require(imgPathImage + 'acCoolingBooking.png')} />
-                                        <Text style={[css.fr, css.f12]}>AC Cooling Repair</Text>
-                                    </TouchableOpacity> */}
 
                                 </View>
                                 <View style={[css.whiteBG, css.imgFull, css.padding10, { position: 'absolute', bottom: 0 }]}>
@@ -352,7 +280,7 @@ export default function GetgenieCategories(props) {
                         </View>
                     </View>
                 </ScrollView>
-            </Modal>
+            </Modal> */}
         </View>
     );
 }

@@ -22,6 +22,8 @@ import Whatsapp800 from "../components/whtsApp";
 import ModalComingSoon from "../components/ModalComingSoon";
 import css from '../components/commonCss';
 import StatusBarAll from "../components/StatusBar";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getUser } from '../reducers/authReducer';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 let imgPath = "../assets/icons/";
@@ -32,7 +34,24 @@ let address = 'no'
 export default function SettingScreen({ navigation }) {
     const [isLoading, setLoading] = useState(true);
     const [modalComingsoon, setModalComingsoon] = useState(false);
+    const userData = useSelector(getUser);
+    const [customerAddresses, setCustomerAddresses] = useState(userData ? userData.customerAddresses : '')
+    const [displayName, setDisplayName] = useState(userData ? userData.name : '')
+    const [displayPhoneNumber, setDisplayPhoneNumber] = useState(userData ? userData.phoneNumber : '')
+    const [displayCountryCode, setDisplayCountryCode] = useState(userData ? userData.countryCode : '')
+    const [displayEmail, setDisplayEmail] = useState(userData ? userData.email : '')
+    const [displayDOB, setDisplayDOB] = useState(userData ? userData.dob : '')
+    const [displayLanguage, setDisplayLanguage] = useState(userData ? userData.language : '')
+    const [displayNationality, setDisplayNationality] = useState(userData ? userData.nationality : '')
+    const [useraddressType, setuseraddressType] = useState(userData ? userData.addressType : '')
+    const [userapartmentNo, setuserapartmentNo] = useState(userData ? userData.apartmentNo : '')
+    const [usercity, setusercity] = useState(userData ? userData.city : '')
+    const [usercommunity, setusercommunity] = useState(userData ? userData.community : '')
+    const [usernickName, setusernickName] = useState(userData ? userData.nickName : '')
+    const [userdefaultCards, setuserdefaultCards] = useState(userData ? userData.defaultCards : '')
 
+
+    console.log('userDatas', userData);
     useEffect(() => {
 
     }, []);
@@ -61,7 +80,7 @@ export default function SettingScreen({ navigation }) {
                                         source={require(imgPath + "iconIndex.png")}
                                         style={[styles.titleIcon]}
                                     />
-                                    <Text style={[css.marginL10, css.f16]}>BASIC INFO</Text>
+                                    <Text style={[css.marginL10, css.f16, css.fm, css.blackC]}>BASIC INFO</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => navigation.navigate('SettingAddInfoPage')}>
                                     <Image
@@ -71,16 +90,16 @@ export default function SettingScreen({ navigation }) {
                                 </TouchableOpacity>
                             </View>
                             <View style={[css.flexDR, css.spaceB5]}>
-                                <Text style={[styles.settingShadowBoxText], { flex: 1, color: '#60604E' }}>Name</Text>
-                                <Text style={[styles.settingShadowBoxText], { flex: 2 }}>Azarudeen</Text>
+                                <Text style={[styles.settingShadowBoxText, css.width30, { color: '#60604E' }]}>Name</Text>
+                                <Text style={[styles.settingShadowBoxText, css.fm, css.width70]}>{displayName ? displayName : ''}</Text>
                             </View>
                             <View style={[css.flexDR, css.spaceB5]}>
-                                <Text style={[styles.settingShadowBoxText], { flex: 1, color: '#60604E' }}>Mobile</Text>
-                                <Text style={[styles.settingShadowBoxText], { flex: 2 }}>+971 588341424</Text>
+                                <Text style={[styles.settingShadowBoxText, css.width30, { color: '#60604E' }]}>Mobile</Text>
+                                <Text style={[styles.settingShadowBoxText, css.fm, css.f14, css.width70]}>{displayCountryCode && displayPhoneNumber ? (displayCountryCode + ' ' + displayPhoneNumber) : ''}</Text>
                             </View>
                             <View style={[css.flexDR]}>
-                                <Text style={[styles.settingShadowBoxText], { flex: 1, color: '#60604E' }}>Email ID</Text>
-                                <Text style={[styles.settingShadowBoxText], { flex: 2 }}>azarudeen@gmail.com</Text>
+                                <Text style={[styles.settingShadowBoxText, css.width30, { color: '#60604E' }]}>Email ID</Text>
+                                <Text style={[styles.settingShadowBoxText, css.fm, css.f14, css.width70]}>{displayEmail ? displayEmail : ''}</Text>
                             </View>
                         </View>
                         <View style={[styles.settingShadowBox]}>
@@ -90,7 +109,7 @@ export default function SettingScreen({ navigation }) {
                                         source={require(imgPath + "iconLocation.png")}
                                         style={[styles.titleIcon]}
                                     />
-                                    <Text style={[css.marginL10, css.f16]}>ADDRESS</Text>
+                                    <Text style={[css.marginL10, css.f16, css.fm, css.blackC]}>ADDRESS</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => navigation.navigate('SettingAddAddressPage')}>
                                     <Image
@@ -99,13 +118,16 @@ export default function SettingScreen({ navigation }) {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            {address == 'no' ? <View>
-                                <Text style={[css.blackC, css.f14]}>No saved Address</Text>
-                            </View> :
+                            {customerAddresses ?
                                 <View>
-                                    <Text style={[css.lGreyC, css.f14, css.feb]}>(Home 1)</Text>
-                                    <Text style={[css.blackC, css.f14]}>1209, Jumeirah village Triangle, Dubai (address)</Text>
-                                </View>}
+                                    <Text style={[css.lGreyC, css.f14, css.feb]}>{customerAddresses.nickName}</Text>
+                                    <Text style={[css.blackC, css.f14, css.fr]}>{customerAddresses.apartmentNo}, {customerAddresses.addressType}, {customerAddresses.community}, {customerAddresses.city} </Text>
+                                </View>
+                                :
+                                <View>
+                                    <Text style={[css.blackC, css.f14, css.fr]}>No saved Address</Text>
+                                </View>
+                            }
                         </View>
                         <View style={[styles.settingShadowBox]}>
                             <View style={[css.flexDRSB, css.line10]}>
@@ -114,7 +136,7 @@ export default function SettingScreen({ navigation }) {
                                         source={require(imgPath + "iconCard.png")}
                                         style={[styles.titleIcon]}
                                     />
-                                    <Text style={[css.marginL10, css.f16]}>CARDS</Text>
+                                    <Text style={[css.marginL10, css.f16, css.fm, css.blackC]}>CARDS</Text>
                                 </View>
                                 <View>
                                     <TouchableOpacity onPress={() => navigation.navigate('SettingAddCardPage')}>
@@ -126,7 +148,7 @@ export default function SettingScreen({ navigation }) {
                                 </View>
                             </View>
                             <View>
-                                {card == 'no' ? <Text style={[css.lGreyC, css.f14, { color: '#60604E' }]}>No saved card</Text> : <Text style={[css.lGreyC, css.f14, { color: '#60604E' }]}>***************</Text>}
+                                <Text style={[css.lGreyC, css.f14, css.fr]}>{userdefaultCards ? userdefaultCards : 'No saved Cards'}</Text>
                             </View>
                         </View>
                         <View style={[styles.settingShadowBox]}>
@@ -136,7 +158,7 @@ export default function SettingScreen({ navigation }) {
                                         source={require(imgPath + "iconFav.png")}
                                         style={[styles.titleIcon]}
                                     />
-                                    <Text style={[css.marginL10, css.f16]}>FAVOURITES</Text>
+                                    <Text style={[css.marginL10, css.f16, css.fm, css.blackC]}>FAVOURITES</Text>
                                 </View>
                                 <View>
                                     <TouchableOpacity onPress={() => setModalComingsoon(true)}>
@@ -153,8 +175,9 @@ export default function SettingScreen({ navigation }) {
                         </View>
                     </View>
                 </View>
-                {modalComingsoon ? <ModalComingSoon title={true} /> : null}
+
             </ScrollView>
+            {modalComingsoon ? <ModalComingSoon title={true} /> : null}
             <Modal
                 animationType="fade"
                 isVisible={modalComingsoon}
@@ -177,7 +200,7 @@ export default function SettingScreen({ navigation }) {
 };
 
 const styles = StyleSheet.create({
-    settingShadowBoxText: { fontSize: 15 },
+    settingShadowBoxText: { fontSize: 14, fontFamily: 'PoppinsR', color: '#525252' },
     settingShadowBox: {
         backgroundColor: "white",
         borderRadius: 5,

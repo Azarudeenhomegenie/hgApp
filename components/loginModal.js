@@ -85,7 +85,7 @@ const LoginModal = (props) => {
             longitude: "78.4744",
             OTPCode: otpData
         };
-
+        //const otpfailed = await dispatch(VERIFY_OTP_FAIL())
         const resp = await dispatch(verifyOTP(data));
         console.log(resp);
         setOtpModal(false)

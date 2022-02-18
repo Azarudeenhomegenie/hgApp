@@ -19,6 +19,8 @@ import {
     TextInput,
 } from "react-native";
 import Modal from 'react-native-modal';
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getAccessToken } from '../../reducers/authReducer';
 import SocialMedia from "../../components/socialMedia";
 import Whatsapp800 from "../../components/whtsApp";
 import ModalComingSoon from "../../components/ModalComingSoon";
@@ -39,7 +41,35 @@ export default function SettingAddCardScreen({ navigation }) {
     const toggleRemovecreditModal = () => { setRemovecardModal(!removecardModal) };
 
     const user = 'noCard';
+
+    const token = useSelector(getAccessToken);
+    const [allCardData, setAllCardData] = useState([])
+    console.log('token', token);
+    const getAllCard = async () => {
+        try {
+            const header = { headers: { Authorization: `Bearer ${token}` } };
+            const api = 'https://api.homegenie.com/api/customer/getAllMyCard'
+
+            const response = await fetch(api, {
+                method: 'GET',
+                headers: new Headers({
+                    'Authorization': `Bearer ${token}`,
+                }),
+                //body: userDataUpdate
+            });
+            const jsonData = await response.json();
+            let array = jsonData.data.cards;
+            console.log('usercard api response', array);
+            setAllCardData(array);
+        } catch (error) {
+            console.error(error);
+            alert('Login Required')
+        } finally {
+            setLoading(false);
+        }
+    }
     useEffect(() => {
+        getAllCard();
     }, []);
 
     return (
@@ -60,7 +90,7 @@ export default function SettingAddCardScreen({ navigation }) {
                 </View>
             </View>
             <ScrollView>
-                {user == 'noCard' ?
+                {user == 'noCar' ?
                     <View style={[css.section]}>
                         <View style={[css.container, { height: windowHeight - 100 }]}>
                             <View style={[css.flexDCSB, css.alignItemsC, { flex: 1 }]}>
@@ -77,18 +107,27 @@ export default function SettingAddCardScreen({ navigation }) {
                         <View style={[css.container,]}>
                             <View style={{ borderRadius: 5, borderColor: '#ccc', borderWidth: 1, padding: 10, backgroundColor: '#F2F4F8' }}>
                                 <Text style={[css.f24, css.fm, css.marginT10, css.marginB10, css.blackC]}>ADD / REMOVE YOUR CARDS</Text>
-                                <View style={{ borderRadius: 5, borderColor: '#ccc', borderWidth: 1, backgroundColor: '#fff' }}>
-                                    <Text style={[css.line5, css.brandC, css.f18, css.fm, css.padding20]}>Select card to pay with</Text>
-                                    <View style={[css.flexDRSB, css.padding20]}>
-                                        <View style={styles.rbWrapper}>
-                                            <TouchableOpacity style={styles.rbStyle}>
-                                                <View style={styles.selected} />
-                                            </TouchableOpacity>
-                                            <Text style={[styles.rbtextStyle,]}>*********</Text>
+                                <FlatList
+                                    data={allCardData}
+                                    keyExtractor={(item, index) => {
+                                        return item._id;
+                                    }}
+                                    renderItem={({ item }) => (
+                                        <View style={[css.whiteBG, css.borderGrey1, css.borderRadius5, css.marginB10]}>
+                                            <Text style={[css.line5, css.brandC, css.f18, css.fm, css.padding20]}>Select card to pay with</Text>
+                                            <View style={[css.flexDRSB, css.padding20]}>
+                                                <View style={styles.rbWrapper}>
+                                                    <TouchableOpacity style={styles.rbStyle}>
+                                                        <View style={styles.selected} />
+                                                    </TouchableOpacity>
+                                                    <Text style={[styles.rbtextStyle,]}>{item.Digit ? item.Digit : ''}</Text>
+                                                </View>
+                                                <Pressable onPress={() => setRemovecardModal(true)}><Image source={require(imgPath + 'delete.png')} /></Pressable>
+                                            </View>
                                         </View>
-                                        <Pressable onPress={() => setRemovecardModal(true)}><Image source={require(imgPath + 'delete.png')} /></Pressable>
-                                    </View>
-                                </View>
+                                    )}
+                                />
+
                             </View>
                             <View style={[css.flexDCSB, css.alignItemsC,]}>
                                 <TouchableOpacity style={[css.blueBtn, css.boxShadow, css.imgFull, css.marginT20, { height: 50 }]} onPress={() => setAddcardModal(true)}>

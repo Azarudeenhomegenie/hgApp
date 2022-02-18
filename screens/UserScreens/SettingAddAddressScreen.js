@@ -19,6 +19,7 @@ import {
     TextInput,
 } from "react-native";
 import Modal from 'react-native-modal';
+import axios from 'axios'
 import SocialMedia from "../../components/socialMedia";
 import Whatsapp800 from "../../components/whtsApp";
 import ModalComingSoon from "../../components/ModalComingSoon";
@@ -28,6 +29,8 @@ import StatusBarAll from "../../components/StatusBar";
 import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 //import { Picker as SelectPicker } from '@react-native-picker/picker';
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getAccessToken } from '../../reducers/authReducer';
 let imgPath = '../../assets/icons/';
 let imgPathImage = '../../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -39,9 +42,11 @@ export default function SettingAddAddressScreen({ navigation }) {
     const [modalComingsoon, setModalComingsoon] = useState(false);
     const [addaddressModal, setAddaddressModal] = useState(false);
     const toggleAddaddressModal = () => { setAddaddressModal(!addaddressModal) };
+    const [editaddressModal, setEditaddressModal] = useState(false);
+    const toggleEditaddressModal = () => { setEditaddressModal(!editaddressModal) };
     const [removeaddressModal, setRemoveaddressModal] = useState(false);
     const toggleRemoveaddressModal = () => { setRemoveaddressModal(!removeaddressModal) };
-    const [radioChecked, setRadioChecked] = useState('first');
+    const [radioChecked, setRadioChecked] = useState();
     const [cityDropdown, setCityDropdown] = useState("Dubai");
 
     const [cityOpen, setCityOpen] = useState(false);
@@ -51,9 +56,66 @@ export default function SettingAddAddressScreen({ navigation }) {
         { label: 'Abu Dhabi', value: 'adbudhabi' }
     ]);
 
-
     const user = 'noAddress';
+    const token = useSelector(getAccessToken);
+    const [allAddressData, setAllAddressData] = useState([])
+    const [singleAddressData, setSingleAddressData] = useState([])
+    console.log('token', token);
+    const getAllAddress = async (addressId) => {
+        console.log('addressId', addressId);
+        try {
+            const header = { headers: { Authorization: `Bearer ${token}` } };
+            const api = 'https://api.homegenie.com/api/customer/getAllAddress'
+            const response = await fetch(api, {
+                method: 'GET',
+                headers: new Headers({
+                    'Authorization': `Bearer ${token}`,
+                }),
+                //body: userDataUpdate
+            });
+            const jsonData = await response.json();
+            let array = jsonData.data;
+            console.log('userupdate api response', array);
+            setAllAddressData(array);
+            if (addressId) {
+                const getSingleAddress = [];
+                getSingleAddress.push(array.find(x => x._id === addressId));
+                console.log('singleAddress', getSingleAddress);
+                setSingleAddressData(getSingleAddress);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Login Required')
+        } finally {
+            setLoading(false);
+        }
+    }
+    const updateAddress = async (addressId) => {
+        console.log('updateAddress ID', addressId);
+        // try {
+        //     const header = { headers: { Authorization: `Bearer ${token}` } };
+        //     const api = 'https://api.homegenie.com/api/customer/getAllAddress'
+
+        //     const response = await fetch(api, {
+        //         method: 'GET',
+        //         headers: new Headers({
+        //             'Authorization': `Bearer ${token}`,
+        //         }),
+        //         //body: userDataUpdate
+        //     });
+        //     const jsonData = await response.json();
+        //     let array = jsonData.data;
+        //     console.log('userupdate api response', array);
+        //     setEditAddressData(array);
+        // } catch (error) {
+        //     console.error(error);
+        //     alert('Login Required')
+        // } finally {
+        //     setLoading(false);
+        // }
+    }
     useEffect(() => {
+        getAllAddress();
     }, []);
 
     return (
@@ -74,7 +136,7 @@ export default function SettingAddAddressScreen({ navigation }) {
                 </View>
             </View>
             <ScrollView>
-                {user == 'noAddress' ?
+                {user == 'noAddresss' ?
                     <View style={[css.section]}>
                         <View style={[css.container, { height: windowHeight - 100 }]}>
                             <View style={[css.flexDCSB, css.alignItemsC, { flex: 1 }]}>
@@ -90,39 +152,32 @@ export default function SettingAddAddressScreen({ navigation }) {
                     <View style={[css.section]}>
                         <View style={[css.container,]}>
                             <View style={[css.boxShadow, css.whiteBG, css.borderRadius10]}>
-                                <Text style={[css.line10, css.blackC, css.f24, css.textCenter, { marginTop: 30, marginBottom: 0, }]}>ADD OR REVIEW</Text>
-                                <View style={[css.flexDRSB, css.padding20, css.line]}>
-                                    <View style={styles.rbWrapper}>
-                                        <TouchableOpacity style={[styles.rbStyle, { alignSelf: 'center', marginRight: 10 }]}>
-                                            <View style={styles.selected} />
-                                        </TouchableOpacity>
-                                        <View style={[css.flexDC, { alignSelf: 'flex-start' }]}>
-                                            <Text style={[css.f18, css.fsb, css.blackC,]}>Azaudeen new</Text>
-                                            <Text style={[css.f18, css.fsb, css.blackC]}>(Default)</Text>
-                                            <Text style={[css.f14, css.fsb, css.greyC]}>Hor al anz, bb1, Dubai</Text>
+                                <Text style={[css.line10, css.blackC, css.f24, css.textCenter, css.fm, css.marginT30, { marginBottom: 0, }]}>ADD OR REVIEW</Text>
+                                <FlatList
+                                    data={allAddressData}
+                                    keyExtractor={(item, index) => {
+                                        return item._id;
+                                    }}
+                                    renderItem={({ item }) => (
+                                        <View style={[css.flexDRSB, css.padding20, css.line]}>
+                                            <View style={styles.rbWrapper}>
+                                                <TouchableOpacity style={[styles.rbStyle, { alignSelf: 'center', marginRight: 10 }]}>
+                                                    <View style={styles.notSelected} />
+                                                </TouchableOpacity>
+                                                <View style={[css.flexDC, { alignSelf: 'flex-start' }]}>
+                                                    <Text style={[css.f14, css.fsb, css.blackC,]}>{item.nickName ? item.nickName : ''}</Text>
+                                                    {item.IsdefaultAddress === 'TRUE' ?
+                                                        <Text style={[css.f4, css.fsb, css.blackC]}>(Default)</Text> : null}
+                                                    <Text style={[css.f14, css.fm, css.greyC]}>{item.apartmentNo}, {item.addressType}, {item.community}, {item.city}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[css.flexDC]}>
+                                                <Pressable style={[css.padding5]} onPress={() => (getAllAddress(item._id), setEditaddressModal(true))}><Image source={require(imgPath + 'edit.png')} /></Pressable>
+                                                <Pressable style={[css.padding5]} onPress={() => setRemoveaddressModal(true)}><Image source={require(imgPath + 'delete.png')} /></Pressable>
+                                            </View>
                                         </View>
-                                    </View>
-                                    <View style={[css.flexDC]}>
-                                        <Pressable style={[css.padding5]} onPress={() => setAddaddressModal(true)}><Image source={require(imgPath + 'edit.png')} /></Pressable>
-                                        <Pressable style={[css.padding5]} onPress={() => setRemoveaddressModal(true)}><Image source={require(imgPath + 'delete.png')} /></Pressable>
-                                    </View>
-                                </View>
-                                <View style={[css.flexDRSB, css.padding20, css.line]}>
-                                    <View style={styles.rbWrapper}>
-                                        <TouchableOpacity style={[styles.rbStyle, { alignSelf: 'center', marginRight: 10 }]}>
-                                            <View style={styles.selected} />
-                                        </TouchableOpacity>
-                                        <View style={[css.flexDC, { alignSelf: 'flex-start' }]}>
-                                            <Text style={[css.f18, css.fsb, css.blackC,]}>Azaudeen new</Text>
-                                            <Text style={[css.f18, css.fsb, css.blackC]}>(Default)</Text>
-                                            <Text style={[css.f14, css.fsb, css.greyC]}>Hor al anz, bb1, Dubai</Text>
-                                        </View>
-                                    </View>
-                                    <View style={[css.flexDC]}>
-                                        <Pressable style={[css.padding5]} onPress={() => setAddaddressModal(true)}><Image source={require(imgPath + 'edit.png')} /></Pressable>
-                                        <Pressable style={[css.padding5]} onPress={() => setRemoveaddressModal(true)}><Image source={require(imgPath + 'delete.png')} /></Pressable>
-                                    </View>
-                                </View>
+                                    )}
+                                />
                                 <View style={[css.flexDCSB, css.alignItemsC, css.padding20]}>
                                     <TouchableOpacity style={[css.blueBtn, css.boxShadow, css.imgFull, css.marginT5, { height: 50 }]} onPress={() => setAddaddressModal(true)}>
                                         <Text style={[css.whiteC, css.f18, css.textCenter, css.fsb]}>+ ADD ADDRESS</Text>
@@ -146,118 +201,251 @@ export default function SettingAddAddressScreen({ navigation }) {
                 useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
-                <ScrollView>
-                    <View style={bookModal.modalViewFull}>
-                        <View style={[bookModal.modalHeader]}>
-                            <TouchableOpacity
-                                style={[css.flexDR,]}
-                                onPress={() => setAddaddressModal(!addaddressModal)}
-                            >
-                                <Image style={[css.marginT5]} source={require(imgPath + 'backArrowBlack.png')} />
-                                <Text style={[css.marginL10, css.f18, css.fm, css.greyC,]}>Back</Text>
-                            </TouchableOpacity>
-                            <View style={[css.marginL20,]}>
-                                <Text style={[css.blackC, css.f16, css.fbo, css.marginT10, css.textCenter]}>Complete all details to add / edit an address.</Text>
-                            </View>
+                <View style={bookModal.modalViewFull}>
+                    <View style={[bookModal.modalHeader]}>
+                        <TouchableOpacity
+                            style={[css.flexDR,]}
+                            onPress={() => setAddaddressModal(!addaddressModal)}
+                        >
+                            <Image style={[css.marginT5]} source={require(imgPath + 'backArrowBlack.png')} />
+                            <Text style={[css.marginL10, css.f18, css.fm, css.greyC,]}>Back</Text>
+                        </TouchableOpacity>
+                        <View style={[css.marginL20,]}>
+                            <Text style={[css.blackC, css.f16, css.fbo, css.marginT10, css.textCenter]}>Complete all details to add / edit an address.</Text>
                         </View>
-                        <ScrollView>
-                            <View style={[bookModal.modalBody]}>
-                                <View>
-                                    <MapView
-                                        style={{ width: '100%', height: 50 }}
-                                        initialRegion={{
-                                            latitude: 25.06863606639939,
-                                            longitude: 55.14505291115706,
-                                            latitudeDelta: 25.06863606639939,
-                                            longitudeDelta: 55.14505291115706,
-                                        }}
+                    </View>
+                    <ScrollView>
+                        <View style={[bookModal.modalBody]}>
+                            <View>
+                                <MapView
+                                    style={{ width: '100%', height: 100 }}
+                                    initialRegion={{
+                                        latitude: 25.06863606639939,
+                                        longitude: 55.14505291115706,
+                                        latitudeDelta: 25.06863606639939,
+                                        longitudeDelta: 55.14505291115706,
+                                    }}
+                                />
+                            </View>
+                            <View style={[css.padding20, css.marginT20]}>
+                                <View style={[css.marginB10]}>
+                                    <TextInput
+                                        style={[form.input,]}
+                                        // onChangeText={onChangeNumber}
+                                        // value={number}
+                                        placeholder="Search location on map"
+                                    //keyboardType="numeric"
                                     />
                                 </View>
-                                <View style={[css.padding20, css.marginT20]}>
-                                    <View style={[css.marginB10]}>
-                                        <TextInput
-                                            style={[form.input,]}
-                                            // onChangeText={onChangeNumber}
-                                            // value={number}
-                                            placeholder="Search location on map"
-                                        //keyboardType="numeric"
+                                <View style={[css.marginB10]}>
+                                    <TextInput
+                                        style={[form.input,]}
+                                        placeholder="Name"
+                                    />
+                                </View>
+                                <View style={[css.flexDR, css.marginB10]}>
+                                    <View style={[css.flexDR, css.width50]}>
+                                        <RadioButton
+                                            value="first"
+                                            status={radioChecked === 'first' ? 'checked' : 'unchecked'}
+                                            onPress={() => setRadioChecked('first')}
+                                            color='#2eb0e4'
+                                            uncheckedColor='#ccc'
                                         />
-                                    </View>
-                                    <View style={[css.marginB10]}>
-                                        <TextInput
-                                            style={[form.input,]}
-                                            placeholder="Name"
-                                        />
-                                    </View>
-                                    <View style={[css.flexDR, css.marginB10]}>
-                                        <View style={[css.flexDR, css.width50]}>
-                                            <RadioButton
-                                                value="first"
-                                                status={radioChecked === 'first' ? 'checked' : 'unchecked'}
-                                                onPress={() => setRadioChecked('first')}
-                                                color='#2eb0e4'
-                                                uncheckedColor='#ccc'
-                                            />
-                                            <Text style={[css.alignSelfC, css.greyC, css.fm, css.f16, css.fr]}>Villa</Text>
-                                        </View>
-                                        <View style={[css.flexDR]}>
-                                            <RadioButton
-                                                value="second"
-                                                status={radioChecked === 'second' ? 'checked' : 'unchecked'}
-                                                onPress={() => setRadioChecked('second')}
-                                                color='#2eb0e4'
-                                                uncheckedColor='#ccc'
-                                            />
-                                            <Text style={[css.alignSelfC, css.greyC, css.fm, css.f16, css.fr]}>Apartment</Text>
-                                        </View>
-                                    </View>
-                                    <View style={[css.flexDRSB, css.marginB10]}>
-                                        <TextInput
-                                            style={[form.input, { width: '48%' }]}
-                                            placeholder="Aprt./Villa No."
-                                        />
-                                        <TextInput
-                                            style={[form.input, { width: '48%' }]}
-                                            placeholder="Street name"
-                                        />
-                                    </View>
-                                    <View style={[css.marginB10]}>
-                                        <TextInput
-                                            style={[form.input,]}
-                                            placeholder="Community / Building name"
-                                        />
-                                    </View>
-                                    <View style={[css.flexDR, css.marginB10]}>
-                                        <DropDownPicker
-                                            style={[form.input, { color: '#ccc' }]}
-                                            open={cityOpen}
-                                            value={cityValue}
-                                            items={cityItems}
-                                            setOpen={setCityOpen}
-                                            setValue={setCityValue}
-                                            setItems={setCityItems}
-                                        />
-                                    </View>
-                                    <View style={[css.flexDR, css.marginB10]}>
-                                        <TextInput
-                                            style={[form.input,]}
-                                            placeholder="Country"
-                                        />
+                                        <Text style={[css.alignSelfC, css.greyC, css.fm, css.f16, css.fr]}>Villa</Text>
                                     </View>
                                     <View style={[css.flexDR]}>
-                                        <View style={[css.boxShadow, css.yellowBtn, css.alignItemsC, css.justifyContentC, { height: 50, width: '100%' }]}><Text style={[css.fsb, css.f24, css.whiteC]}>SAVE ADDRESS</Text></View>
+                                        <RadioButton
+                                            value="second"
+                                            status={radioChecked === 'second' ? 'checked' : 'unchecked'}
+                                            onPress={() => setRadioChecked('second')}
+                                            color='#2eb0e4'
+                                            uncheckedColor='#ccc'
+                                        />
+                                        <Text style={[css.alignSelfC, css.greyC, css.fm, css.f16, css.fr]}>Apartment</Text>
                                     </View>
                                 </View>
+                                <View style={[css.flexDRSB, css.marginB10]}>
+                                    <TextInput
+                                        style={[form.input, { width: '48%' }]}
+                                        placeholder="Aprt./Villa No."
+                                    />
+                                    <TextInput
+                                        style={[form.input, { width: '48%' }]}
+                                        placeholder="Street name"
+                                    />
+                                </View>
+                                <View style={[css.marginB10]}>
+                                    <TextInput
+                                        style={[form.input,]}
+                                        placeholder="Community / Building name"
+                                    />
+                                </View>
+                                <View style={[css.flexDR, css.marginB10]}>
+                                    <DropDownPicker
+                                        style={[form.input,]}
+                                        open={cityOpen}
+                                        value={cityValue}
+                                        items={cityItems}
+                                        setOpen={setCityOpen}
+                                        setValue={setCityValue}
+                                        setItems={setCityItems}
+                                    />
+                                </View>
+                                <View style={[css.flexDR, css.marginB10]}>
+                                    <TextInput
+                                        style={[form.input,]}
+                                        placeholder="Country"
+                                    />
+                                </View>
+                                <View style={[css.flexDR]}>
+                                    <View style={[css.boxShadow, css.yellowBtn, css.alignItemsC, css.justifyContentC, { height: 50, width: '100%' }]}><Text style={[css.fsb, css.f24, css.whiteC]}>SAVE ADDRESS</Text></View>
+                                </View>
                             </View>
-                        </ScrollView>
+                        </View>
+                    </ScrollView>
+                </View>
+            </Modal>
+            <Modal
+                isVisible={editaddressModal}
+                animationIn='fadeInUp'
+                animationInTiming={700}
+                animationOut='fadeOutDown'
+                animationOutTiming={700}
+                coverScreen={true}
+                useNativeDriver={true}
+                style={{ margin: 0, }}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+            >
+                <View style={bookModal.modalViewFull}>
+                    <View style={[bookModal.modalHeader]}>
+                        <TouchableOpacity
+                            style={[css.flexDR,]}
+                            onPress={() => setEditaddressModal(!editaddressModal)}
+                        >
+                            <Image style={[css.marginT5]} source={require(imgPath + 'backArrowBlack.png')} />
+                            <Text style={[css.marginL10, css.f18, css.fm, css.greyC,]}>Back</Text>
+                        </TouchableOpacity>
+                        <View style={[css.marginL20,]}>
+                            <Text style={[css.blackC, css.f16, css.fbo, css.marginT10, css.textCenter]}>Complete all details to add / edit an address.</Text>
+                        </View>
                     </View>
-                </ScrollView>
+                    <ScrollView>
+                        <FlatList
+                            data={singleAddressData}
+                            keyExtractor={(item, index) => {
+                                return item._id;
+                            }}
+                            renderItem={({ item }) => (
+                                <View style={[bookModal.modalBody]}>
+                                    <View>
+                                        <MapView
+                                            style={{ width: '100%', height: 100 }}
+                                            initialRegion={{
+                                                latitude: item.locationLongLat[0],
+                                                longitude: item.locationLongLat[1],
+                                                // latitudeDelta: 25.06863606639939,
+                                                // longitudeDelta: 55.14505291115706,
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={[css.padding20, css.marginT20]}>
+                                        <View style={[css.marginB10]}>
+                                            <TextInput
+                                                style={[form.input,]}
+                                                // onChangeText={onChangeNumber}
+                                                //value={item.nickName}
+                                                placeholder="Search location on map"
+                                            //keyboardType="numeric"
+                                            />
+                                        </View>
+                                        <View style={[css.marginB10]}>
+                                            <TextInput
+                                                style={[form.input,]}
+                                                placeholder="Name"
+                                                value={item.nickName}
+                                            />
+                                        </View>
+                                        <View style={[css.flexDR, css.marginB10]}>
+                                            <View style={[css.flexDR, css.width50]}>
+                                                <RadioButton
+                                                    value={setRadioChecked(item.addressType)}
+                                                    status={radioChecked === 'VILLA' ? 'checked' : 'unchecked'}
+                                                    onPress={() => setRadioChecked(value)}
+                                                    color='#2eb0e4'
+                                                    uncheckedColor='#ccc'
+                                                />
+                                                <Text style={[css.alignSelfC, css.greyC, css.fm, css.f16, css.fr]}>Villa</Text>
+                                            </View>
+                                            <View style={[css.flexDR]}>
+                                                <RadioButton
+                                                    value={setRadioChecked(item.addressType)}
+                                                    status={radioChecked === 'APARTMENT' ? 'checked' : 'unchecked'}
+                                                    onPress={() => setRadioChecked('second')}
+                                                    color='#2eb0e4'
+                                                    uncheckedColor='#ccc'
+                                                />
+                                                <Text style={[css.alignSelfC, css.greyC, css.fm, css.f16, css.fr]}>Apartment</Text>
+                                            </View>
+                                        </View>
+                                        <View style={[css.flexDRSB, css.marginB10]}>
+                                            <TextInput
+                                                style={[form.input, { width: '48%' }]}
+                                                placeholder="Aprt No./Villa No."
+                                                value={item.apartmentNo}
+                                            />
+                                            <TextInput
+                                                style={[form.input, { width: '48%' }]}
+                                                placeholder="Street name"
+                                                value={item.streetAddress}
+                                            />
+                                        </View>
+                                        <View style={[css.marginB10]}>
+                                            <TextInput
+                                                style={[form.input,]}
+                                                placeholder="Community / Building name"
+                                                value={item.community}
+                                            />
+                                        </View>
+                                        <View style={[css.flexDR, css.marginB10]}>
+                                            <DropDownPicker
+                                                style={[form.input, { color: '#ccc' }]}
+                                                open={cityOpen}
+                                                value={cityValue}
+                                                items={cityItems}
+                                                setOpen={setCityOpen}
+                                                setValue={setCityValue}
+                                                setItems={setCityItems}
+                                            />
+                                        </View>
+                                        <View style={[css.flexDR, css.marginB10]}>
+                                            <TextInput
+                                                style={[form.input]}
+                                                placeholder="Country"
+                                                value={item.emirate}
+                                            />
+                                        </View>
+                                        <View style={[css.flexDR]}>
+                                            <Pressable
+                                                onPress={() => (updateAddress(item._id))}
+                                                style={[css.boxShadow, css.yellowBtn, css.alignItemsC, css.justifyContentC, { height: 50, width: '100%' }]}>
+                                                <Text style={[css.fsb, css.f24, css.whiteC]}>UPDATE ADDRESS</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                </View>
+                            )}
+                        />
+
+                    </ScrollView>
+                </View>
             </Modal>
             <Modal
                 isVisible={removeaddressModal}
-                animationIn='flipInX'
+                animationIn='fadeIn'
                 animationInTiming={700}
-                animationOut='flipOutX'
+                animationOut='fadeOut'
                 animationOutTiming={700}
                 coverScreen={true}
                 useNativeDriver={true}
@@ -267,7 +455,7 @@ export default function SettingAddAddressScreen({ navigation }) {
                 <View style={css.centeredView}>
                     <View style={css.modalNewView}>
                         <View style={[css.modalNewHeader]}>
-                            <View><Text style={[css.modalNewText, { fontSize: 20, color: '#525252', lineHeight: 26, letterSpacing: 0.2, fontFamily: 'PoppinsM' }]}>Are you sure you want to delete the Address?</Text></View>
+                            <View><Text style={[css.modalNewText, css.fm, css.f16, css.blackC]}>Are you sure you want to delete the Address?</Text></View>
                         </View>
                         <View style={[css.modalNewBody, css.alignItemsC, css.justifyContentC]}>
                             <View style={[css.flexDRSE, css.imgFull]}>
@@ -275,13 +463,13 @@ export default function SettingAddAddressScreen({ navigation }) {
                                     onPress={() => setRemoveaddressModal(!removeaddressModal)}
                                     style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, { backgroundColor: '#f4f4f4', width: '40%', height: 50, borderRadius: 10, }]}
                                 >
-                                    <Text style={[css.blackC, css.fsb, css.f18]}>Cancel</Text>
+                                    <Text style={[css.blackC, css.fsb, css.f14]}>Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => setRemoveaddressModal(!removeaddressModal)}
                                     style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, { backgroundColor: '#f6b700', width: '40%', height: 50, borderRadius: 10, }]}
                                 >
-                                    <Text style={[css.whiteC, css.fsb, css.f18]}>Yes, I'm sure</Text>
+                                    <Text style={[css.whiteC, css.fsb, css.f14]}>Yes, I'm sure</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -301,7 +489,7 @@ const bookModal = StyleSheet.create({
     modalBody: { fontSize: 14, fontFamily: 'PoppinsR', padding: 20 },
 })
 const form = StyleSheet.create({
-    input: { borderRadius: 10, borderWidth: 1, borderColor: '#ccc', height: 50, width: '100%', paddingLeft: 20, paddingRight: 20 },
+    input: { borderRadius: 10, borderWidth: 1, borderColor: '#ccc', height: 50, width: '100%', paddingLeft: 20, paddingRight: 20, fontSize: 12, fontFamily: 'PoppinsR', color: '#525252' },
 })
 const styles = StyleSheet.create({
     titleIcon: { width: 25, height: 25 },
@@ -344,5 +532,11 @@ const styles = StyleSheet.create({
         height: 15,
         borderRadius: 55,
         backgroundColor: '#2eb0e4',
+    },
+    notSelected: {
+        width: 15,
+        height: 15,
+        borderRadius: 55,
+        backgroundColor: '#fff',
     },
 });

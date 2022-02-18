@@ -96,14 +96,14 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                 </Pressable>
                             </View>
                             :
-                            <View style={[css.container]}>
+                            <View style={{ padding: 10 }}>
                                 <FlatList
                                     data={currentBookings}
                                     keyExtractor={(item, index) => {
                                         return item._id;
                                     }}
                                     renderItem={({ item }) => (
-                                        <View style={[styles.screen4box]}>
+                                        <View style={[styles.screen4box, {}]}>
                                             <View style={[styles.bookingHead, css.line10, css.padding10]}>
                                                 <View style={[css.flexDR]}>
                                                     <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     padding30: {
         padding: 30,
     },
-    screen4box: { marginTop: 25, shadowColor: "#000", shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, backgroundColor: '#fff', borderRadius: 10, width: '100%' },
+    screen4box: { shadowColor: "#000", shadowOffset: { width: 0, height: 4, }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5, backgroundColor: '#fff', borderRadius: 10, width: '96%', marginRight: '2%', marginLeft: '2%', marginTop: '2%', marginBottom: '2%' },
     bookingFooter: { borderBottomRightRadius: 10, borderBottomLeftRadius: 10 },
     bookingTabsText: {
         textAlign: 'center',

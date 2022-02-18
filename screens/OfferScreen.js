@@ -231,7 +231,7 @@ export default function OfferScreen({ navigation }) {
                                 }}
                                 renderItem={({ item }) => (
                                     <View style={[css.imgFull]}>
-                                        <WebView source={{ html: item.termsCondition }} style={{ flex: 1, minWidth: '100%', height: windowHeight, }} />
+                                        <WebView source={{ html: item.termsCondition }} style={{ minWidth: '100%', height: 300, }} />
                                         <Text style={{ minWidth: windowWidth }}></Text>
                                     </View>
                                 )}
