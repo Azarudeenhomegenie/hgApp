@@ -2,6 +2,7 @@
 import { AppRegistry } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Provider as StoreProvider } from 'react-redux';
+import { NavtiveBaseProvider } from 'native-base';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import Navigation from '@navigation/navigation';

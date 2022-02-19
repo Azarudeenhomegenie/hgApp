@@ -1,8 +1,12 @@
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
 
-function Account() {
-  return <View />;
-}
+const Account = () => {
+  return (
+    <View>
+      <Text>Hello World </Text>
+    </View>
+  );
+};
 
 export default Account;

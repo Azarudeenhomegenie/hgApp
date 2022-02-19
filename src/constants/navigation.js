@@ -4,7 +4,7 @@ export const ROUTE_HOME = 'Home';
 export const ROUTE_BOOKINGS = 'Bookings';
 export const ROUTE_GETGENIE = 'GetgenieScreen';
 export const ROUTE_OFFERS = 'Offers';
-export const ROUTE_USER = 'User';
+export const ROUTE_USER = 'Account';
 
 export const NAVIGATION_ICONS = {
   [ROUTE_HOME]: require('@assets/icons/homeIcon.png'),

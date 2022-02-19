@@ -31,6 +31,7 @@ module.exports = {
         unnamedComponents: 'arrow-function',
       },
     ],
+    'global-require': 'off',
   },
   globals: {
     fetch: false

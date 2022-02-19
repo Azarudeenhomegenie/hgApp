@@ -3,10 +3,10 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  Pressable
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Pressable } from 'native-base';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Whatsapp from '@components/whtsApp';
@@ -14,9 +14,8 @@ import Text from '@components/MyText';
 import css from '@components/commonCss';
 import color from '@constants/colors';
 import LoginModal from '@components/modals/login';
-import OtpModal from '@components/modals/otp';
-import { AUTH_MODEL_LOGIN, AUTH_MODEL_OTP } from '../../constants/modalTypes';
-import { IMAGE_PATH } from '../../constants/app';
+// import OtpModal from '@components/modals/otp';
+import { AUTH_MODEL_LOGIN, AUTH_MODEL_OTP } from '@constants/modalTypes';
 
 const AuthHeader = () => {
   const navigation = useNavigation();
@@ -48,7 +47,7 @@ const Auth = () => {
         <View style={styles.screen}>
           <View style={styles.bgThinBlue}>
             <View style={[styles.flexRowSpace, styles.customPadding]}>
-              <View style={[css.flexDRSB, css.imgFull]} >
+              <View style={[css.flexDRSB, css.imgFull]}>
                 <View style={css.flexDR}>
                   <View>
                     <Image
@@ -75,7 +74,7 @@ const Auth = () => {
                 </Pressable>
                 <Pressable
                   style={[css.flexDR, css.line10, styles.accountLinks]}
-                  onPress={() => setActiveModal()}
+                  onPress={() => setActiveModal(AUTH_MODEL_LOGIN)}
                 >
                   <Image style={styles.signinImage} source={require('@assets/icons/signin.png')} />
                   <Text style={css.text}>Login/Signup</Text>
@@ -98,8 +97,8 @@ const Auth = () => {
         </View>
       </ScrollView>
       <View style={styles.centeredView}>
-        <LoginModal isVisible={activeModel === AUTH_MODEL_LOGIN} />
-        <OtpModal isVisible={activeModel === AUTH_MODEL_OTP} />
+        <LoginModal isVisible={activeModel === AUTH_MODEL_LOGIN} setActiveModal={setActiveModal} />
+        {/* <OtpModal isVisible={activeModel === AUTH_MODEL_OTP} /> */}
       </View>
     </SafeAreaView>
   );
@@ -142,8 +141,7 @@ const styles = StyleSheet.create({
     ...css.f12,
     ...css.fsb,
     ...css.grayC
-  }
-  ,
+  },
   bgThinBlue: {
     backgroundColor: color.thinblue
   },

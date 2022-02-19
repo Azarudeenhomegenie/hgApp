@@ -6,16 +6,15 @@ import {
   Pressable
 } from 'react-native';
 import Modal from 'react-native-modal';
-import PhoneInput from '../formElements/PhoneInput';
-import Text from '../MyText';
-import css from '../commonCss';
-
-import { sendOTP } from '../../redux/reducers/userSlice';
+import PhoneInput from '@components/formElements/PhoneInput';
+import Text from '@components/MyText';
+import css from '@components/commonCss';
 import color from '@constants/colors';
-import BackButton from '../BackButton';
-import { AUTH_MODEL_OTP, AUTH_MODEL_REGISTER } from '../../constants/modalTypes';
+import BackButton from '@components/BackButton';
+import { AUTH_MODEL_OTP, AUTH_MODEL_REGISTER } from '@constants/modalTypes';
+import { sendOTP } from '../../redux/reducers/userSlice';
 
-function LoginModal(props) {
+const LoginModal = (props) => {
   const dispatch = useDispatch();
   const { isVisible, setActiveModal } = props;
   const [countryPrefix, setCountryPrefix] = useState('971');
@@ -73,7 +72,7 @@ function LoginModal(props) {
       </View>
     </Modal>
   );
-}
+};
 
 const styles = StyleSheet.create({
   flexRow: {
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
     ...css.textCenter
   },
   modal: {
-    padding: 15,
+    padding: 10,
     margin: 20,
     backgroundColor: color.white,
     borderRadius: 10,

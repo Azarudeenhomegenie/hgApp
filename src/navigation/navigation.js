@@ -7,28 +7,28 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   NAVIGATION_ICONS,
   NAVIGATION_ICONS_STYLE
-} from '../constants/navigation';
-import homeScreen from '../screens/Dashboard/homeScreen';
-import UserScreen from '../screens/User';
-import MyBookingScreen from '../screens/MyBookingScreen';
-import GetgenieScreen from '../screens/GetgenieScreen';
-import CategoryScreen from '../screens/CategoryScreen';
-import OfferScreen from '../screens/OfferScreen';
-import SupportScreen from '../screens/SupportScreen';
-import WalletScreen from '../screens/WalletScreen';
-import SettingScreen from '../screens/SettingScreen';
-import NotificationScreen from '../screens/NotificationScreen';
-import ReferEarnScreen from '../screens/ReferEarnScreen';
-import SettingAddCardScreen from '../screens/UserScreens/SettingAddCardScreen';
-import SettingAddAddressScreen from '../screens/UserScreens/SettingAddAddressScreen';
-import SettingAddInfoScreen from '../screens/UserScreens/SettingAddInfoScreen';
-import JobDetailScreen from '../screens/JobDetailScreen';
-import GetgenieCategories from '../screens/Booking/GetgenieCategories';
-import Getgeniescreen1 from '../screens/Booking/Getgeniescreen1';
-import Getgeniescreen2 from '../screens/Booking/Getgeniescreen2';
-import Getgeniescreen3 from '../screens/Booking/Getgeniescreen3';
-import Getgeniescreen4 from '../screens/Booking/Getgeniescreen4';
-import Getgeniescreen5 from '../screens/Booking/Getgeniescreen5';
+} from '@constants/navigation';
+import homeScreen from '@screens/Dashboard/homeScreen';
+import UserScreen from '@screens/User';
+import MyBookingScreen from '@screens/MyBookingScreen';
+import GetgenieScreen from '@screens/GetgenieScreen';
+import CategoryScreen from '@screens/CategoryScreen';
+import OfferScreen from '@screens/OfferScreen';
+import SupportScreen from '@screens/SupportScreen';
+import WalletScreen from '@screens/WalletScreen';
+import SettingScreen from '@screens/SettingScreen';
+import NotificationScreen from '@screens/NotificationScreen';
+import ReferEarnScreen from '@screens/ReferEarnScreen';
+import SettingAddCardScreen from '@screens/UserScreens/SettingAddCardScreen';
+import SettingAddAddressScreen from '@screens/UserScreens/SettingAddAddressScreen';
+import SettingAddInfoScreen from '@screens/UserScreens/SettingAddInfoScreen';
+import JobDetailScreen from '@screens/JobDetailScreen';
+import GetgenieCategories from '@screens/Booking/GetgenieCategories';
+import Getgeniescreen1 from '@screens/Booking/Getgeniescreen1';
+import Getgeniescreen2 from '@screens/Booking/Getgeniescreen2';
+import Getgeniescreen3 from '@screens/Booking/Getgeniescreen3';
+import Getgeniescreen4 from '@screens/Booking/Getgeniescreen4';
+import Getgeniescreen5 from '@screens/Booking/Getgeniescreen5';
 import color from '../constants/colors';
 import { getLoggedInStatus } from '../redux/reducers/userSlice';
 
@@ -184,7 +184,7 @@ const HomeTab = ({ navigation }) => {
     >
       <Tab.Screen name="Home" component={HomeStackScreen} />
       <Tab.Screen name="Bookings" component={MyBookingStackScreen} />
-      <Tab.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ title: '' }} />
+      <Tab.Screen name="GetgenieScreen" component={GetgenieScreen} />
       <Tab.Screen name="Offers" component={OfferStackScreen} />
       <Tab.Screen name="Account" component={AccountStackScreen} />
     </Tab.Navigator>
