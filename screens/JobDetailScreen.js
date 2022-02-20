@@ -22,9 +22,11 @@ import 'moment-timezone';
 import Modal from 'react-native-modal';
 import StatusBarAll from "../components/StatusBar";
 import { List } from 'react-native-paper';
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import css, { blackC, borderRadius30, imgFull } from '../components/commonCss';
 import { FlatList } from "react-native-gesture-handler";
+import { loadJobDetails, getJobDetail, getGenie } from "../reducers/jobDetailReducer";
+import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -33,36 +35,15 @@ let Genie = 'yes'
 
 export default function JobDetailScreen({ route, props, navigation }) {
     const [isLoading, setLoading] = useState(true);
-    const [jobdetailsData, setJobdetailsData] = useState([]);
+    // const [jobdetailsData, setJobdetailsData] = useState([]);
     const [genieData, setGenieData] = useState([]);
     const [genieModal, setGenieModal] = useState(false);
+    const dispatch = useDispatch();
+    const jobdetailsData = [useSelector(getJobDetail)] || null;
+
     const token = route.params.token
     const jobId = route.params.jobId
-    const getJobdetails = async () => {
-        try {
-            console.log('Tokeninside', token);
-            console.log('jobIdinside', jobId);
-            const header = { headers: { Authorization: `Bearer ${token}` } };
-            const api = 'https://api.homegenie.com/api/customer/getJobDetails'
-            const data = new FormData();
-            data.append('appointmentId', jobId);
-            const response = await fetch(api, {
-                method: 'post',
-                headers: new Headers({
-                    'Authorization': `Bearer ${token}`,
-                }),
-                body: data
-            });
-            const jsonData = await response.json();
-            let array = jsonData.data;
-            // console.log('jobDetail', array);
-            setJobdetailsData(array);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    }
+
     const getGenieData = async (genieId) => {
         console.log('Token for Genie', token);
         console.log('genieId', genieId);
@@ -70,7 +51,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
         try {
             let formData = new FormData();
             formData.append('Auth', token);
-            const api = 'https://api.homegenie.com/api/customer/getDriverDetails?id=' + gid
+            const api = `${BASE_URL}customer/getDriverDetails?id=${gid}`
             const response = await fetch(api, {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${token}` },
@@ -89,7 +70,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
     }
 
     useEffect(() => {
-        getJobdetails();
+        const loadJobdetails = () => {
+            dispatch(loadJobDetails(token, jobId));
+        };
+        loadJobdetails();
     }, []);
 
     return (
