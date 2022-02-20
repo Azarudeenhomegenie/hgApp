@@ -1,14 +1,13 @@
 export const defaultOptions = {
-    rateGenie: false,
-    Payment: false,
+    rateGenie: false, // no no comp
+    Payment: false, // no no comp
     view: false,
-    cancel: false,
+    cancel: false, 
     showAction: false,
-    accept: false,
+    accept: false, // no no comp
     reditems: false,
     singleButton: false,
     advancePayment: false,
-    singleButton: false
 }
 
 
