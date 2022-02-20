@@ -47,6 +47,7 @@ const LoginModal = (props) => {
     const [userData, setUserData] = useState(null);
     const [otpSend, setOtpSend] = useState(true);
     const [modalComingsoon, setModalComingsoon] = useState(false);
+    const [activeModal, setActiveModal] = useState('login');
 
     const [accessToken, setAccessToken] = useState(null);
 
@@ -66,9 +67,9 @@ const LoginModal = (props) => {
         const data = await dispatch(login(phone, countryPlus + countryCodeNew));
         //console.log(data)
         if (data.isRegistered) {
-            setOtpModal(true);
+            setActiveModal('otp');
         } else {
-            setRegisterModal(true);
+            setActiveModal('register');
         }
     };
 
@@ -239,77 +240,86 @@ const LoginModal = (props) => {
         }
     }
 
-    return (
-        <>
-            <Modal
-                animationType="fade"
-                isVisible={props.changeData} hasBackdrop={true}
-            >
-                <View >
-                    <View style={[styles.modalView], { padding: 15 }}>
-                        <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                            <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
-                                <Pressable
-                                    style={[styles.button, styles.buttonClose]}
-                                    onPress={() => props.falseData(false)}
-                                >
-                                    <Image
-                                        //resizeMode="contain"
-                                        //style={{ width: 20, height: 20 }}
-                                        source={require("../assets/icons/backArrowBlack.png")}
-                                    />
-                                </Pressable>
-                                <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>Login/Signup to HomeGenie</Text>
-                                <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Login/Signup to access your stored addressess and service booking details.</Text>
-                            </View>
-                            <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
-                                <View style={[styles.flexRow, css.alignItemsC, { width: '90%' }]}>
-                                    <CountryPicker
-                                        disable={false}
-                                        animationType={'fade'}
-                                        containerStyle={styles.pickerStyle}
-                                        pickerTitleStyle={styles.pickerTitleStyle}
-                                        selectedCountryTextStyle={styles.selectedCountryTextStyle}
-                                        countryNameTextStyle={styles.countryNameTextStyle}
-                                        pickerTitle={'Country Picker'}
-                                        searchBarPlaceHolder={'Search......'}
-                                        hideCountryFlag={false}
-                                        hideCountryCode={false}
-                                        searchBarStyle={styles.searchBarStyle}
-                                        countryCode={countryCodeNew}
-                                        selectedValue={(index) => setCountryCodeNew(index)}
-                                    />
-                                    <TextInput
-                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '100%', padding: 10, height: 60, paddingLeft: '33%', fontFamily: 'PoppinsR' }}
-                                        placeholder="Enter Mobile number"
-                                        keyboardType="numeric"
-                                        value={phone}
-                                        onChange={(text) => setPhone(text.nativeEvent.text)}
-                                    />
+    if (activeModal === 'login') {
+
+        return (
+            <>
+                <Modal
+                    animationType="fade"
+                    isVisible={true} hasBackdrop={true}
+                >
+                    <View >
+                        <View style={[styles.modalView], { padding: 15 }}>
+                            <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
+                                <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                                    <Pressable
+                                        style={[styles.button, styles.buttonClose]}
+                                        onPress={() => props.falseData(false)}
+                                    >
+                                        <Image
+                                            //resizeMode="contain"
+                                            //style={{ width: 20, height: 20 }}
+                                            source={require("../assets/icons/backArrowBlack.png")}
+                                        />
+                                    </Pressable>
+                                    <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>Login/Signup to HomeGenie</Text>
+                                    <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Login/Signup to access your stored addressess and service booking details.</Text>
                                 </View>
+                                <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                                    <View style={[styles.flexRow, css.alignItemsC, { width: '90%' }]}>
+                                        <CountryPicker
+                                            disable={false}
+                                            animationType={'fade'}
+                                            containerStyle={styles.pickerStyle}
+                                            pickerTitleStyle={styles.pickerTitleStyle}
+                                            selectedCountryTextStyle={styles.selectedCountryTextStyle}
+                                            countryNameTextStyle={styles.countryNameTextStyle}
+                                            pickerTitle={'Country Picker'}
+                                            searchBarPlaceHolder={'Search......'}
+                                            hideCountryFlag={false}
+                                            hideCountryCode={false}
+                                            searchBarStyle={styles.searchBarStyle}
+                                            countryCode={countryCodeNew}
+                                            selectedValue={(index) => setCountryCodeNew(index)}
+                                        />
+                                        <TextInput
+                                            style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 5, width: '100%', padding: 10, height: 60, paddingLeft: '33%', fontFamily: 'PoppinsR' }}
+                                            placeholder="Enter Mobile number"
+                                            keyboardType="numeric"
+                                            value={phone}
+                                            onChange={(text) => setPhone(text.nativeEvent.text)}
+                                        />
+                                    </View>
 
-                                <Pressable
-                                    style={[styles.offerBooknow]}
-                                    //onPress={() => onSubmitLogin()}
-                                    onPress={() => handleLogin()}
-                                >
-                                    <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
-                                </Pressable>
+                                    <Pressable
+                                        style={[styles.offerBooknow]}
+                                        //onPress={() => onSubmitLogin()}
+                                        onPress={() => handleLogin()}
+                                    >
+                                        <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
+                                    </Pressable>
 
 
+                                </View>
+                                {/* <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+                            <Pressable
+                                onPress={() => { setLoginModal(false), setRegisterModal(true) }}
+                            ><Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e' }}>Don't have an account? <Text style={{ color: '#2eb0e4' }}>Signup</Text></Text></Pressable>
+                        </View> */}
                             </View>
-                            {/* <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
-                        <Pressable
-                            onPress={() => { setLoginModal(false), setRegisterModal(true) }}
-                        ><Text style={{ alignItems: 'center', textAlign: 'center', fontSize: 14, color: '#7e7e7e' }}>Don't have an account? <Text style={{ color: '#2eb0e4' }}>Signup</Text></Text></Pressable>
-                    </View> */}
                         </View>
                     </View>
-                </View>
-            </Modal>
+                </Modal>
+            </>
+        );
+    }
+
+    if (activeModal === 'register') {
+
+        return (
             <Modal
                 animationType="fade"
-                isVisible={registerModal} hasBackdrop={true}
+                isVisible={true} hasBackdrop={true}
             >
                 <View>
                     <View style={[styles.modalView], { padding: 15 }}>
@@ -371,9 +381,14 @@ const LoginModal = (props) => {
                     </View>
                 </View>
             </Modal>
+        );
+    }
+
+    if (activeModal === 'otp') {
+        return (
             <Modal
                 animationType="fade"
-                isVisible={otpModal} hasBackdrop={true}
+                isVisible={true} hasBackdrop={true}
             >
                 <View >
                     <View style={[styles.modalView], { padding: 15 }}>
@@ -462,9 +477,10 @@ const LoginModal = (props) => {
                     </View>
                 </View>
             </Modal>
-        </>
+        );
+    }
 
-    );
+    return null;
 };
 
 const styles = StyleSheet.create({
