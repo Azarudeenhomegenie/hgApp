@@ -7,6 +7,7 @@ const color = {
   grey: '#cccccc',
   darkgrey: '#525252',
   thinblue: '#eff7fc',
-  transparentGrey: '#C9C9C920'
+  transparentGrey: '#C9C9C920',
+  transparent: 'transparent'
 };
 export default color;

@@ -44,29 +44,28 @@ const LoginModal = (props) => {
       isVisible={isVisible}
       hasBackdrop
     >
-      <View>
-        <View style={styles.modal}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <BackButton handleClick={() => setActiveModal(null)} />
-              <Text style={styles.modalHeading}>
-                Login/Signup to HomeGenie
-              </Text>
-              <Text style={styles.modalSubHeading}>
-                Login/Signup to access your stored addressess and service booking details.
-              </Text>
+
+      <View style={styles.modal}>
+        <View style={styles.modalContainer}>
+          <View style={[styles.modalHeader, styles.customHeader]}>
+            <BackButton style={styles.backButton} handleClick={() => setActiveModal(null)} />
+            <Text style={styles.modalHeading}>
+              Login/Signup to HomeGenie
+            </Text>
+            <Text style={styles.modalSubHeading}>
+              Login/Signup to access your stored addressess and service booking details.
+            </Text>
+          </View>
+          <View style={styles.modalBody}>
+            <View style={styles.flexRow}>
+              <PhoneInput prefix={countryPrefix} onChange={onPhoneInputChange} />
             </View>
-            <View style={styles.modalBody}>
-              <View style={styles.flexRow}>
-                <PhoneInput prefix={countryPrefix} onChange={onPhoneInputChange} />
-              </View>
-              <Pressable
-                style={styles.offerBooknow}
-                onPress={() => handleLogin()}
-              >
-                <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
-              </Pressable>
-            </View>
+            <Pressable
+              style={styles.offerBooknow}
+              onPress={() => handleLogin()}
+            >
+              <Text style={[styles.textStyle, styles.offerBooknowText]}>Login/Signup</Text>
+            </Pressable>
           </View>
         </View>
       </View>
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.yellow,
     borderColor: color.yellow,
     borderWidth: 1,
-    width: '90%',
+    width: '100%',
     height: 40,
     marginTop: 20,
     marginBottom: 15,
@@ -98,6 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'PoppinsM',
     color: color.white,
+    width: '100%'
   },
 
   // New,
@@ -106,18 +106,19 @@ const styles = StyleSheet.create({
     ...css.f18,
     ...css.blackC,
     ...css.marginT20,
-    ...css.textCenter
+    ...css.textCenter,
   },
   modalSubHeading: {
     ...css.fm,
     ...css.f14,
     ...css.greyC,
     ...css.marginT5,
-    ...css.textCenter
+    ...css.textCenter,
+    paddingHorizontal: 20
   },
   modal: {
-    padding: 10,
-    margin: 20,
+    padding: 0,
+    margin: 0,
     backgroundColor: color.white,
     borderRadius: 10,
     alignItems: 'center',
@@ -137,24 +138,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modalHeader: {
+  customHeader: {
+    backgroundColor: color.lightgrey,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 20,
-    width: '100%',
-    height: 70,
-    paddingLeft: 20,
-    backgroundColor: color.lightblue,
-    justifyContent: 'center',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    elevation: 10,
-    shadowColor: color.black,
-    color: color.white,
+    // paddingVertical: 20,
+    width: '100%'
   },
   modalBody: {
     alignItems: 'center',
-    padding: 20,
+    paddingVertical: 20,
+    // backgroundColor: color.grey,
+    display: 'flex',
+    width: '100%'
   }
 });
 

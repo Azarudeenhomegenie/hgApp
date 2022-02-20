@@ -1,33 +1,21 @@
-/* eslint-disable react-native/no-color-literals */
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import CountryPicker from 'rn-country-picker';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-const inputStyle = {
-  borderColor: '#ccc',
-  borderWidth: 1,
-  borderRadius: 5,
-  width: '100%',
-  padding: 10,
-  height: 60,
-  paddingLeft: '33%',
-  fontFamily: 'PoppinsR',
-};
+import color from '@constants/colors';
 
 const styles = StyleSheet.create({
-  // eslint-disable-next-line react-native/no-color-literals
+  wrapper: {
+    width: '90%'
+  },
   input: {
-    borderColor: '#ccc',
+    borderColor: color.grey,
     borderWidth: 1,
     borderRadius: 5,
-    width: '90%',
-    height: 40,
-    marginTop: 20,
-    padding: 5,
-    fontFamily: 'PoppinsM',
-    fontSize: 14,
-    color: '#525252'
+    width: '100%',
+    padding: 10,
+    height: 50,
+    paddingLeft: '33%',
+    fontFamily: 'PoppinsR'
   },
   pickerTitleStyle: {
     justifyContent: 'center',
@@ -37,10 +25,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 14,
-    color: '#525252',
+    color: color.darkgrey,
   },
   pickerStyle: {
-    height: 60,
+    height: 50,
     fontSize: 10,
     width: '32%',
     marginBottom: 10,
@@ -48,10 +36,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRightWidth: 1,
     borderRadius: 0,
-    borderColor: '#ccc',
-    // backgroundColor: 'white',
+    borderColor: color.grey,
     position: 'absolute',
-    backgroundColor: 'transparent',
+    backgroundColor: color.transparent,
     top: 0,
     left: 0,
     zIndex: 4,
@@ -62,31 +49,31 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     fontSize: 12,
     fontFamily: 'PoppinsR',
-    color: '#525252',
+    color: color.darkgrey,
   },
 
   countryNameTextStyle: {
     paddingLeft: 10,
     fontSize: 12,
     fontFamily: 'PoppinsR',
-    color: '#525252',
+    color: color.darkgrey,
     textAlign: 'right',
   }
 });
 
-function PhoneInput(props) {
+const PhoneInput = (props) => {
   const { onChange, placeholder, prefix } = props;
   const defaultPlaceholder = placeholder || 'Enter Mobile number';
   const [countryPrefix, setCountryPrefix] = useState(prefix || null);
   const [phone, setPhone] = useState(null);
 
   useEffect(() => {
-    console.log('BINGO: ', phone)
+    console.log('BINGO: ', phone);
     onChange(phone, countryPrefix);
   }, [phone, countryPrefix, onChange]);
 
   return (
-    <SafeAreaView>
+    <View style={styles.wrapper}>
       <CountryPicker
         disable={false}
         animationType="fade"
@@ -103,13 +90,14 @@ function PhoneInput(props) {
         selectedValue={(index) => setCountryPrefix(index)}
       />
       <TextInput
-        style={inputStyle}
+        style={styles.input}
         placeholder={defaultPlaceholder}
+        placeholderTextColor={color.black}
         keyboardType="numeric"
-        onChange={setPhone}
+        onChange={(text) => setPhone(text.nativeEvent.text)}
       />
-    </SafeAreaView>
+    </View>
   );
-}
+};
 
 export default PhoneInput;
