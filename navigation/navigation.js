@@ -21,6 +21,7 @@ import SettingAddCardScreen from '../screens/UserScreens/SettingAddCardScreen';
 import SettingAddAddressScreen from '../screens/UserScreens/SettingAddAddressScreen';
 import SettingAddInfoScreen from '../screens/UserScreens/SettingAddInfoScreen';
 import JobDetailScreen from '../screens/JobDetailScreen';
+import PaymentScreen from '../screens/PaymentScreen';
 import GetgenieCategories from '../screens/Booking/GetgenieCategories';
 import Getgeniescreen1 from '../screens/Booking/Getgeniescreen1';
 import Getgeniescreen2 from '../screens/Booking/Getgeniescreen2';
@@ -76,6 +77,7 @@ const MyBookingStackScreen = ({ navigation }) => {
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="MyBookingPage">
             <Stack.Screen name="MyBookingPage" component={MyBookingScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="JobdetailPage" component={JobDetailScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="PaymentPage" component={PaymentScreen} options={{ gestureEnabled: false }} />
         </Stack.Navigator>
     );
 }

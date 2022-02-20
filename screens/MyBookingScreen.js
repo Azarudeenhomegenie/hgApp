@@ -142,7 +142,9 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                     {item.status === 'PAYMENT_PENDING' ?
                                                         <Pressable
                                                             style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
-                                                            onPress={() => navigation.navigate("JobdetailPage")}
+                                                            onPress={() => navigation.navigate("PaymentPage", {
+                                                                jobId: item._id
+                                                            })}
                                                         >
                                                             <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
                                                         </Pressable>

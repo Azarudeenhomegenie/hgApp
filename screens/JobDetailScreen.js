@@ -367,14 +367,16 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     <View>{item.status == 'CANCELLED' ?
                         null
                         :
-                        <View style={[styles.cancelButton]}><Pressable ><Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text></Pressable></View>
+                        <View style={[styles.cancelButton]}><Pressable onPress={() => navigation.navigate('PaymentPage', {
+                            token: token, jobId: item._id
+                        })}>
+                            <Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text>
+                        </Pressable>
+                        </View>
                     }
                     </View>
                 )}
             />
-            {/* {Genie == 'no' ? null :
-                <View style={[styles.cancelButtonContainer]}><Pressable style={[styles.cancelButton]}><Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text></Pressable></View>
-            } */}
             <Modal
                 animationType="fade"
                 isVisible={genieModal}
