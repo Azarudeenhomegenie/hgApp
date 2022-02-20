@@ -102,39 +102,39 @@ const LoginModal = (props) => {
         console.log('accessToken', resp.accessToken);
     };
 
-    const LoginApi = () => {
-        // https://api.homegenie.com/api/customer/validatePhoneNo
-        let data = new FormData();
-        data.append('phoneNo', phone);
-        data.append('countryCode', countryPlus + countryCodeNew)
-        // console.log(countryPlus + countryCodeNew);
-        // console.log(phone);
+    // const LoginApi = () => {
+    //     // https://api.homegenie.com/api/customer/validatePhoneNo
+    //     let data = new FormData();
+    //     data.append('phoneNo', phone);
+    //     data.append('countryCode', countryPlus + countryCodeNew)
+    //     // console.log(countryPlus + countryCodeNew);
+    //     // console.log(phone);
 
-        fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-            },
-            body: data
-        })
-            .then(response => response.json())
-            .then(res => {
-                console.log(res.data.isRegistered)
-                if (res.data.isRegistered) {
-                    setOtpCodeOne(null);
-                    setOtpCodeTwo(null);
-                    setOtpCodeThree(null);
-                    setOtpCodeFour(null);
-                    setOtpModal(true);
-                } else {
-                    setOtpCodeOne(null);
-                    setOtpCodeTwo(null);
-                    setOtpCodeThree(null);
-                    setOtpCodeFour(null);
-                    setRegisterModal(true);
-                }
-            })
-    }
+    //     fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //         },
+    //         body: data
+    //     })
+    //         .then(response => response.json())
+    //         .then(res => {
+    //             console.log(res.data.isRegistered)
+    //             if (res.data.isRegistered) {
+    //                 setOtpCodeOne(null);
+    //                 setOtpCodeTwo(null);
+    //                 setOtpCodeThree(null);
+    //                 setOtpCodeFour(null);
+    //                 setOtpModal(true);
+    //             } else {
+    //                 setOtpCodeOne(null);
+    //                 setOtpCodeTwo(null);
+    //                 setOtpCodeThree(null);
+    //                 setOtpCodeFour(null);
+    //                 setRegisterModal(true);
+    //             }
+    //         })
+    // }
     const ResetOtpApi = () => {
         //console.log('resend Api call')
         let data = new FormData();
@@ -155,50 +155,50 @@ const LoginModal = (props) => {
             })
     }
 
-    const OtpVrifyApi = () => {
-        let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
-        let data = new FormData();
-        data.append("deviceType", "WEBSITE");
-        data.append("deviceToken", "151");
-        data.append("phoneNo", phone);
-        data.append("OTPCode", otpData);
-        data.append('countryCode', countryPlus + countryCodeNew)
-        data.append("timezone", "Asia/Calcutta");
-        data.append("latitude", "17.3753");
-        data.append("longitude", "78.4744");
-        //console.log(data)
-        fetch('https://api.homegenie.com/api/customer/verifyOTP1', {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-            },
-            body: data
-        })
-            .then(response => response.json())
-            .then(res => {
-                //console.log('userDataLoginModal', res)
-                if (res.message == "Success") {
-                    setOtpModal(false)
-                    props.userData(true)
-                    setOtpCodeOne(null);
-                    setOtpCodeTwo(null);
-                    setOtpCodeThree(null);
-                    setOtpCodeFour(null);
-                    setAccessToken(res.data.accessToken);
-                    setDisplayEmail(res.data.userDetails.email);
-                    setDisplayName(res.data.userDetails.name);
-                    props.getName(res.data.userDetails.name);
-                    props.getEmail(res.data.userDetails.email);
-                    props.getPhone(res.data.userDetails.phoneNo);
-                    props.getToken(res.data.accessToken);
-                    props.falseData(false)
-                    setUser('in')
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
-    }
+    // const OtpVrifyApi = () => {
+    //     let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
+    //     let data = new FormData();
+    //     data.append("deviceType", "WEBSITE");
+    //     data.append("deviceToken", "151");
+    //     data.append("phoneNo", phone);
+    //     data.append("OTPCode", otpData);
+    //     data.append('countryCode', countryPlus + countryCodeNew)
+    //     data.append("timezone", "Asia/Calcutta");
+    //     data.append("latitude", "17.3753");
+    //     data.append("longitude", "78.4744");
+    //     //console.log(data)
+    //     fetch('https://api.homegenie.com/api/customer/verifyOTP1', {
+    //         method: 'PUT',
+    //         headers: {
+    //             Accept: 'application/json',
+    //         },
+    //         body: data
+    //     })
+    //         .then(response => response.json())
+    //         .then(res => {
+    //             //console.log('userDataLoginModal', res)
+    //             if (res.message == "Success") {
+    //                 setOtpModal(false)
+    //                 props.userData(true)
+    //                 setOtpCodeOne(null);
+    //                 setOtpCodeTwo(null);
+    //                 setOtpCodeThree(null);
+    //                 setOtpCodeFour(null);
+    //                 setAccessToken(res.data.accessToken);
+    //                 setDisplayEmail(res.data.userDetails.email);
+    //                 setDisplayName(res.data.userDetails.name);
+    //                 props.getName(res.data.userDetails.name);
+    //                 props.getEmail(res.data.userDetails.email);
+    //                 props.getPhone(res.data.userDetails.phoneNo);
+    //                 props.getToken(res.data.accessToken);
+    //                 props.falseData(false)
+    //                 setUser('in')
+    //             }
+    //         })
+    //         .catch(e => {
+    //             console.log(e)
+    //         })
+    // }
 
     const signUpApi = () => {
         if (userName == null) {

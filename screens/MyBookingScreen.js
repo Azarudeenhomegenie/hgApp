@@ -46,7 +46,7 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
     //const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYwN2QxMGZjNTlkMTVhOTAxNDBiYjhjMSIsInR5cGUiOiJDVVNUT01FUiIsImlhdCI6MTY0NDQzNzQyNX0.8ofowAJZCqukx09NbDP1ddduRbx6Fr6dnBt2yUygSkE'
     // const currentBookings = useSelector(getCurrentBookings);
     const dispatch = useDispatch();
-
+    console.log('currentBookings', currentBookings);
     const [userData, setUserData] = useState();
     const [index, setIndex] = useState(0);
     const [routes] = useState([
