@@ -65,7 +65,7 @@ const LoginModal = (props) => {
     const handleLogin = async () => {
         console.log('login pressed', props);
         const data = await dispatch(login(phone, countryPlus + countryCodeNew));
-        console.log(data)
+        //console.log(data)
         if (data.isRegistered) {
             setActiveModal('otp');
         } else {
