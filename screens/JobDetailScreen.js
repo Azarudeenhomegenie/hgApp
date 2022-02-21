@@ -22,9 +22,11 @@ import 'moment-timezone';
 import Modal from 'react-native-modal';
 import StatusBarAll from "../components/StatusBar";
 import { List } from 'react-native-paper';
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import css, { blackC, borderRadius30, imgFull } from '../components/commonCss';
 import { FlatList } from "react-native-gesture-handler";
+import { loadJobDetails, getJobDetail, getGenie } from "../reducers/jobDetailReducer";
+import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -33,36 +35,16 @@ let Genie = 'yes'
 
 export default function JobDetailScreen({ route, props, navigation }) {
     const [isLoading, setLoading] = useState(true);
-    const [jobdetailsData, setJobdetailsData] = useState([]);
+    // const [jobdetailsData, setJobdetailsData] = useState([]);
     const [genieData, setGenieData] = useState([]);
     const [genieModal, setGenieModal] = useState(false);
+    const dispatch = useDispatch();
+    let jobdetailsData = useSelector(getJobDetail);
+    jobdetailsData = jobdetailsData ? [jobdetailsData] : null
+
     const token = route.params.token
     const jobId = route.params.jobId
-    const getJobdetails = async () => {
-        try {
-            console.log('Tokeninside', token);
-            console.log('jobIdinside', jobId);
-            const header = { headers: { Authorization: `Bearer ${token}` } };
-            const api = 'https://api.homegenie.com/api/customer/getJobDetails'
-            const data = new FormData();
-            data.append('appointmentId', jobId);
-            const response = await fetch(api, {
-                method: 'post',
-                headers: new Headers({
-                    'Authorization': `Bearer ${token}`,
-                }),
-                body: data
-            });
-            const jsonData = await response.json();
-            let array = jsonData.data;
-            // console.log('jobDetail', array);
-            setJobdetailsData(array);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    }
+
     const getGenieData = async (genieId) => {
         console.log('Token for Genie', token);
         console.log('genieId', genieId);
@@ -70,7 +52,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
         try {
             let formData = new FormData();
             formData.append('Auth', token);
-            const api = 'https://api.homegenie.com/api/customer/getDriverDetails?id=' + gid
+            const api = `${BASE_URL}customer/getDriverDetails?id=${gid}`
             const response = await fetch(api, {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${token}` },
@@ -89,45 +71,50 @@ export default function JobDetailScreen({ route, props, navigation }) {
     }
 
     useEffect(() => {
-        getJobdetails();
+        const loadJobdetails = () => {
+            dispatch(loadJobDetails(token, jobId));
+        };
+        loadJobdetails();
     }, []);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFBFF" }}>
             <StatusBarAll />
             <View style={[css.section, styles.fixedContainer]}>
-                <FlatList
-                    data={jobdetailsData}
-                    keyExtractor={(item, index) => {
-                        return item._id;
-                    }}
-                    renderItem={({ item }) => (
-                        <View style={[css.container, css.liteBlueBG, styles.fixedHeader, css.line, css.paddingB10, css.paddingT10]}>
-                            <View style={[css.flexDR]}>
-                                <Pressable onPress={() => navigation.goBack()} style={[css.alignSelfC]}><Image style={[css.marginR20]} source={require(imgPath + 'backArrowBlack.png')} /></Pressable>
-                                <View><Image style={[css.img30, css.marginR10]} source={{ uri: item.categoryImage.thumbnail }} /></View>
-                                <View><Text style={[css.f18, css.fm, css.blackC]}>{item.categoryName}</Text></View>
-                            </View>
-                            <View style={[css.flexDR, css.marginT5]}>
-                                <View><Text style={[css.fr, css.marginR20, css.blackC, css.f24]}>Job Id</Text></View>
-                                <View><Text style={[css.f24, css.fbo, css.brandC]}>{item.uniqueCode}</Text></View>
-                            </View>
-                            <View style={[css.flexDC,]}>
-                                <View><Text style={[css.fr, css.greyC, css.f12]}>Booking For: {item.utc_timing.requestedTime ?
-                                    moment(new Date(item.utc_timing.requestedTime)).format("DD/MM/YYYY, LTS")
-                                    :
-                                    null}</Text>
+                {jobdetailsData && 
+                    <FlatList
+                        data={jobdetailsData}
+                        keyExtractor={(item, index) => {
+                            return item._id;
+                        }}
+                        renderItem={({ item }) => (
+                            <View style={[css.container, css.liteBlueBG, styles.fixedHeader, css.line, css.paddingB10, css.paddingT10]}>
+                                <View style={[css.flexDR]}>
+                                    <Pressable onPress={() => navigation.goBack()} style={[css.alignSelfC]}><Image style={[css.marginR20]} source={require(imgPath + 'backArrowBlack.png')} /></Pressable>
+                                    <View><Image style={[css.img30, css.marginR10]} source={{ uri: item.categoryImage.thumbnail }} /></View>
+                                    <View><Text style={[css.f18, css.fm, css.blackC]}>{item.categoryName}</Text></View>
                                 </View>
-                                <View><Text style={[css.f12, css.fr, css.greyC]}>Status: {item.status}</Text></View>
+                                <View style={[css.flexDR, css.marginT5]}>
+                                    <View><Text style={[css.fr, css.marginR20, css.blackC, css.f24]}>Job Id</Text></View>
+                                    <View><Text style={[css.f24, css.fbo, css.brandC]}>{item.uniqueCode}</Text></View>
+                                </View>
+                                <View style={[css.flexDC,]}>
+                                    <View><Text style={[css.fr, css.greyC, css.f12]}>Booking For: {item.utc_timing.requestedTime ?
+                                        moment(new Date(item.utc_timing.requestedTime)).format("DD/MM/YYYY, LTS")
+                                        :
+                                        null}</Text>
+                                    </View>
+                                    <View><Text style={[css.f12, css.fr, css.greyC]}>Status: {item.showAction}</Text></View>
+                                </View>
                             </View>
-                        </View>
-                    )}
-                />
+                        )}
+                    />
+                }
             </View>
             <ScrollView>
                 <View style={[css.section]}>
                     <View style={css.container}>
-                        <FlatList
+                        {jobdetailsData && <FlatList
                             data={jobdetailsData}
                             keyExtractor={(item, index) => {
                                 return item._id;
@@ -176,12 +163,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     }
                                 </View>
                             )}
-                        />
+                        />}
                     </View>
                 </View>
                 <View style={[css.section]}>
                     <View style={[css.container, { marginBottom: 50 }]}>
                         <List.AccordionGroup>
+                            {jobdetailsData && 
                             <FlatList
                                 data={jobdetailsData}
                                 keyExtractor={(item, index) => {
@@ -352,26 +340,28 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         </List.Accordion>
                                     </View>
                                 )}
-                            />
+                            />}
                         </List.AccordionGroup>
                     </View>
                 </View>
             </ScrollView>
-            <FlatList
+
+            { jobdetailsData && <FlatList
                 data={jobdetailsData}
                 keyExtractor={(item, index) => {
                     return item._id;
                 }}
                 style={[styles.cancelButtonContainer]}
                 renderItem={({ item }) => (
-                    <View>{item.status == 'CANCELLED' ?
-                        null
-                        :
+                    <View> 
+                        {item.cancel ?
                         <View style={[styles.cancelButton]}><Pressable ><Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text></Pressable></View>
+                        :
+                        null
                     }
                     </View>
                 )}
-            />
+            />}
             {/* {Genie == 'no' ? null :
                 <View style={[styles.cancelButtonContainer]}><Pressable style={[styles.cancelButton]}><Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text></Pressable></View>
             } */}

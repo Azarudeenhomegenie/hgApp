@@ -16,5 +16,5 @@ const store = createStore(
 );
 console.log('DISSSSSPAAA');
 store.dispatch(init());
-store.subscribe(state => console.log(store.getState().auth));
+// store.subscribe(state => console.log(store.getState().auth));
 export default store;
