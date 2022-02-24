@@ -35,10 +35,12 @@ module.exports = {
     blackBG: { backgroundColor: '#525252' },
     liteBlackBG: { backgroundColor: '#7e7e7e' },
     liteGreyBG: { backgroundColor: '#F4F4F4' },
+    rgreyBG: { backgroundColor: '#7070701c' },
     ltGrayBG: { backgroundColor: '#d1d1d150' },
     lGreyBG: { backgroundColor: '#60604E' },
     whiteBG: { backgroundColor: '#fff' },
     maroonBG: { backgroundColor: '#d36565' },
+    screenBG: { backgroundColor: '#FAFBFF' },
     //bg-ends
     section: {
         fontFamily: 'PoppinsR',
@@ -134,6 +136,7 @@ module.exports = {
     width30: { width: "30%" },
     width25: { width: "25%" },
     width20: { width: "20%" },
+    width15: { width: "15%" },
     width10: { width: "10%" },
     img100: { width: 100, height: 100 },
     imgg90: { width: 90, height: 90 },
@@ -176,6 +179,7 @@ module.exports = {
     paddingR10: { paddingRight: 10 },
     paddingR20: { paddingRight: 20 },
     paddingR30: { paddingRight: 30 },
+    paddingT0: { paddingTop: 0 },
     paddingT10: { paddingTop: 10 },
     paddingT20: { paddingTop: 20 },
     paddingT30: { paddingTop: 30 },

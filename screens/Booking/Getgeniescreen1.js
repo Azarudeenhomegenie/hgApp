@@ -472,7 +472,7 @@ export default function Getgeniescreen1(props) {
                             <View style={[css.line20]}>
                                 <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
                                 <View style={[css.flexDR]}>
-                                    <View style={[width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
+                                    <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
                                     <View style={[css.flexDC, css.alignSelfC]}>
                                         <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
                                         <Text style={[css.brandC, css.fsb]}>HomeGenie warranty policy</Text>

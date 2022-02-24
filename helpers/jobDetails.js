@@ -2,7 +2,7 @@ export const defaultOptions = {
     rateGenie: false, // no no comp
     Payment: false, // no no comp
     view: false,
-    cancel: false, 
+    cancel: false,
     showAction: false,
     accept: false, // no no comp
     reditems: false,
@@ -12,9 +12,9 @@ export const defaultOptions = {
 
 
 export const getJobDetailsOption = (type, data) => {
-    switch(type) {
+    switch (type) {
         case "REQUESTED":
-            return getRequestOption(data);   
+            return getRequestOption(data);
         case "ASSIGNED":
             return getAssignedOption(data);
         case "CANCELLED":
@@ -59,7 +59,7 @@ const getRequestOption = (data) => {
     };
 };
 
-const getAssignedOption= (data) => { 
+const getAssignedOption = (data) => {
 
     defaultOptions.view = true;
     const {
@@ -71,8 +71,8 @@ const getAssignedOption= (data) => {
         payment
     } = data;
     if (
-        advancePayment 
-        && advanceCharges 
+        advancePayment
+        && advanceCharges
         && advance_payment['payment_type'] === null
         && payment['payment_type'] === null
     ) {
@@ -80,9 +80,9 @@ const getAssignedOption= (data) => {
         defaultOptions.showAction = 'Pay Advance';
         defaultOptions.reditems = 'action-substatus'
     } else if (
-        advancePayment 
+        advancePayment
         && advanceCharges
-        && advance_payment['payment_type'] === 'null' 
+        && advance_payment['payment_type'] === 'null'
         && payment['payment_type'] === 'CASH'
     ) {
         defaultOptions.cancel = true;
@@ -98,7 +98,7 @@ const getAssignedOption= (data) => {
     };
 };
 
-const getCancelledOption= (data) => {
+const getCancelledOption = (data) => {
 
 
     defaultOptions.Payment = true;
@@ -106,7 +106,7 @@ const getCancelledOption= (data) => {
     defaultOptions.showAction = 'Pay Charges';
     defaultOptions.reditems = 'action-substatus';
 
-    const { 
+    const {
         charges: { totalCharges },
         driverData,
         serviceType,
@@ -114,9 +114,9 @@ const getCancelledOption= (data) => {
     } = data;
 
     if (
-        (totalCharges == 0 || !driverData) 
+        (totalCharges == 0 || !driverData)
         && (
-            serviceType == 'EMERGENCY' 
+            serviceType == 'EMERGENCY'
             || serviceType == 'SAMEDAY'
         )
     ) {
@@ -124,7 +124,7 @@ const getCancelledOption= (data) => {
         defaultOptions.showAction = 'Pay Charges';
         defaultOptions.reditems = 'action-substatus';
     } else if (
-        totalCharges == 0 
+        totalCharges == 0
         || !driverData
     ) {
         defaultOptions.Payment = false;
@@ -150,7 +150,7 @@ const getPaymentPendingOptions = (data) => {
     // PAYMENT_PENDING
 
     let Payment = true;
-    let view =  true;
+    let view = true;
     let showAction = 'Pay Final Payment';
     let reditems = 'action-substatus';
 
@@ -170,18 +170,18 @@ const getPaymentPendingOptions = (data) => {
     };
 };
 
-const getInserviceOption= (data) => {
+const getInserviceOption = (data) => {
 
-   defaultOptions.view = true;
-   defaultOptions.singleButton = true;
-   defaultOptions.showAction = 'Await Completion';
+    defaultOptions.view = true;
+    defaultOptions.singleButton = true;
+    defaultOptions.showAction = 'Await Completion';
 
     return {
         ...defaultOptions,
     };
 };
 
-const getRatingOption= (data) => {
+const getRatingOption = (data) => {
     defaultOptions.rateGenie = true;
     defaultOptions.view = true;
     defaultOptions.showAction = 'Rate Genie';
@@ -192,7 +192,7 @@ const getRatingOption= (data) => {
     };
 };
 
-const getComplaintRegisteredOption= (data) => {
+const getComplaintRegisteredOption = (data) => {
     defaultOptions.view = false;
 
     return {
@@ -200,14 +200,14 @@ const getComplaintRegisteredOption= (data) => {
     };
 };
 
-const getInspectionOption= (data) => {
+const getInspectionOption = (data) => {
     defaultOptions.view = true;
     defaultOptions.cancel = true;
 
     const {
         advancePayment,
         isInspectionCompleted,
-        charges: { 
+        charges: {
             unitCharges,
             estimateCharges,
             advanceCharges,
@@ -261,7 +261,7 @@ const getInspectionOption= (data) => {
     };
 };
 
-const getRescheduledOption= (data) => {
+const getRescheduledOption = (data) => {
     defaultOptions.view = true;
     defaultOptions.Accept = true;
 
@@ -276,12 +276,12 @@ const getRescheduledOption= (data) => {
     };
 };
 
-const getRejectedOption= (data) => {
+const getRejectedOption = (data) => {
 
     defaultOptions.Payment = true;
     defaultOptions.view = true;
 
-    const { 
+    const {
         charges: {
             totalCharges,
             callOutCharges
@@ -307,16 +307,16 @@ const getRejectedOption= (data) => {
     };
 };
 
-const getEnrouteOption= (data) => {
+const getEnrouteOption = (data) => {
     defaultOptions.view = true;
     defaultOptions.showAction = 'Await Arrival';
-    
+
     return {
         ...defaultOptions,
     };
 };
 
-const getUnfinishedOption= (data) => {   
+const getUnfinishedOption = (data) => {
     defaultOptions.view = true;
 
     return {
@@ -324,7 +324,7 @@ const getUnfinishedOption= (data) => {
     };
 };
 
-const getReEstimateOption= (data) => {
+const getReEstimateOption = (data) => {
     defaultOptions.view = true;
     defaultOptions.SingleButton = true;
     defaultOptions.showAction = 'Await Estimate';
@@ -334,14 +334,14 @@ const getReEstimateOption= (data) => {
     };
 };
 
-const getUnAssignedOption= (data) => {
-   defaultOptions.view = true;
+const getUnAssignedOption = (data) => {
+    defaultOptions.view = true;
     return {
         ...defaultOptions,
     };
 };
 
-const getExpiredOption= (data) => {
+const getExpiredOption = (data) => {
     const { charges, payment } = data;
     if (charges && charges.totalCharges == 0) {
         defaultOptions.Payment = false;

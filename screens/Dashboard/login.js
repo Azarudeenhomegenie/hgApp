@@ -62,11 +62,11 @@ const Login = (props) => {
                             <View style={[css.flexDRSB, { padding: 15, paddingTop: 5, paddingBottom: 5 }]} >
                                 <View style={[css.flexDR]}>
                                     <View>
-                                        {displayProfilePic ?
+                                        {userData.profilePicURL ?
                                             <Image
                                                 resizeMode="cover"
                                                 style={[{ borderRadius: 500, width: 60, height: 60, marginRight: 15 }]}
-                                                source={{ uri: displayProfilePic }} />
+                                                source={{ uri: userData.profilePicURL }} />
                                             :
                                             <Image
                                                 resizeMode="contain"

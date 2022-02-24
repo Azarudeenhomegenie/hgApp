@@ -68,7 +68,7 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
             case '1':
                 return (
                     <View style={[styles.scene, styles.bookingTabs]}>
-                        {currentBookings == '' ?
+                        {currentBookings == null ?
                             <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                                 <View style={{
                                     width: 150, height: 150,
@@ -127,12 +127,21 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <View style={[css.flexDR]}>
                                                         <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
-                                                            {item.status === 'PAYMENT_PENDING' ?
-                                                                <Text onPress={() => navigation.navigate('JobdetailPage')} style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                            {/* {item.status === 'PAYMENT_PENDING' ?
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
                                                                 : null}
                                                             {item.status === 'INSPECTION' ?
-                                                                <Text onPress={() => navigation.navigate('JobdetailPage')} style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                : null}
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                                : null} */}
+                                                            {
+                                                                item.status === 'IN_SERVICE' ?
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
+                                                                    : item.status === 'PAYMENT_PENDING' ?
+                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                                        : item.status === 'ENROUTE' ?
+                                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
+                                                                            : null
+                                                            }
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -142,8 +151,8 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                     {item.status === 'PAYMENT_PENDING' ?
                                                         <Pressable
                                                             style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
-                                                            onPress={() => navigation.navigate("PaymentPage", {
-                                                                jobId: item._id
+                                                            onPress={() => navigation.navigate("JobdetailPage", {
+                                                                token: token, jobId: item._id
                                                             })}
                                                         >
                                                             <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>

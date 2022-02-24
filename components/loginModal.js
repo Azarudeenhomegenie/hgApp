@@ -408,9 +408,9 @@ const LoginModal = (props) => {
                                 <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Please enter 4 digit code sent via SMS</Text>
                             </View>
                             <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
-                                <View style={styles.flexRow}>
+                                <View style={[css.flexDR]}>
                                     <TextInput
-                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        style={[css.borderGrey1, css.borderRadius10, css.textCenter, css.marginR10, css.f24, css.fm, css.blackC, css.width15, { height: 45 }]}
                                         placeholder=""
                                         keyboardType="numeric"
                                         value={OtpCodeOne}
@@ -419,9 +419,10 @@ const LoginModal = (props) => {
                                             setOtpCodeOne(text.nativeEvent.text);
                                             secondOtp.current.focus();
                                         }}
+                                        ref={firtOtp}
                                     />
                                     <TextInput
-                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        style={[css.borderGrey1, css.borderRadius10, css.textCenter, css.marginR10, css.f24, css.fm, css.blackC, css.width15, { height: 45 }]}
                                         placeholder=""
                                         keyboardType="numeric"
                                         value={OtpCodeTwo}
@@ -433,7 +434,7 @@ const LoginModal = (props) => {
                                         ref={secondOtp}
                                     />
                                     <TextInput
-                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        style={[css.borderGrey1, css.borderRadius10, css.textCenter, css.marginR10, css.f24, css.fm, css.blackC, css.width15, { height: 45 }]}
                                         placeholder=""
                                         keyboardType="numeric"
                                         value={OtpCodeThree}
@@ -445,7 +446,7 @@ const LoginModal = (props) => {
                                         ref={thirdOtp}
                                     />
                                     <TextInput
-                                        style={{ borderColor: '#ccc', borderWidth: 1, borderRadius: 10, width: '15%', padding: 10, marginRight: 10, textAlign: 'center' }}
+                                        style={[css.borderGrey1, css.borderRadius10, css.textCenter, css.marginR10, css.f24, css.fm, css.blackC, css.width15, { height: 45 }]}
                                         placeholder=""
                                         keyboardType="numeric"
                                         value={OtpCodeFour}
