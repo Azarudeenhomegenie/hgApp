@@ -39,6 +39,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const toggleserviceDetailModal = () => { setserviceDetailModal(!serviceDetailModal) };
     const [pricingDetailModal, setpricingDetailModal] = useState(false);
     const togglepricingDetailModal = () => { setpricingDetailModal(!pricingDetailModal) };
+    const [typeModal, settypeModal] = useState(false);
+    const toggletypeModal = () => { settypeModal(!typeModal) };
     const [genieData, setGenieData] = useState(null);
     const [genieModal, setGenieModal] = useState(false);
     const dispatch = useDispatch();
@@ -130,7 +132,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                                 <View style={[css.flexDR]}>
                                                     <Image style={[css.img20]} source={require(imgPath + 'star-fill.png')} />
-                                                    <Text style={[css.fr, css.f12, css, blackC, css.alignSelfC, css.marginL5]}>{(jobdetailsData.driverData.rating / jobdetailsData.driverData.ratingPersonNo).toFixed(1)}/5 rated</Text>
+                                                    <Text style={[css.fr, css.f12, css.blackC, css.alignSelfC, css.marginL5]}>{(jobdetailsData.driverData.rating / jobdetailsData.driverData.ratingPersonNo).toFixed(1)}/5 rated</Text>
                                                 </View>
                                             </View>
                                         </View>
@@ -182,7 +184,12 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         <View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>Type</Text></View>
-                                                <View style={[css.flexDR]}><Image source={require(imgPath + 'service-info.png')} /><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text></View>
+                                                <Pressable
+                                                    onPress={() => settypeModal(!typeModal)}
+                                                    style={[css.flexDR]}
+                                                ><Image source={require(imgPath + 'service-info.png')} />
+                                                    <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text>
+                                                </Pressable>
                                             </View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>Priority</Text></View>
@@ -412,7 +419,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                                 <View style={[css.flexDR]}>
                                                     <Image style={[css.img15]} source={require(imgPath + 'star-fill.png')} />
-                                                    <Text style={[css.fr, css.f12, css, blackC, css.alignSelfC, css.marginL5]}>
+                                                    <Text style={[css.fr, css.f12, css.blackC, css.alignSelfC, css.marginL5]}>
                                                         {jobdetailsData.driverData ?
                                                             (jobdetailsData.driverData.rating / jobdetailsData.driverData.ratingPersonNo).toFixed(1)
                                                             :
@@ -442,9 +449,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 {genieData.categories ?
                                                     <FlatList
                                                         data={genieData.categories}
-                                                        // keyExtractor={(item, index) => {
-                                                        //     return item._id;
-                                                        // }}
                                                         contentContainerStyle={[css.flexDR, { flexWrap: 'wrap' }]}
                                                         renderItem={({ item }) => (
                                                             <View style={[css.padding5, css.borderBlack1, css.borderRadius5, css.alignCenter, css.marginB5, css.marginR5, { flex: 1 }]}>
@@ -454,19 +458,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     />
                                                     : null}
                                             </View>
-
-                                            {/* <View style={[css.padding5, css.borderBlack1, css.borderRadius5, css.alignCenter, css.marginB5, css.marginR5]}>
-                                                    <Text>AC</Text>
-                                                </View>
-                                                <View style={[css.padding5, css.borderBlack1, css.borderRadius5, css.alignCenter, css.marginB5, css.marginR5]}>
-                                                    <Text>Electrical</Text>
-                                                </View>
-                                                <View style={[css.padding5, css.borderBlack1, css.borderRadius5, css.alignCenter, css.marginB5, css.marginR5]}>
-                                                    <Text>Plumbing</Text>
-                                                </View>
-                                                <View style={[css.padding5, css.borderBlack1, css.borderRadius5, css.alignCenter, css.marginB5, css.marginR5]}>
-                                                    <Text>Cleaning</Text>
-                                                </View> */}
                                         </View>
                                         {genieData.feedback ?
                                             <View style={[css.padding10, css.line10]}>
@@ -476,35 +467,35 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.fiveStar ? genieData.feedback.fiveStar : null})</Text></View>
+                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View><Text>4*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.fourStar ? genieData.feedback.fourStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.fourStar ? genieData.feedback.fourStar : null})</Text></View>
+                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.fourStar ? genieData.feedback.fourStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View><Text>3*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.threeStar ? genieData.feedback.threeStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.threeStar ? genieData.feedback.threeStar : null})</Text></View>
+                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.threeStar ? genieData.feedback.threeStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View><Text>2*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.twoStar ? genieData.feedback.twoStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.twoStar ? genieData.feedback.twoStar : null})</Text></View>
+                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.twoStar ? genieData.feedback.twoStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View><Text>1*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.liteGreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.oneStar ? genieData.feedback.oneStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.oneStar ? genieData.feedback.oneStar : null})</Text></View>
+                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.oneStar ? genieData.feedback.oneStar : '0'})</Text></View>
                                                 </View>
                                             </View>
                                             :
@@ -604,7 +595,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                         <View style={[bookModal.modalHeader]}>
                             <TouchableOpacity
                                 style={[css.flexDR, css.marginT20, css.marginB20]}
-                                onPress={() => setpricingDetailModale(!pricingDetailModal)}
+                                onPress={() => setpricingDetailModal(!pricingDetailModal)}
                             >
                                 <Image style={[css.alignSelfC, css.marginR10]} source={require(imgPath + 'backArrowBlack.png')} />
                                 <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
@@ -613,15 +604,21 @@ export default function JobDetailScreen({ route, props, navigation }) {
                         <View style={[bookModal.modalBody]}>
                             <View style={[css.flexDR, css.line10]}>
                                 <Image style={[css.img30, css.marginR10]} source={require(imgPath + 'priceverification.png')} />
-                                <Text style={[css.f24, css.lGreyC, css.alignSelfC, css.fsb]}>Pricing Details</Text>
+                                <Text style={[css.f20, css.lGreyC, css.alignSelfC, css.fsb]}>Pricing Details</Text>
                             </View>
                             <View style={[css.line20]}>
-                                <Text style={[css.f18, css.fsb, css.brandC, css.spaceB10]}>Inspection based services.</Text>
-                                <Text style={[css.fm, css.blackC, css.spaceB20,]}>Minimum inspection call-out charges* AED 129{"\n"} Additional charges as per bill estimate.{"\n"} *Inspection call-out charges apply to inspection based services only, and include travel cost plus 1 hour of labor required to diagnose the issue, perform minor repairs, if time permits or provide a detailed bill estimate for a major repair.</Text>
+                                <View style={[css.flexDR]}>
+                                    <Image
+                                        style={{ width: 20, height: 20, marginRight: 10 }}
+                                        source={require(imgPath + 'iconIndex.png')}
+                                    />
+                                    <Text style={[css.f16, css.fsb, css.brandC, css.spaceB10]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text>
+                                </View>
+                                <Text style={[css.fm, css.blackC, css.spaceB20,]}>Minimum service* charges of AED PRICE per AC unit. AED PRICE for additional AC unit. {'\n'}*Minimum service charges are  applicable for coil cleaning of unfurnished apartments or villas. Service charges, fixed on the basis of information provided, may vary at the time of actual service due to any special condition or requirement.</Text>
                             </View>
                             <View style={[css.line20]}>
                                 <Text style={[css.f16, css.fm, css.blackC, css.spaceB10]}>NOTES</Text>
-                                <Text style={[css.fm, css.blackC, css.spaceB5, css.f12]}>Additional charges apply for Emergency and Friday bookings, based on availability and permissions from community/ building, as confirmed by the Customer. VAT charges are not included and are based on the total invoice Amount.</Text>
+                                <Text style={[css.fm, css.blackC, css.spaceB5, css.f12]}>Additional charges apply for Emergency bookings, based on availability and permissions from community/ building, as confirmed by the customer. VAT charges are not included and are based on the total invoice amount.</Text>
                             </View>
                             <View style={[css.line20]}>
                                 <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
@@ -629,13 +626,47 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
                                     <View style={[css.flexDC, css.alignSelfC]}>
                                         <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
-                                        <Text style={[css.brandC, css.fsb]}>HomeGenie warranty policy</Text>
+                                        <Text style={[css.brandC, css.fsb]} onPress={() => { Linking.openURL('https://www.homegenie.com/en/warranty') }}>HomeGenie warranty policy</Text>
                                     </View>
                                 </View>
                             </View>
                         </View>
                     </View>
                 </ScrollView>
+            </Modal>
+            <Modal
+                isVisible={typeModal}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+                coverScreen={true}
+                useNativeDriver={true}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+            >
+                <View style={css.centeredView}>
+                    <View style={css.modalNewView}>
+                        <View style={[css.modalNewHeader]}>
+                            <View><Text style={[css.modalNewText, css.f18, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text></View>
+                            <View><Text style={[css.textCenter, css.blackC, css.f14, css.fr]}>The selected service is a fixed price service with the price estimate calculated based on the details you select while booking the service.</Text></View>
+                        </View>
+                        <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
+                            <View style={[css.imgFull, css.alignItemsC]}>
+                                <TouchableOpacity
+                                    onPress={() => settypeModal(!typeModal)}
+                                    style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
+                                >
+                                    <Text style={[css.whiteC, css.fm, css.f16]}>Okay, got it</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={[css.marginT10]}>
+                                <Text style={[css.modalNewText, css.blackC, css.fr, css.f14]}>An additional Emergency charges</Text>
+                                <Text style={[css.modalNewText, css.blackC, css.fr, css.f14]}>are applicable to the booking.</Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
             </Modal>
         </SafeAreaView>
     );
