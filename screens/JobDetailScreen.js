@@ -13,6 +13,7 @@ import {
     Dimensions,
     StatusBar,
     Pressable,
+    FlatList,
     TextInput,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -24,7 +25,7 @@ import StatusBarAll from "../components/StatusBar";
 import { List } from 'react-native-paper';
 import { connect, useDispatch, useSelector } from "react-redux";
 import css from '../components/commonCss';
-import { FlatList } from "react-native-gesture-handler";
+//import { FlatList } from "react-native-gesture-handler";
 import { loadJobDetails, getJobDetail, getGenie } from "../reducers/jobDetailReducer";
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
