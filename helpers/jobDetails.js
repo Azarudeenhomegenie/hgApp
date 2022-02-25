@@ -78,7 +78,7 @@ const getAssignedOption = (data) => {
     ) {
         defaultOptions.accept = true;
         defaultOptions.showAction = 'Pay Advance';
-        defaultOptions.reditems = 'action-substatus'
+        defaultOptions.reditems = true
     } else if (
         advancePayment
         && advanceCharges
@@ -104,7 +104,7 @@ const getCancelledOption = (data) => {
     defaultOptions.Payment = true;
     defaultOptions.view = true;
     defaultOptions.showAction = 'Pay Charges';
-    defaultOptions.reditems = 'action-substatus';
+    defaultOptions.reditems = true;
 
     const {
         charges: { totalCharges },
@@ -122,7 +122,7 @@ const getCancelledOption = (data) => {
     ) {
         defaultOptions.Payment = false;
         defaultOptions.showAction = 'Pay Charges';
-        defaultOptions.reditems = 'action-substatus';
+        defaultOptions.reditems = true;
     } else if (
         totalCharges == 0
         || !driverData
@@ -152,7 +152,7 @@ const getPaymentPendingOptions = (data) => {
     let Payment = true;
     let view = true;
     let showAction = 'Pay Final Payment';
-    let reditems = 'action-substatus';
+    let reditems = true;
 
     const { payment_type } = data['payment'] || {};
     if (payment_type === 'CASH') {
@@ -184,8 +184,8 @@ const getInserviceOption = (data) => {
 const getRatingOption = (data) => {
     defaultOptions.rateGenie = true;
     defaultOptions.view = true;
-    defaultOptions.showAction = 'Rate Genie';
-    defaultOptions.reditems = 'action-substatus';
+    //defaultOptions.showAction = 'Rate Genie';
+    defaultOptions.reditems = true;
 
     return {
         ...defaultOptions,
@@ -221,7 +221,7 @@ const getInspectionOption = (data) => {
         defaultOptions.accept = true;
         defaultOptions.cancel = false;
         defaultOptions.showAction = 'Pay Advance';
-        defaultOptions.reditems = 'action-substatus';
+        defaultOptions.reditems = true;
 
         if (estimateCharges == advanceCharges) {
             defaultOptions['advancePayment'] = vatFinalCharges;
@@ -233,7 +233,7 @@ const getInspectionOption = (data) => {
         defaultOptions.showAction = 'Await Estimate';
     } else if (isInspectionCompleted && !advancePayment) {
         defaultOptions.showAction = 'Accept Estimate';
-        defaultOptions.reditems = 'action-substatus';
+        defaultOptions.reditems = true;
         defaultOptions.accept = true;
         defaultOptions.cancel = false;
         defaultOptions['advancePayment'] = 0;
@@ -247,7 +247,7 @@ const getInspectionOption = (data) => {
         defaultOptions.cancel = false;
         defaultOptions.accept = true;
         defaultOptions.showAction = 'Accept and Pay Advance';
-        defaultOptions.reditems = 'action-substatus';
+        defaultOptions.reditems = true;
         defaultOptions['advancePayment'] = data.advancePayment;
     } else if (payment['payment_type'] == 'CASH') {
         defaultOptions.cancel = false;
@@ -294,7 +294,7 @@ const getRejectedOption = (data) => {
     };
 
     defaultOptions.showAction = 'Pay Call-out charges';
-    defaultOptions.reditems = 'action-substatus';
+    defaultOptions.reditems = true;
 
     if (payment && payment['payment_type'] == 'CASH') {
         defaultOptions.Payment = false;

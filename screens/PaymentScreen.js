@@ -22,10 +22,11 @@ import { getLogin } from "../actions/hgAction";
 import Whatsapp from "../components/whtsApp";
 import Text from "../components/MyText";
 import SocialMedia from '../components/socialMedia';
+import Modal from 'react-native-modal';
 import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
 import css, { brandC } from "../components/commonCss";
-import BASE_URL from "../base_file";
+import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
@@ -39,33 +40,30 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
     const [isLoading, setLoading] = useState(true);
     const [userName, setUserName] = useState(token);
     const jobId = route.params.jobId;
+    const amount = route.params.amount;
     const [paymentData, setPaymentData] = useState([]);
-    console.log('token_PaymentPage', token);
-    console.log('jobID_PaymentPage', jobId);
-    console.log('base_URL', BASE_URL);
+    const [amountPaidModal, setamountPaidModal] = useState(false)
+    const toggleamountPaidModal = () => { setamountPaidModal(!amountPaidModal) };
+
+    // console.log('token_PaymentPage', token);
+    // console.log('jobID_PaymentPage', jobId);
+    // console.log('amount_PaymentPage', amount);
     const dispatch = useDispatch();
 
 
-    const getPaymentDetails = async (appointmentId) => {
+    const getPaymentDetails = async (jobId) => {
+        console.log('payment for job');
+        console.log('jobId', jobId);
+        console.log('userToken', token);
+        console.log(amount);
         try {
-            console.log('TokenPayment', token);
-            console.log('appointmentIdPayment', appointmentId);
-            // const header = { headers: { Authorization: `Bearer ${token}` } };
-            // const api = 'https://beta.api.homegenie.com/api/customer/cashPayment'
-            // const data = new FormData();
-            // data.append('appointmentId', jobId);
-            // data.append('amount', amount);
-            // const response = await fetch(api, {
-            //     method: 'post',
-            //     headers: new Headers({
-            //         'Authorization': `Bearer ${token}`,
-            //     }),
-            //     body: data
-            // });
-            // const jsonData = await response.json();
-            // let array = jsonData.data;
-            // console.log('jobDetail', array);
-            //setPaymentData(array);
+            const header = { headers: { Authorization: `Bearer ${token}` } };
+            const api = `${BASE_URL}customer/cashPayment?'appointmentID'=jobId&'amount'=amount`
+            const response = await axios.get(
+                api,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setamountPaidModal(true)
         } catch (error) {
             console.error(error);
         } finally {
@@ -116,7 +114,38 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
                     <Text style={[css.fsb, css.whiteC, css.f16]}>PAY NOW</Text>
                 </Pressable>
             </View>
-        </SafeAreaView >
+            <Modal
+                isVisible={amountPaidModal}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+                coverScreen={true}
+                useNativeDriver={true}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+            >
+                <View style={css.centeredView}>
+                    <View style={css.modalNewView}>
+                        <View style={[css.modalNewHeader]}>
+                            <View>
+                                <Text style={[css.modalNewText, css.f14, css.blackC, css.fm]}>Your amount {amount} was paid.</Text></View>
+                        </View>
+                        <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
+                            <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
+
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('Home')}
+                                    style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
+                                >
+                                    <Text style={[css.whiteC, css.fm, css.f14]}>Got it</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        </SafeAreaView>
     );
 }
 

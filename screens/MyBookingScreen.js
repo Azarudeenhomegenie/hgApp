@@ -21,6 +21,8 @@ import axios from "axios";
 import { getLogin } from "../actions/hgAction";
 import Whatsapp from "../components/whtsApp";
 import Text from "../components/MyText";
+import moment from 'moment';
+import 'moment-timezone';
 import SocialMedia from '../components/socialMedia';
 import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
@@ -45,6 +47,7 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
     // const token = useSelector(getAccessToken);
     //const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYwN2QxMGZjNTlkMTVhOTAxNDBiYjhjMSIsInR5cGUiOiJDVVNUT01FUiIsImlhdCI6MTY0NDQzNzQyNX0.8ofowAJZCqukx09NbDP1ddduRbx6Fr6dnBt2yUygSkE'
     // const currentBookings = useSelector(getCurrentBookings);
+    console.log('token', token);
     const dispatch = useDispatch();
     console.log('currentBookings', currentBookings);
     const [userData, setUserData] = useState();
@@ -89,7 +92,7 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                     <Text style={[styles.buttonText], {
                                         fontSize: 16,
                                         lineHeight: 21,
-                                        fontWeight: 'bold',
+                                        fontFamily: 'PoppinsM',
                                         letterSpacing: 0.25,
                                         color: 'white',
                                     }}>Book Now</Text>
@@ -127,12 +130,6 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <View style={[css.flexDR]}>
                                                         <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
-                                                            {/* {item.status === 'PAYMENT_PENDING' ?
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
-                                                                : null}
-                                                            {item.status === 'INSPECTION' ?
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                : null} */}
                                                             {
                                                                 item.status === 'IN_SERVICE' ?
                                                                     <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
@@ -140,8 +137,11 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                                         <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
                                                                         : item.status === 'ENROUTE' ?
                                                                             <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                                            : null
-                                                            }
+                                                                            : item.status === 'UNFINISHED' ?
+                                                                                <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                    {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                                </Text>
+                                                                                : null}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -236,7 +236,21 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                 </View>
                                                 <View style={[css.flexDR]}>
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
-                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.status}</Text>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.status}{' '}
+                                                        {
+                                                            item.status === 'IN_SERVICE' ?
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
+                                                                : item.status === 'PAYMENT_PENDING' ?
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                                    : item.status === 'ENROUTE' ?
+                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
+                                                                        : item.status === 'UNFINISHED' ?
+                                                                            <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                            </Text>
+                                                                            : null
+                                                        }
+                                                    </Text>
                                                 </View>
                                             </View>
                                             <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>

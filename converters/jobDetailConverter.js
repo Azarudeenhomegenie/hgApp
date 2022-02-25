@@ -4,7 +4,7 @@ import { getJobDetailsOption } from '../helpers/jobDetails';
 
 
 export const JobDetailConverter = {
-    fromApi: (data) =>  {
+    fromApi: (data) => {
         let jobDetail = data;
 
         const { slot } = data;
@@ -13,7 +13,7 @@ export const JobDetailConverter = {
         jobDetail['slot'] = SLOTS[slotTime];
 
         const { scheduleDate } = jobDetail;
-        
+
         const date = moment(scheduleDate);
         jobDetail['scheduleDate'] = `${date.format('ddd DD MMM YYYY')} | ${SLOTS[slotTime]}`;
         jobDetail['dateScheduled'] = `${SLOTS[slotTime]}, ${date.format('MMM DD')}`;
@@ -24,7 +24,7 @@ export const JobDetailConverter = {
         jobDetail["utc_timing"]["requestedTime"] = [requstedMoment.format('DD/MM/YYYY'), requstedMoment.format('hh:mm:ss')]
 
         jobDetail['favouriteGenie'] = !(jobDetail['favouriteGenie'] === 'FALSE')
-        
+
         const { charges: { totalCharges, unitCharges, estimateCharges, cancellationCharges } } = jobDetail;
         const { status, payment } = jobDetail;
 
@@ -36,7 +36,8 @@ export const JobDetailConverter = {
             jobDetail['services'] = 'Fixed price';
             jobDetail['charges']['totalCharges'] = unitCharges;
         } else {
-            bookingOngoing[k]['services'] = 'Inspection based';
+            //bookingOngoing[k]['services'] = 'Inspection based';
+            jobDetail['services'] = 'Inspection based';
         }
 
         if (estimateCharges) {
