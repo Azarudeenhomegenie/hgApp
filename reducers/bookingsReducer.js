@@ -78,5 +78,5 @@ export const loadBookings = (token) => async dispatch => {
 
 
 //Selectors
-export const getCurrentBookings = state => state.currentBookings
-export const getPastBookings = state => state.pastBookings
+export const getCurrentBookings = state => state.bookings.currentBookings
+export const getPastBookings = state => state.bookings.pastBookings
