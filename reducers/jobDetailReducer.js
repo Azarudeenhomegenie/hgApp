@@ -101,6 +101,17 @@ export const loadGenie = (token, gid) => async dispatch => {
     }
 };
 
+export const addRating = (token, data) => async dispatch => {
+    try {
+        const res = await axios.post(`${BASE_URL}customer/driverRatingComments`, data, { headers: { Authorization: `Bearer ${token}` } });
+        return true;
+    } catch (e) {
+        console.log('CATCH');
+        console.log(e)
+       return false;
+    }
+};
+
 
 //Selectors
 export const getJobDetail = state => state.jobdetails.jobdetail;
