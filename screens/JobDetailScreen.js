@@ -186,7 +186,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                         <View style={[css.flexDC,]}>
                             <View><Text style={[css.fr, css.greyC, css.f12]}>Booking For: {jobdetailsData.utc_timing.requestedTime ?
                                 //moment(new Date(jobdetailsData.utc_timing.requestedTime)).format("DD/MM/YYYY")
-                                (jobdetailsData.utc_timing.requestedTime.join(", "))
+                                (jobdetailsData.utc_timing.requestedTime)
                                 :
                                 null}</Text>
                             </View>

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { BASE_URL } from "../base_file";
-import { JobDetailConverter } from '../converters/jobDetailConverter';
+// import { JobDetailConverter } from '../converters/jobDetailConverter';
+import { JobBookingDetailConverter } from '../converters/bookingDetailConverter';
 
 export const LOAD_JOB_DETAIL = 'hg/jobdetails/JOB_DETAIL'
 export const LOAD_JOB_DETAIL_SUCCESS = 'hg/jobdetails/JOB_DETAIL_SUCCESS'
@@ -69,7 +70,7 @@ export const loadJobDetails = (token, jobId) => async dispatch => {
         console.log('URL', `${BASE_URL}customer/getJobDetails`)
         const res = await axios.post(`${BASE_URL}customer/getJobDetails`, { appointmentId: jobId }, { headers: { Authorization: `Bearer ${token}` } });
         // console.log('BINGO DATA::::::', JSON.stringify(res.data.data[0]))
-        const payload = JobDetailConverter.fromApi(res.data.data[0]);
+        const payload = JobBookingDetailConverter.fromApi(res.data.data[0]);
         console.log('Loaded....... JOB DAGTA');
         dispatch({ type: LOAD_JOB_DETAIL_SUCCESS, payload });
         return payload;
