@@ -28,7 +28,7 @@ import { List, Checkbox, RadioButton } from 'react-native-paper';
 import { connect, useDispatch, useSelector } from "react-redux";
 import css from '../components/commonCss';
 //import { FlatList } from "react-native-gesture-handler";
-import { loadJobDetails, getJobDetail, getGenie } from "../reducers/jobDetailReducer";
+import { loadJobDetails, getJobDetail, getGenie, addRating } from "../reducers/jobDetailReducer";
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
@@ -97,32 +97,19 @@ export default function JobDetailScreen({ route, props, navigation }) {
         }
     }
     const updateRatingData = async (appointmentId) => {
-        console.log('working');
-        console.log('appoinmentId', appointmentId);
-        console.log('userToken', token);
-        console.log(reviewTextArea);
-        console.log(favGeniechecked);
-        console.log(starCount);
-        try {
-            const header = { headers: { Authorization: `Bearer ${token}` } };
-            const api = `${BASE_URL}customer/driverRatingComments`
-            const formData = new FormData();
-            formData.append('appointmentId', appointmentId)
-            formData.append('driverRating', starCount)
-            formData.append('favouriteGenie', favGeniechecked)
-            formData.append('driverComment', reviewTextArea)
-            const response = await axios.post(
-                api,
-                formData,
-                //{ appointmentId: appointmentId, driverRating: starCount, favouriteGenie: favGeniechecked, driverComment: reviewTextArea },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            //return response.data;
-        } catch (error) {
-            console.error(error);
-            //alert('Rating not updated')
-        } finally {
-            setLoading(false);
+
+        const params = {
+            appointmentId,
+            driverRating: `${starCount}`,
+            favouriteGenie: true,
+            driverComment: 'test'
+        };
+        console.log('Params', params, token);
+        const isUpdated = await dispatch(addRating(token, params));
+        if (isUpdated) {
+            console.log('Rating success');
+        } else {
+            console.log('Rating Fail');
         }
     }
     const deleteJob = async (appoinmentId) => {

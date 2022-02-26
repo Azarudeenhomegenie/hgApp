@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, } from "react";
+import React, { Component, useState, useCallback } from "react";
 import {
     StyleSheet,
     View,
@@ -15,9 +15,9 @@ import {
     Pressable,
     FlatList
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { connect } from "react-redux";
-//import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
 import { getLogin } from "../actions/hgAction";
 import Whatsapp from "../components/whtsApp";
@@ -34,13 +34,16 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentBookings, loadBookings } from '../reducers/bookingsReducer'
+import { getCurrentBookings, getPastBookings, loadBookings } from '../reducers/bookingsReducer'
 
 //Selectors
 import { getLoggedInStatus, getUser, getAccessToken } from '../reducers/authReducer';
 // import { FlatList } from "-";
 
-const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, token }) => {
+const MyBookingScreen = ({ props, navigation }) => {
+    const currentBookings = useSelector(getCurrentBookings);
+    const pastBookings = useSelector(getPastBookings);
+    const token = useSelector(getAccessToken);
     const [userName, setUserName] = useState(token);
     //console.log('Props', token)
     // const isLoggedIn = useSelector(getLoggedInStatus);
@@ -59,12 +62,15 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
     ]);
 
 
-    useEffect(async () => {
-        if (token) {
-            //console.log('TKN:', token)
-            dispatch(loadBookings(token));
-        }
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            if (token) {
+                //console.log('TKN:', token)
+                dispatch(loadBookings(token));
+            }
+            console.log('test', token);
+        }, [])
+    );
 
 
     const renderScene = ({ route }) => {
@@ -426,11 +432,15 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(
-    state => ({
-        currentBookings: state.bookings.currentBookings,
-        pastBookings: state.bookings.pastBookings,
-        token: state.auth.token
-    }),
-    null
-)(MyBookingScreen);
+
+
+export default MyBookingScreen;
+
+// connect(
+//     state => ({
+//         currentBookings: state.bookings.currentBookings,
+//         pastBookings: state.bookings.pastBookings,
+//         token: state.auth.token
+//     }),
+//     null
+// )(MyBookingScreen);
