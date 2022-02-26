@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useCallback } from "react";
 import {
     StyleSheet,
     View,
@@ -16,6 +16,7 @@ import {
     FlatList,
     TextInput,
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Text from "../components/MyText";
 import moment from 'moment';
@@ -72,6 +73,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const togglecancelReasonModal = () => { setcancelReasonModal(!cancelReasonModal) };
     const [deleteJobReason, setdeleteJobReason] = useState('Professional not assigned');
 
+    const [inspectionAccept, setinspectionAccept] = useState()
+
     const getGenieData = async (genieId) => {
         console.log('Token for Genie', token);
         console.log('genieId', genieId);
@@ -101,8 +104,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
         const params = {
             appointmentId,
             driverRating: `${starCount}`,
-            favouriteGenie: true,
-            driverComment: 'test'
+            favouriteGenie: favGeniechecked,
+            driverComment: reviewTextArea
         };
         console.log('Params', params, token);
         const isUpdated = await dispatch(addRating(token, params));
@@ -136,14 +139,39 @@ export default function JobDetailScreen({ route, props, navigation }) {
             setLoading(false);
         }
     }
-    useEffect(() => {
-        const loadJobdetails = async () => {
-            await dispatch(loadJobDetails(token, jobId));
-        };
+    const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
+        console.log('inspectionAcceptReject');
+        console.log('jobId', jobId);
+        console.log('userToken', token);
+        console.log('approvalOrRejectStatus', approvalOrRejectStatus);
+        try {
+            const header = { headers: { Authorization: `Bearer ${token}` } };
+            const api = `${BASE_URL}customer/acceptOrRejectedJobOnce/`
+            const formData = new FormData();
+            formData.append('jobId', jobId)
+            formData.append('status', approvalOrRejectStatus)
+            const response = await axios.put(
+                api,
+                formData,
+                header
+            );
+            navigation.navigate('MyBookingPage')
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    useFocusEffect(
+        useCallback(() => {
+            const loadJobdetails = async () => {
+                await dispatch(loadJobDetails(token, jobId));
+            };
 
-        loadJobdetails();
-        console.log('loadJobdetails', loadJobdetails);
-    }, []);
+            loadJobdetails();
+            console.log('loadJobdetails', loadJobdetails);
+        }, [])
+    );
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFBFF" }}>
             <StatusBarAll />
@@ -323,34 +351,60 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                         </View>
-                                        {jobdetailsData.problemImages != [''] ?
-                                            <FlatList
-                                                data={jobdetailsData.problemImages}
-                                                keyExtractor={(item, index) => {
-                                                    return item._id;
-                                                }}
-                                                renderItem={({ item }) => (
-                                                    <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
-                                                        <Text style={[css.brandC, css.f16, css.fr, css.alignSelfC]}>Image Shared</Text>
-                                                        <Image
-                                                            resizeMode="contain"
-                                                            style={{ width: 100, height: 60, borderRadius: 10 }}
-                                                            source={{ uri: item.original }}
-                                                        />
-                                                    </View>
-
-                                                )}
-                                            />
-                                            : null
-                                        }
-                                        {jobdetailsData.problemDetails ?
-                                            <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDC]}>
-                                                <Text style={[css.brandC, css.f16, css.fr]}>Your Note:</Text>
-                                                <Text>{jobdetailsData.problemDetails}</Text>
+                                        {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill ?
+                                            <View>
+                                                {jobdetailsData.materialImages != [''] ?
+                                                    <FlatList
+                                                        data={jobdetailsData.materialImages}
+                                                        keyExtractor={(item, index) => {
+                                                            return item._id;
+                                                        }}
+                                                        renderItem={({ item }) => (
+                                                            <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
+                                                                <Text style={[css.brandC, css.f14, css.fr, css.alignSelfC]}>Material Image Shared</Text>
+                                                                <Image
+                                                                    resizeMode="cover"
+                                                                    style={{ width: 100, height: 60, borderRadius: 10 }}
+                                                                    source={{ uri: item.original }}
+                                                                />
+                                                            </View>
+                                                        )}
+                                                    />
+                                                    : null
+                                                }
                                             </View>
                                             :
-                                            null
+                                            <View>
+                                                {jobdetailsData.problemImages != [''] ?
+                                                    <FlatList
+                                                        data={jobdetailsData.problemImages}
+                                                        keyExtractor={(item, index) => {
+                                                            return item._id;
+                                                        }}
+                                                        renderItem={({ item }) => (
+                                                            <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
+                                                                <Text style={[css.brandC, css.f16, css.fr, css.alignSelfC]}>Image Shared</Text>
+                                                                <Image
+                                                                    resizeMode="contain"
+                                                                    style={{ width: 100, height: 60, borderRadius: 10 }}
+                                                                    source={{ uri: item.original }}
+                                                                />
+                                                            </View>
+                                                        )}
+                                                    />
+                                                    : null
+                                                }
+                                                {jobdetailsData.problemDetails ?
+                                                    <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDC]}>
+                                                        <Text style={[css.brandC, css.f16, css.fr]}>Your Note:</Text>
+                                                        <Text>{jobdetailsData.problemDetails}</Text>
+                                                    </View>
+                                                    :
+                                                    null
+                                                }
+                                            </View>
                                         }
+
 
                                     </List.Accordion>
                                     <List.Accordion title="Payment Summary" id="2"
@@ -403,23 +457,60 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                         <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.vatFinalCharges ? jobdetailsData.charges.vatFinalCharges : ''}</Text></View>
                                                     </View>
                                                 </View>
-                                                :
-                                                <View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fm]}>Labor (including inspection)</Text></View>
-                                                        <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? jobdetailsData.charges.unitCharges : jobdetailsData.charges.callOutCharges}</Text></View>
+                                                : '0' && jobdetailsData.billAndInvoices.estimatedBill != null ?
+                                                    <View>
+                                                        {jobdetailsData.estimateItems &&
+                                                            <FlatList
+                                                                data={jobdetailsData.estimateItems}
+                                                                keyExtractor={(item, index) => {
+                                                                    return item._id;
+                                                                }}
+                                                                renderItem={({ item }) => (
+                                                                    <View style={[css.flexDRSB]}>
+                                                                        <View><Text style={[css.greyC, css.fm]}>{item.name ? item.name : ''}</Text></View>
+                                                                        <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{item.charge ? item.charge : ''}</Text></View>
+                                                                    </View>
+                                                                )}
+                                                            />
+                                                        }
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fm]}>Discount (online *)</Text></View>
+                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges ? jobdetailsData.charges.discountCharges : ''}</Text></View>
+                                                        </View>
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fbo]}>Total Charges</Text></View>
+                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges ? jobdetailsData.charges.totalCharges : ''}</Text></View>
+                                                        </View>
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fm]}>Vat charges</Text></View>
+                                                            <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.vatCharges ? jobdetailsData.charges.vatCharges : ''}</Text></View>
+                                                        </View>
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fbo]}>Total charges (incl VAT)</Text></View>
+                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.finalCharges ? jobdetailsData.charges.finalCharges : ''}</Text></View>
+                                                        </View>
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fbo]}>Due Amount</Text></View>
+                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.vatFinalCharges ? jobdetailsData.charges.vatFinalCharges : ''}</Text></View>
+                                                        </View>
                                                     </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fm]}>Discount (online *)</Text></View>
-                                                        <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges ? jobdetailsData.charges.discountCharges : ''}</Text></View>
-                                                    </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fbo]}>Total Charges</Text></View>
-                                                        <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges ? jobdetailsData.charges.totalCharges : 'To be decided'}</Text></View>
-                                                    </View>
-                                                </View>
+                                                    : '0' ?
+                                                        <View>
+                                                            <View style={[css.flexDRSB]}>
+                                                                <View><Text style={[css.greyC, css.fm]}>Labor (including inspection)</Text></View>
+                                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? jobdetailsData.charges.unitCharges : jobdetailsData.charges.callOutCharges}</Text></View>
+                                                            </View>
+                                                            <View style={[css.flexDRSB]}>
+                                                                <View><Text style={[css.greyC, css.fm]}>Discount (online *)</Text></View>
+                                                                <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges ? jobdetailsData.charges.discountCharges : ''}</Text></View>
+                                                            </View>
+                                                            <View style={[css.flexDRSB]}>
+                                                                <View><Text style={[css.greyC, css.fbo]}>Total Charges</Text></View>
+                                                                <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges ? jobdetailsData.charges.totalCharges : 'To be decided'}</Text></View>
+                                                            </View>
+                                                        </View>
+                                                        : null
                                             }
-
                                         </View>
                                         <View style={[css.line5, css.spaceT10]}>
                                             <View style={[css.flexDRSB]}>
@@ -444,24 +535,42 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         <View style={[css.spaceB20, css.line5,]}>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>Bill Estimate</Text></View>
-                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC]}>NA</Text></View>
+                                                <View style={[css.flexDR]}>
+                                                    {jobdetailsData.billAndInvoices.estimatedBill != null ?
+                                                        <Pressable
+                                                            onPress={() => Linking.openURL(jobdetailsData.billAndInvoices.estimatedBill)}
+                                                            style={[css.alignSelfC]}>
+                                                            <Image style={{ width: 20, height: 25 }} source={require(imgPath + 'downloadpdf.png')} />
+                                                        </Pressable>
+                                                        :
+                                                        <Text style={[css.alignSelfC, css.blackC]}>NA</Text>
+                                                    }
+                                                </View>
                                             </View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>VAT invoice(s)</Text></View>
                                                 <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC]}>NA</Text></View>
                                             </View>
                                         </View>
+                                        {jobdetailsData.billAndInvoices.estimatedBill != null &&
+                                            <View style={[css.line5, css.spaceT10]}>
+                                                <View><Text style={[css.f16, css.fsb, css.brandC]}>NOTES: </Text></View>
+                                                <View><Text style={[css.greyC, css.fm, css.f14]}>{jobdetailsData.genieNotes}, </Text></View>
+                                                <View><Text style={[css.greyC, css.fm, css.f14]}>See detailed breakdown on email sent to registered email address.</Text></View>
+                                            </View>
+                                        }
                                         <View style={[css.spaceT10]}>
                                             <View style={[css.flexDR]}>
                                                 <View><Image style={[css.marginR20]} source={require(imgPath + 'warranty.png')} /></View>
                                                 <View style={[css.flexDC, css.alignSelfC]}>
-                                                    <Text style={[css.liteBlackC, css.fbo, css.f14]}>Warranty</Text>
+                                                    <Text style={[css.liteBlackC, css.fbo, css.f12]}>Warranty</Text>
                                                     {jobdetailsData.warranty.warrantyText ?
-                                                        <Text style={[css.liteBlackC, css.f14, css.fr]}>{jobdetailsData.warranty.warrantyText}</Text>
+                                                        <Text style={[css.liteBlackC, css.f12, css.fr]}>{jobdetailsData.warranty.warrantyText}</Text>
                                                         :
-                                                        <Text style={[css.cMaroon, css.f14, css.fr]}>No warranty applicable to this service</Text>
+                                                        <Text style={[css.cMaroon, css.f12, css.fr]}>No warranty applicable to this service</Text>
                                                     }
-                                                    <Pressable style={[css.flexDR]}><Text style={[css.liteBlackC, css.f14, css.fr]}>Visit </Text><Text style={[css.brandC, css.f14, css.fr]} onPress={() => Linking.openURL('https://www.homegenie.com/en/warranty/')}> HomeGenie Warranty Policy</Text></Pressable>
+                                                    <Pressable><Text style={[css.liteBlackC, css.f12, css.fr, { flexWrap: 'wrap' }]}>Visit <Text style={[css.brandC,]} onPress={() => Linking.openURL('https://www.homegenie.com/en/warranty/')}> HomeGenie Warranty Policy</Text></Text>
+                                                    </Pressable>
                                                 </View>
                                             </View>
                                         </View>
@@ -508,6 +617,16 @@ export default function JobDetailScreen({ route, props, navigation }) {
                         <View style={[styles.cancelButton, css.yellowBG]}>
                             <Text style={[css.whiteC, css.fbo, css.f18]}>Pay Now</Text>
                         </View>
+                    </Pressable>
+                </View>
+            }
+            {jobdetailsData && jobdetailsData.accept && jobdetailsData.billAndInvoices.estimatedBill != null &&
+                <View style={[css.container, css.paddingT0, css.marginB10, css.flexDRSA]}>
+                    <Pressable onPress={() => inspectionAcceptReject('APPROVE', jobdetailsData._id)} style={[styles.cancelButton, css.yellowBG, { width: 100 }]}>
+                        <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
+                    </Pressable>
+                    <Pressable onPress={() => inspectionAcceptReject('CLOSED', jobdetailsData._id)} style={[styles.cancelButton, { width: 100 }]}>
+                        <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
                     </Pressable>
                 </View>
             }

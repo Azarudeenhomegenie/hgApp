@@ -97,7 +97,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     onPress={() => navigation.navigate('GetgenieScreen')}
                                 >
                                     <Text style={[styles.buttonText], {
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         lineHeight: 21,
                                         fontFamily: 'PoppinsM',
                                         letterSpacing: 0.25,
@@ -170,22 +170,22 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                         </Pressable>
                                                         : 'INSPECTION' && item.billAndInvoices.estimatedBill ?
                                                             <Pressable
-                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
                                                                 onPress={() => navigation.navigate("JobdetailPage", {
                                                                     token: token, jobId: item._id
                                                                 })}
                                                             >
-                                                                <Text style={[css.whiteC, css.f14, css.fm]}>Accept</Text>
+                                                                <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
                                                             </Pressable>
                                                             : null
                                                     }
                                                     <Pressable
-                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: 100, height: 40 }]}
+                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: '30%', height: 40 }]}
                                                         onPress={() => navigation.navigate("JobdetailPage", {
                                                             token: token, jobId: item._id
                                                         })}
                                                     >
-                                                        <Text style={[css.brandC, css.f14, css.fm]}>View Details</Text>
+                                                        <Text style={[css.brandC, css.f12, css.fm]}>View Details</Text>
                                                     </Pressable>
                                                 </View>
                                             </View>
@@ -280,12 +280,12 @@ const MyBookingScreen = ({ props, navigation }) => {
                                             <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
                                                 <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
                                                     <Pressable
-                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: 100, height: 40 }]}
+                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: '30%', height: 40 }]}
                                                         onPress={() => navigation.navigate("JobdetailPage", {
                                                             token: token, jobId: item._id
                                                         })}
                                                     >
-                                                        <Text style={[css.brandC, css.f14, css.fm]}>View Details</Text>
+                                                        <Text style={[css.brandC, css.f12, css.fm]}>View Details</Text>
                                                     </Pressable>
                                                 </View>
                                             </View>
@@ -332,7 +332,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                         )}
                         activeColor={{ color: 'green', backgroundColor: 'yellow' }}
                         indicatorStyle={{ backgroundColor: 'rgba(46,176,228,.2)', height: 4 }}
-                        style={{ backgroundColor: 'transparent', width: '80%', alignSelf: 'center', elevation: 0 }}
+                        style={{ backgroundColor: 'transparent', width: '90%', alignSelf: 'center', elevation: 0 }}
                     />
                 )}
                 onIndexChange={(index) => setIndex(index)}
