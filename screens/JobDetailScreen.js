@@ -96,9 +96,9 @@ export default function JobDetailScreen({ route, props, navigation }) {
             setLoading(false);
         }
     }
-    const updateRatingData = async (appoinmentId) => {
+    const updateRatingData = async (appointmentId) => {
         console.log('working');
-        console.log('appoinmentId', appoinmentId);
+        console.log('appoinmentId', appointmentId);
         console.log('userToken', token);
         console.log(reviewTextArea);
         console.log(favGeniechecked);
@@ -106,20 +106,21 @@ export default function JobDetailScreen({ route, props, navigation }) {
         try {
             const header = { headers: { Authorization: `Bearer ${token}` } };
             const api = `${BASE_URL}customer/driverRatingComments`
-            //const formData = new FormData();
-            // formData.append('appointmentId', appoinmentId)
-            // formData.append('driverRating', starCount)
-            // formData.append('favouriteGenie', favGeniechecked)
-            // formData.append('driverComment', reviewTextArea)
+            const formData = new FormData();
+            formData.append('appointmentId', appointmentId)
+            formData.append('driverRating', starCount)
+            formData.append('favouriteGenie', favGeniechecked)
+            formData.append('driverComment', reviewTextArea)
             const response = await axios.post(
                 api,
-                { appointmentId: appoinmentId, driverRating: starCount, favouriteGenie: favGeniechecked, driverComment: reviewTextArea },
+                formData,
+                //{ appointmentId: appointmentId, driverRating: starCount, favouriteGenie: favGeniechecked, driverComment: reviewTextArea },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            return response.data;
+            //return response.data;
         } catch (error) {
             console.error(error);
-            alert('Rating not updated')
+            //alert('Rating not updated')
         } finally {
             setLoading(false);
         }
@@ -183,6 +184,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     {jobdetailsData && jobdetailsData.status == 'IN_SERVICE' ? ' - AWAIT COMPLETION' : null}
                                     {jobdetailsData && jobdetailsData.status == 'PAYMENT_PENDING' ? ' - PAY FINAL PAYMENT' : null}
                                     {jobdetailsData && jobdetailsData.status == 'ENROUTE' ? ' - AWAIT ARRIVAL' : null}
+                                    {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill == null ? ' - AWAIT ESTIMATE' : null}
+                                    {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill ? ' - ACCEPT ESTIMATE' : null}
                                     {/* {jobdetailsData.showAction} */}
                                 </Text>
                             </View>

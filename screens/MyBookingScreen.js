@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, } from "react";
 import {
     StyleSheet,
     View,
@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { connect } from "react-redux";
+//import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
 import { getLogin } from "../actions/hgAction";
 import Whatsapp from "../components/whtsApp";
@@ -137,11 +138,15 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                                         <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
                                                                         : item.status === 'ENROUTE' ?
                                                                             <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                                            : item.status === 'UNFINISHED' ?
-                                                                                <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                    {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                                </Text>
-                                                                                : null}
+                                                                            : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill ?
+                                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                                                : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
+                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                                                    : item.status === 'UNFINISHED' ?
+                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                            {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                                        </Text>
+                                                                                        : null}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -157,7 +162,16 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                         >
                                                             <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
                                                         </Pressable>
-                                                        : null
+                                                        : 'INSPECTION' && item.billAndInvoices.estimatedBill ?
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
+                                                                onPress={() => navigation.navigate("JobdetailPage", {
+                                                                    token: token, jobId: item._id
+                                                                })}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f14, css.fm]}>Accept</Text>
+                                                            </Pressable>
+                                                            : null
                                                     }
                                                     <Pressable
                                                         style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: 100, height: 40 }]}
@@ -244,11 +258,15 @@ const MyBookingScreen = ({ props, navigation, currentBookings, pastBookings, tok
                                                                     <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
                                                                     : item.status === 'ENROUTE' ?
                                                                         <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                                        : item.status === 'UNFINISHED' ?
-                                                                            <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                            </Text>
-                                                                            : null
+                                                                        : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill ?
+                                                                            <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                                            : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
+                                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                                                : item.status === 'UNFINISHED' ?
+                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                        {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                                    </Text>
+                                                                                    : null
                                                         }
                                                     </Text>
                                                 </View>
