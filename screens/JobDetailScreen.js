@@ -29,7 +29,7 @@ import { List, Checkbox, RadioButton } from 'react-native-paper';
 import { connect, useDispatch, useSelector } from "react-redux";
 import css from '../components/commonCss';
 //import { FlatList } from "react-native-gesture-handler";
-import { loadJobDetails, getJobDetail, getGenie, addRating } from "../reducers/jobDetailReducer";
+import { loadJobDetails, getJobDetail, getGenie, addRating, updateInspection } from "../reducers/jobDetailReducer";
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
@@ -139,28 +139,22 @@ export default function JobDetailScreen({ route, props, navigation }) {
         }
     }
     const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
-        console.log('inspectionAcceptReject');
-        console.log('jobId', jobId);
-        console.log('userToken', token);
-        console.log('approvalOrRejectStatus', approvalOrRejectStatus);
-        try {
-            const header = { headers: { Authorization: `Bearer ${token}` } };
-            const api = `${BASE_URL}customer/acceptOrRejectedJobOnce/`
-            const formData = new FormData();
-            formData.append('jobId', jobId)
-            formData.append('status', approvalOrRejectStatus)
-            const response = await axios.put(
-                api,
-                formData,
-                header
-            );
+
+        const params = {
+            jobId,
+            status: approvalOrRejectStatus,
+        };
+
+        console.log('Params', params, token);
+        const isUpdated = await dispatch(updateInspection(token, params));
+        if (isUpdated) {
+            console.log('Status updated success');
             navigation.navigate('MyBookingPage')
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
+        } else {
+            console.log('Rating Fail');
         }
     }
+
     useFocusEffect(
         useCallback(() => {
             const loadJobdetails = async () => {

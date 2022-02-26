@@ -113,6 +113,18 @@ export const addRating = (token, data) => async dispatch => {
 };
 
 
+export const updateInspection = (token, data) => async dispatch => {
+    try {
+        const res = await axios.put(`${BASE_URL}customer/acceptOrRejectedJobOnce`, data, { headers: { Authorization: `Bearer ${token}` } });
+        return true;
+    } catch (e) {
+        console.log('CATCH');
+        console.log(e)
+       return false;
+    }
+};
+
+
 //Selectors
 export const getJobDetail = state => state.jobdetails.jobdetail;
 export const getGenie = state => state.jobdetails.genie;
