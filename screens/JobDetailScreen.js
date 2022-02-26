@@ -72,7 +72,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const [cancelReasonModal, setcancelReasonModal] = useState(false)
     const togglecancelReasonModal = () => { setcancelReasonModal(!cancelReasonModal) };
     const [deleteJobReason, setdeleteJobReason] = useState('Professional not assigned');
-
+    const [rejectJobModal, setrejectJobModal] = useState(false)
+    const togglerejectJobModal = () => { setrejectJobModal(!rejectJobModal) };
+    const [inspectionAcceptRejectData, setinspectionAcceptRejectData] = useState()
+    const [inspectionAcceptRejectJobID, setinspectionAcceptRejectJobID] = useState()
 
     const getGenieData = async (genieId) => {
         console.log('Token for Genie', token);
@@ -141,8 +144,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
 
         const params = {
-            jobId,
-            status: approvalOrRejectStatus,
+            jobId: inspectionAcceptRejectJobID,
+            status: inspectionAcceptRejectData,
         };
 
         console.log('Params', params, token);
@@ -194,6 +197,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     {jobdetailsData && jobdetailsData.status == 'ENROUTE' ? ' - AWAIT ARRIVAL' : null}
                                     {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill == null ? ' - AWAIT ESTIMATE' : null}
                                     {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill ? ' - ACCEPT ESTIMATE' : null}
+                                    {jobdetailsData && jobdetailsData.status == 'REJECTED' ? ' - PAY CALL-OUT CHARGES' : null}
                                     {/* {jobdetailsData.showAction} */}
                                 </Text>
                             </View>
@@ -288,7 +292,9 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 <Pressable
                                                     onPress={() => settypeModal(!typeModal)}
                                                     style={[css.flexDR]}
-                                                ><Image source={require(imgPath + 'service-info.png')} />
+                                                >
+                                                    <Image source={require(imgPath + 'service-info.png')} />
+                                                    {/* <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text> */}
                                                     <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text>
                                                 </Pressable>
                                             </View>
@@ -542,7 +548,17 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             </View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>VAT invoice(s)</Text></View>
-                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC]}>NA</Text></View>
+                                                <View style={[css.flexDR]}>
+                                                    {jobdetailsData.billAndInvoices.finalInvoice != null ?
+                                                        <Pressable
+                                                            onPress={() => Linking.openURL(jobdetailsData.billAndInvoices.finalInvoice)}
+                                                            style={[css.alignSelfC]}>
+                                                            <Image style={{ width: 20, height: 25 }} source={require(imgPath + 'downloadpdf.png')} />
+                                                        </Pressable>
+                                                        :
+                                                        <Text style={[css.alignSelfC, css.blackC]}>NA</Text>
+                                                    }
+                                                </View>
                                             </View>
                                         </View>
                                         {jobdetailsData.billAndInvoices.estimatedBill != null &&
@@ -615,10 +631,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
             }
             {jobdetailsData && jobdetailsData.accept && jobdetailsData.billAndInvoices.estimatedBill != null &&
                 <View style={[css.container, css.paddingT0, css.marginB10, css.flexDRSA]}>
-                    <Pressable onPress={() => inspectionAcceptReject('APPROVE', jobdetailsData._id)} style={[styles.cancelButton, css.yellowBG, { width: 100 }]}>
+                    <Pressable onPress={() => inspectionAcceptReject(setinspectionAcceptRejectData('APPROVE'), setinspectionAcceptRejectJobID(jobdetailsData._id))} style={[styles.cancelButton, css.yellowBG, { width: 100 }]}>
                         <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
                     </Pressable>
-                    <Pressable onPress={() => inspectionAcceptReject('CLOSED', jobdetailsData._id)} style={[styles.cancelButton, { width: 100 }]}>
+                    <Pressable onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))} style={[styles.cancelButton, { width: 100 }]}>
                         <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
                     </Pressable>
                 </View>
@@ -1156,6 +1172,45 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, css.imgFull, { height: 40, }]}
                                     >
                                         <Text style={[css.whiteC, css.fm, css.f14]}>Submit</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                }
+            </Modal>
+            <Modal
+                isVisible={rejectJobModal}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+                coverScreen={true}
+                useNativeDriver={true}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+            >
+                {jobdetailsData &&
+                    <View style={css.centeredView}>
+                        <View style={css.modalNewView}>
+                            <View style={[css.modalNewHeader]}>
+                                <View>
+                                    <Text style={[css.modalNewText, css.f14, css.blackC, css.fm]}>Are you sure you want to cancel the Booking?</Text>
+                                </View>
+                            </View>
+                            <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
+                                <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
+                                    <TouchableOpacity
+                                        onPress={() => togglerejectJobModal()}
+                                        style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
+                                    >
+                                        <Text style={[css.whiteC, css.fm, css.f12, css.textCenter]}>NO, REQUEST REVISED</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => inspectionAcceptReject()}
+                                        style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.liteGreyBG, { width: '40%', height: 40, }]}
+                                    >
+                                        <Text style={[css.blackC, css.fm, css.f12, css.textCenter]}>YES, CLOSE THE JOB</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

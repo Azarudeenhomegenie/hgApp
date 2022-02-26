@@ -146,6 +146,9 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                     <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.nickName}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
+                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.services}</Text>
+                                                </View>
+                                                <View style={[css.flexDR]}>
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <View style={[css.flexDR]}>
                                                         <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
@@ -160,11 +163,13 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                                                 <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
                                                                                 : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
                                                                                     <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                                    : item.status === 'UNFINISHED' ?
-                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                            {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                                        </Text>
-                                                                                        : null}
+                                                                                    : item.status === 'REJECTED' ?
+                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                                                        : item.status === 'UNFINISHED' ?
+                                                                                            <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                                            </Text>
+                                                                                            : null}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -180,14 +185,16 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                         >
                                                             <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
                                                         </Pressable>
-                                                        : 'INSPECTION' && item.billAndInvoices.estimatedBill ?
-                                                            <Pressable
-                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                                onPress={() => inspectionAcceptReject('APPROVE', item._id)}
-                                                            >
-                                                                <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
-                                                            </Pressable>
-                                                            : null
+                                                        : 'IN_SERVICE' ?
+                                                            <Text></Text>
+                                                            : 'INSPECTION' ?
+                                                                <Pressable
+                                                                    style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                                    onPress={() => inspectionAcceptReject('APPROVE', item._id)}
+                                                                >
+                                                                    <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
+                                                                </Pressable>
+                                                                : null
                                                     }
                                                     <Pressable
                                                         style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: '30%', height: 40 }]}
@@ -278,11 +285,13 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                                             <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
                                                                             : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
                                                                                 <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                                : item.status === 'UNFINISHED' ?
-                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                        {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                                    </Text>
-                                                                                    : null
+                                                                                : item.status === 'REJECTED' ?
+                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                                                    : item.status === 'UNFINISHED' ?
+                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                            {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                                        </Text>
+                                                                                        : null
                                                         }
                                                     </Text>
                                                 </View>
