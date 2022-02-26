@@ -45,12 +45,6 @@ const MyBookingScreen = ({ props, navigation }) => {
     const pastBookings = useSelector(getPastBookings);
     const token = useSelector(getAccessToken);
     const [userName, setUserName] = useState(token);
-    //console.log('Props', token)
-    // const isLoggedIn = useSelector(getLoggedInStatus);
-    // const user = useSelector(getUser);
-    // const token = useSelector(getAccessToken);
-    //const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYwN2QxMGZjNTlkMTVhOTAxNDBiYjhjMSIsInR5cGUiOiJDVVNUT01FUiIsImlhdCI6MTY0NDQzNzQyNX0.8ofowAJZCqukx09NbDP1ddduRbx6Fr6dnBt2yUygSkE'
-    // const currentBookings = useSelector(getCurrentBookings);
     console.log('token', token);
     const dispatch = useDispatch();
     console.log('currentBookings', currentBookings);
@@ -61,7 +55,25 @@ const MyBookingScreen = ({ props, navigation }) => {
         { key: '2', title: 'Past Bookings' },
     ]);
 
-
+    const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
+        try {
+            const header = { headers: { Authorization: `Bearer ${token}` } };
+            const api = `${BASE_URL}customer/acceptOrRejectedJobOnce/`
+            const formData = new FormData();
+            formData.append('jobId', jobId)
+            formData.append('status', approvalOrRejectStatus)
+            const response = await axios.put(
+                api,
+                formData,
+                header
+            );
+            navigation.navigate('MyBookingPage')
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
     useFocusEffect(
         useCallback(() => {
             if (token) {
@@ -171,9 +183,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                         : 'INSPECTION' && item.billAndInvoices.estimatedBill ?
                                                             <Pressable
                                                                 style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                                onPress={() => navigation.navigate("JobdetailPage", {
-                                                                    token: token, jobId: item._id
-                                                                })}
+                                                                onPress={() => inspectionAcceptReject('APPROVE', item._id)}
                                                             >
                                                                 <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
                                                             </Pressable>

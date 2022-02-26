@@ -73,7 +73,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const togglecancelReasonModal = () => { setcancelReasonModal(!cancelReasonModal) };
     const [deleteJobReason, setdeleteJobReason] = useState('Professional not assigned');
 
-    const [inspectionAccept, setinspectionAccept] = useState()
 
     const getGenieData = async (genieId) => {
         console.log('Token for Genie', token);
