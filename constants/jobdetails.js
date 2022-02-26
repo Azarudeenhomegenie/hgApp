@@ -24,3 +24,24 @@ export const SLOTS = {
     "23": "11PM - 1AM",
     "0": "12AM - 2AM"
 };
+
+
+export const CHARGE_KEYS = [
+    'discountCharges',
+    'emergencyCharges',
+    'fridayCharges',
+    'totalCharges',
+    'callOutCharges',
+    'advanceCharges', 
+    'cancellationCharges',   
+    'estimateCharges',
+    'finalCharges',
+    'labourCharges',
+    'materialCharges',
+    'otherCharges',
+    'unitCharges',
+    'vatCharges',
+    'vatFinalCharges',
+    'dueCharges',
+    'additionalCharges'
+];
