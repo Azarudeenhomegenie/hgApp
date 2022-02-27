@@ -294,8 +294,11 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     style={[css.flexDR]}
                                                 >
                                                     <Image source={require(imgPath + 'service-info.png')} />
-                                                    {/* <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text> */}
-                                                    <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text>
+                                                    <Text style={[css.alignSelfC, css.blackC, css.fm]}>
+                                                        {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
+                                                        {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
+                                                        {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '}
+                                                        service</Text>
                                                 </Pressable>
                                             </View>
                                             <View style={[css.flexDRSB]}>
@@ -326,8 +329,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         </View>
                                         <View style={[css.spaceB20]}>
                                             <View style={[css.flexDRSB]}>
-                                                <View><Text style={[css.greyC, css.fm]}>Date and Time</Text></View>
-                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.scheduleDate ?
+                                                <View><Text style={[css.greyC, css.fm, css.f14]}>Date and Time</Text></View>
+                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm, css.f14]}>{jobdetailsData.scheduleDate ?
                                                     //moment(new Date(jobdetailsData.scheduleDate)).format("ddd DD MMM YYYY")
                                                     jobdetailsData.scheduleDate
                                                     :
@@ -552,7 +555,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     {jobdetailsData.billAndInvoices.finalInvoice != null ?
                                                         <Pressable
                                                             onPress={() => Linking.openURL(jobdetailsData.billAndInvoices.finalInvoice)}
-                                                            style={[css.alignSelfC]}>
+                                                            style={[css.alignSelfC]}
+                                                        >
                                                             <Image style={{ width: 20, height: 25 }} source={require(imgPath + 'downloadpdf.png')} />
                                                         </Pressable>
                                                         :
@@ -870,43 +874,51 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={[bookModal.modalBody]}>
-                                <View style={[css.flexDR, css.line10]}>
-                                    <Image style={[css.img30, css.marginR10]} source={require(imgPath + 'priceverification.png')} />
-                                    <Text style={[css.f20, css.lGreyC, css.alignSelfC, css.fsb]}>Pricing Details</Text>
-                                </View>
-                                <View style={[css.line20]}>
-                                    <View style={[css.flexDR]}>
-                                        <Image
-                                            style={{ width: 20, height: 20, marginRight: 10 }}
-                                            source={require(imgPath + 'iconIndex.png')}
-                                        />
-                                        <Text style={[css.f16, css.fsb, css.brandC, css.spaceB10]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text>
+                            <ScrollView>
+                                <View style={[bookModal.modalBody]}>
+                                    <View style={[css.flexDR, css.line10]}>
+                                        <Image style={[css.img30, css.marginR10]} source={require(imgPath + 'priceverification.png')} />
+                                        <Text style={[css.f20, css.lGreyC, css.alignSelfC, css.fsb]}>Pricing Details</Text>
                                     </View>
-                                    <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
-                                        {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{'\n'}
-                                        {jobdetailsData.subCategory.pricingUnitNote.additionalUnitNote}
-                                    </Text>
-                                    <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
-                                        {jobdetailsData.subCategory.pricingUnitNote.asteriskNote}
-                                    </Text>
-                                </View>
-                                <View style={[css.line20]}>
-                                    <Text style={[css.f16, css.fm, css.blackC, css.spaceB10]}>NOTES</Text>
-                                    <Text style={[css.fm, css.blackC, css.spaceB5, css.f14]}>Additional charges apply for Emergency bookings, based on availability and permissions from community/ building, as confirmed by the customer. VAT charges are not included and are based on the total invoice amount.</Text>
-                                </View>
-                                <View style={[css.line20]}>
-                                    <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
-                                    <View style={[css.flexDR]}>
-                                        <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
-                                        <View style={[css.flexDC, css.alignSelfC]}>
-                                            {jobdetailsData.charges.unitCharges ? '' : <Text style={[css.greyC, css.fm]}>As provided in the bill estimate.</Text>}
-                                            <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
-                                            <Text style={[css.brandC, css.fsb]} onPress={() => { Linking.openURL('https://www.homegenie.com/en/warranty') }}>HomeGenie warranty policy</Text>
+                                    <View>
+                                        <View style={[css.line20]}>
+                                            <View style={[css.flexDR]}>
+                                                <Image
+                                                    style={{ width: 20, height: 20, marginRight: 10 }}
+                                                    source={require(imgPath + 'iconIndex.png')}
+                                                />
+                                                <Text style={[css.f16, css.fsb, css.brandC, css.spaceB10]}>
+                                                    {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
+                                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
+                                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '}
+                                                    service</Text>
+                                            </View>
+                                            <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
+                                                {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{'\n'}
+                                                {jobdetailsData.subCategory.pricingUnitNote.additionalUnitNote}
+                                            </Text>
+                                            <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
+                                                {jobdetailsData.subCategory.pricingUnitNote.asteriskNote}
+                                            </Text>
+                                        </View>
+                                        <View style={[css.line20]}>
+                                            <Text style={[css.f16, css.fm, css.blackC, css.spaceB10]}>NOTES: </Text>
+                                            <Text style={[css.fm, css.blackC, css.spaceB5, css.f14]}>Additional charges apply for Emergency bookings, based on availability and permissions from community/ building, as confirmed by the customer. VAT charges are not included and are based on the total invoice amount.</Text>
+                                        </View>
+                                        <View style={[css.line20]}>
+                                            <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
+                                            <View style={[css.flexDR]}>
+                                                <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
+                                                <View style={[css.flexDC, css.alignSelfC]}>
+                                                    {jobdetailsData.charges.unitCharges ? '' : <Text style={[css.greyC, css.fm]}>As provided in the bill estimate.</Text>}
+                                                    <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
+                                                    <Text style={[css.brandC, css.fsb]} onPress={() => { Linking.openURL('https://www.homegenie.com/en/warranty') }}>HomeGenie warranty policy</Text>
+                                                </View>
+                                            </View>
                                         </View>
                                     </View>
                                 </View>
-                            </View>
+                            </ScrollView>
                         </View>
                     }
                 </ScrollView>
@@ -926,11 +938,19 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     <View style={css.centeredView}>
                         <View style={css.modalNewView}>
                             <View style={[css.modalNewHeader]}>
-                                <View><Text style={[css.modalNewText, css.f18, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? 'Fixed price' : 'Inspection based'} service</Text></View>
-                                {jobdetailsData.charges.unitCharges ?
+                                <View><Text style={[css.modalNewText, css.f18, css.blackC, css.fm]}>
+                                    {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
+                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
+                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '}
+                                    service</Text></View>
+                                {jobdetailsData.charges.unitCharges != 0 &&
                                     <View><Text style={[css.textCenter, css.blackC, css.f14, css.fr]}>The selected service is a fixed price service with the price estimate calculated based on the details you select while booking the service.</Text></View>
-                                    :
+                                }
+                                {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 &&
                                     <View><Text style={[css.textCenter, css.blackC, css.f14, css.fr]}>If the service is an inspection based service e.g.an AC repair then it requires an inspection visit for a diagnosis and thereby an inspection charge is applicable to this service. The inspection will result in an estimate for the customer which needs to be approved or rejected. If approved the service is delivered at the agreed estimate. If rejected, the inspection charge should be paid by the customer.</Text></View>
+                                }
+                                {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 &&
+                                    <View><Text style={[css.textCenter, css.blackC, css.f14, css.fr]}>The selected issue or service requires us to visit your location to survey and ascertail your requirements before we could provide you with an estimate.</Text></View>
                                 }
                             </View>
                             <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>

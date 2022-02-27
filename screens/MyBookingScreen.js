@@ -146,9 +146,6 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                     <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.nickName}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
-                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.services}</Text>
-                                                </View>
-                                                <View style={[css.flexDR]}>
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <View style={[css.flexDR]}>
                                                         <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
