@@ -33,6 +33,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 import { useDispatch, useSelector } from "react-redux";
+import { updatePayment } from "../reducers/jobDetailReducer";
 import { getCurrentBookings, loadBookings } from '../reducers/bookingsReducer'
 import { getLoggedInStatus, getUser, getAccessToken } from '../reducers/authReducer';
 
@@ -56,18 +57,26 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
         console.log('jobId', jobId);
         console.log('userToken', token);
         console.log(amount);
-        try {
-            const header = { headers: { Authorization: `Bearer ${token}` } };
-            const api = `${BASE_URL}customer/cashPayment?'appointmentID'=jobId&'amount'=amount`
-            const response = await axios.get(
-                api,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+        // try {
+        //     const header = { headers: { Authorization: `Bearer ${token}` } };
+        //     const api = `${BASE_URL}customer/cashPayment?'appointmentID'=jobId&'amount'=amount`
+        //     const response = await axios.get(
+        //         api,
+        //         header,
+        //     );
+        //     setamountPaidModal(true)
+        // } catch (error) {
+        //     console.error(error);
+        // } finally {
+        //     setLoading(false);
+        // }
+
+        const isUpdated = await dispatch(updatePayment(token, jobId, amount));
+        if (isUpdated) {
+            console.log('Status updated success');
             setamountPaidModal(true)
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
+        } else {
+            console.log('payment Fail');
         }
     }
     useEffect(async () => {
@@ -135,7 +144,7 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
                             <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
 
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('Home')}
+                                    onPress={() => navigation.navigate('MyBookingPage')}
                                     style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
                                 >
                                     <Text style={[css.whiteC, css.fm, css.f14]}>Got it</Text>

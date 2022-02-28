@@ -125,6 +125,16 @@ export const updateInspection = (token, data) => async dispatch => {
     }
 };
 
+export const updatePayment = (token, jobId, amount) => async dispatch => {
+    try {
+        const res = await axios.get(`${BASE_URL}customer/cashPayment?appointmentID=${jobId}&amount=${amount}`, { headers: { Authorization: `Bearer ${token}` } });
+        return true;
+    } catch (e) {
+        console.log('CATCH');
+        console.log(e)
+        return false;
+    }
+};
 
 //Selectors
 export const getJobDetail = state => state.jobdetails.jobdetail;

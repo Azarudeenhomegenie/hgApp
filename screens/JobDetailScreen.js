@@ -113,6 +113,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
         const isUpdated = await dispatch(addRating(token, params));
         if (isUpdated) {
             console.log('Rating success');
+            navigation.navigate('MyBookingPage')
         } else {
             console.log('Rating Fail');
         }
@@ -958,10 +959,11 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     source={require(imgPath + 'iconIndex.png')}
                                                 />
                                                 <Text style={[css.f16, css.fsb, css.brandC, css.spaceB10]}>
-                                                    {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
+                                                    {/* {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
                                                     {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
-                                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '}
-                                                    service</Text>
+                                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '} */}
+                                                    {jobdetailsData.serviceBasedType}
+                                                </Text>
                                             </View>
                                             <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
                                                 {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{'\n'}
@@ -1009,10 +1011,11 @@ export default function JobDetailScreen({ route, props, navigation }) {
                         <View style={css.modalNewView}>
                             <View style={[css.modalNewHeader]}>
                                 <View><Text style={[css.modalNewText, css.f18, css.blackC, css.fm]}>
-                                    {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
+                                    {/* {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
                                     {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
-                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '}
-                                    service</Text></View>
+                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '} */}
+                                    {jobdetailsData.serviceBasedType}
+                                </Text></View>
                                 {jobdetailsData.charges.unitCharges != 0 &&
                                     <View><Text style={[css.textCenter, css.blackC, css.f14, css.fr]}>The selected service is a fixed price service with the price estimate calculated based on the details you select while booking the service.</Text></View>
                                 }

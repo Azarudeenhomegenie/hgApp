@@ -260,6 +260,7 @@ export const getCurrentDetails = (data) => {
         unitCharges,
         discountCharges,
         additionalCharges,
+        totalCharges,
     } = charges || {};
 
     // show due amount
@@ -565,7 +566,7 @@ export const getCurrentDetails = (data) => {
 
             break;
         case "PAYMENT_PENDING":
-            defaultOptions.cancel = true;
+            defaultOptions.cancel = false;
             console.log('came here payment pending');
             if (payment && payment["payment_type"]) {
                 defaultOptions.showAction = " - Await collection ";
@@ -614,7 +615,7 @@ export const getCurrentDetails = (data) => {
                     defaultOptions.reditems = false;
                     defaultOptions.accept = false;
                     defaultOptions.Payment = true;
-                } else if (!targetExists && results.data[0] && results.data[0].charges && results.data[0].charges.totalCharges == 0) {
+                } else if (!targetExists && totalCharges == 0) {
                     defaultOptions.view = false;
                     defaultOptions.showAction = "";
                     defaultOptions.reditems = false;
@@ -638,7 +639,7 @@ export const getCurrentDetails = (data) => {
         if (finalCharges && driverData && payment && (payment.payment_type == "CASH" || payment.payment_type == "BANK_TRANSFER")) {
             // $("#finalstatus").html("");
             defaultOptions.view = false;
-        } else if (data.finalCharges && results.data[0].driverData) {
+        } else if (finalCharges && driverData) {
             defaultOptions.Payment = true;
             //$("#finalstatus").html(Mustache.render(paymentTemplate, data));
         }

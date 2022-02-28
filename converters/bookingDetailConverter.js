@@ -11,7 +11,7 @@ export const JobBookingDetailConverter = {
             charges,
             driverData,
             address,
-            //status
+            status,
         } = data;
 
         detail.id = _id;

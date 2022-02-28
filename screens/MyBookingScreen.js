@@ -80,7 +80,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                 //console.log('TKN:', token)
                 dispatch(loadBookings(token));
             }
-            console.log('sxxsxs');
+            console.log('xsxscdsx');
         }, [])
     );
 
@@ -90,34 +90,7 @@ const MyBookingScreen = ({ props, navigation }) => {
             case '1':
                 return (
                     <View style={[styles.scene, styles.bookingTabs]}>
-                        {currentBookings == null ?
-                            <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                                <View style={{
-                                    width: 150, height: 150,
-                                    borderRadius: 200,
-                                    backgroundColor: '#fff', justifyContent: 'center',
-                                    alignItems: 'center', marginTop: 50,
-                                }}>
-                                    <Image
-                                        style={[styles.bookingTabsImage], { width: 100, height: 100, }}
-                                        source={require(imgPath + 'empty-ongoing.png')}
-                                    />
-                                </View>
-                                <Text style={[styles.bookingTabsText]} >No Bookings yet. {"\n"}start Booking and {"\n"} Enjoy HomeGenie Services</Text>
-                                <Pressable
-                                    style={[styles.button, { backgroundColor: '#f6b700', }]}
-                                    onPress={() => navigation.navigate('GetgenieScreen')}
-                                >
-                                    <Text style={[styles.buttonText], {
-                                        fontSize: 14,
-                                        lineHeight: 21,
-                                        fontFamily: 'PoppinsM',
-                                        letterSpacing: 0.25,
-                                        color: 'white',
-                                    }}>Book Now</Text>
-                                </Pressable>
-                            </View>
-                            :
+                        {currentBookings != null ?
                             <View style={{ padding: 10 }}>
                                 <FlatList
                                     data={currentBookings}
@@ -206,13 +179,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                         </View>
                                     )} />
                             </View>
-                        }
-                    </View>
-                )
-            case '2':
-                return (
-                    <View style={[styles.scene, styles.bookingTabs]}>
-                        {pastBookings == null ?
+                            :
                             <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                                 <View style={{
                                     width: 150, height: 150,
@@ -231,15 +198,21 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     onPress={() => navigation.navigate('GetgenieScreen')}
                                 >
                                     <Text style={[styles.buttonText], {
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         lineHeight: 21,
-                                        fontWeight: 'bold',
+                                        fontFamily: 'PoppinsM',
                                         letterSpacing: 0.25,
                                         color: 'white',
                                     }}>Book Now</Text>
                                 </Pressable>
                             </View>
-                            :
+                        }
+                    </View>
+                )
+            case '2':
+                return (
+                    <View style={[styles.scene, styles.bookingTabs]}>
+                        {pastBookings != null ?
                             <View style={[css.container]}>
                                 <FlatList
                                     data={pastBookings}
@@ -307,6 +280,33 @@ const MyBookingScreen = ({ props, navigation }) => {
                                             </View>
                                         </View>
                                     )} />
+                            </View>
+                            :
+                            <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                                <View style={{
+                                    width: 150, height: 150,
+                                    borderRadius: 200,
+                                    backgroundColor: '#fff', justifyContent: 'center',
+                                    alignItems: 'center', marginTop: 50,
+                                }}>
+                                    <Image
+                                        style={[styles.bookingTabsImage], { width: 100, height: 100, }}
+                                        source={require(imgPath + 'empty-ongoing.png')}
+                                    />
+                                </View>
+                                <Text style={[styles.bookingTabsText]} >No Bookings yet. {"\n"}start Booking and {"\n"} Enjoy HomeGenie Services</Text>
+                                <Pressable
+                                    style={[styles.button, { backgroundColor: '#f6b700', }]}
+                                    onPress={() => navigation.navigate('GetgenieScreen')}
+                                >
+                                    <Text style={[styles.buttonText], {
+                                        fontSize: 16,
+                                        lineHeight: 21,
+                                        fontWeight: 'bold',
+                                        letterSpacing: 0.25,
+                                        color: 'white',
+                                    }}>Book Now</Text>
+                                </Pressable>
                             </View>
                         }
 
