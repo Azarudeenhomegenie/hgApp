@@ -36,6 +36,7 @@ export const JobDetailConverter = {
             jobDetail['services'] = 'Fixed price';
             jobDetail['charges']['totalCharges'] = unitCharges;
         } else {
+            //bookingOngoing[k]['services'] = 'Inspection based';
             jobDetail['services'] = 'Inspection based';
         }
 

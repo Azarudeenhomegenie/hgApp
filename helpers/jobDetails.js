@@ -184,7 +184,7 @@ const getInserviceOption = (data) => {
 const getRatingOption = (data) => {
     defaultOptions.rateGenie = true;
     defaultOptions.view = true;
-    //defaultOptions.showAction = 'Rate Genie';
+    defaultOptions.showAction = 'Rate Genie';
     defaultOptions.reditems = true;
 
     return {

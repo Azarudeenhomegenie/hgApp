@@ -109,7 +109,7 @@ export const addRating = (token, data) => async dispatch => {
     } catch (e) {
         console.log('CATCH');
         console.log(e)
-       return false;
+        return false;
     }
 };
 
@@ -121,7 +121,7 @@ export const updateInspection = (token, data) => async dispatch => {
     } catch (e) {
         console.log('CATCH');
         console.log(e)
-       return false;
+        return false;
     }
 };
 

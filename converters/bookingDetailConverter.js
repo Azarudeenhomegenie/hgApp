@@ -2,7 +2,7 @@ import { getPastDetail, getCurrentDetails } from '../helpers/bookingDetail';
 
 export const JobBookingDetailConverter = {
     fromApi: (data) => {
-        let detail  = data;
+        let detail = data;
 
         const {
             _id,
@@ -10,7 +10,8 @@ export const JobBookingDetailConverter = {
             serviceType,
             charges,
             driverData,
-            address
+            address,
+            //status
         } = data;
 
         detail.id = _id;
@@ -39,7 +40,7 @@ export const JobBookingDetailConverter = {
             detail.serviceType = 'Sameday';
         }
 
-        const { 
+        const {
             unitCharges,
             callOutCharges,
             hourlyCharges,
@@ -105,7 +106,7 @@ export const JobBookingDetailConverter = {
             detail.totalCharges = 'To be decided';
             detail.charges.labourCharges = `${labourCharges}`;
             detail.charges.labourSubText = 'Survey charges';
-            
+
             let serviceBasedPrice = subCategory.callOutCharges;
             detail.serviceCharge = '';
             if (subCategory.pricingUnitNote) {
@@ -139,13 +140,19 @@ export const JobBookingDetailConverter = {
         // let addressInfo = address;
         // let addressAuth = {};
         // addressAuth.Auth = udata.data.accessToken; redoo
-
-        detail = {
-            ...detail,
-            ...(true === true ? getCurrentDetails(detail) : getPastDetail(detail))
+        const { questions } = subCategory;
+        if (questions) {
+            detail.questions = questions;
         }
 
-        return detail;
+        const result = {
+            ...detail,
+            ...(true === true ? getCurrentDetails(detail) : getPastDetail(detail))
+            //...(['SETTLED', 'CANCELED'].indexOf(status) === -1 ? getCurrentDetails(detail) : getPastDetail(detail))
+        }
+        // console.log('charges_charges', result.charges);
+        // console.log('charges_hideLabourCharges', result.hideLabourCharges);
+        return result;
+
     }
 };
-        

@@ -142,19 +142,17 @@ export default function JobDetailScreen({ route, props, navigation }) {
         }
     }
     const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
-
         const params = {
             jobId: inspectionAcceptRejectJobID,
             status: inspectionAcceptRejectData,
         };
-
         console.log('Params', params, token);
         const isUpdated = await dispatch(updateInspection(token, params));
         if (isUpdated) {
             console.log('Status updated success');
             navigation.navigate('MyBookingPage')
         } else {
-            console.log('Rating Fail');
+            console.log('inspectionAcceptReject Fail');
         }
     }
 
@@ -192,13 +190,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
                             </View>
                             <View>
                                 <Text style={[css.f12, css.fr, css.blackC]}>Status: {jobdetailsData.status ? jobdetailsData.status : ''}
-                                    {jobdetailsData && jobdetailsData.status == 'IN_SERVICE' ? ' - AWAIT COMPLETION' : null}
+                                    {/* {jobdetailsData && jobdetailsData.status == 'IN_SERVICE' ? ' - AWAIT COMPLETION' : null}
                                     {jobdetailsData && jobdetailsData.status == 'PAYMENT_PENDING' ? ' - PAY FINAL PAYMENT' : null}
                                     {jobdetailsData && jobdetailsData.status == 'ENROUTE' ? ' - AWAIT ARRIVAL' : null}
                                     {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill == null ? ' - AWAIT ESTIMATE' : null}
                                     {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill ? ' - ACCEPT ESTIMATE' : null}
-                                    {jobdetailsData && jobdetailsData.status == 'REJECTED' ? ' - PAY CALL-OUT CHARGES' : null}
-                                    {/* {jobdetailsData.showAction} */}
+                                    {jobdetailsData && jobdetailsData.status == 'REJECTED' ? ' - PAY CALL-OUT CHARGES' : null} */}
+                                    {jobdetailsData.showAction}
                                 </Text>
                             </View>
                         </View>
@@ -295,10 +293,11 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 >
                                                     <Image source={require(imgPath + 'service-info.png')} />
                                                     <Text style={[css.alignSelfC, css.blackC, css.fm]}>
-                                                        {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
+                                                        {/* {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
                                                         {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
-                                                        {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '}
-                                                        service</Text>
+                                                        {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '} */}
+                                                        {jobdetailsData.serviceBasedType}
+                                                    </Text>
                                                 </Pressable>
                                             </View>
                                             <View style={[css.flexDRSB]}>
@@ -309,7 +308,22 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 <View><Text style={[css.greyC, css.fm]}>Frequency</Text></View>
                                                 <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>One Time</Text></View>
                                             </View>
-                                            <View style={[css.flexDRSB]}>
+                                            {jobdetailsData.questions &&
+                                                <FlatList
+                                                    data={jobdetailsData.questions}
+                                                    keyExtractor={(item, index) => {
+                                                        return item._id;
+                                                    }}
+                                                    renderItem={({ item }) => (
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fm]}>{item.question}</Text></View>
+                                                            <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{item.answer.answer}</Text></View>
+                                                        </View>
+                                                    )}
+                                                />
+                                            }
+
+                                            {/* <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>Reason for the service ?</Text></View>
                                                 <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.subCategory.questions[0].answer.answer ? jobdetailsData.subCategory.questions[0].answer.answer : '1. Dirty air'}</Text></View>
                                             </View>
@@ -320,7 +334,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>Need external units serviced aswell ?</Text></View>
                                                 <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.subCategory.questions[2].answer.answer ? jobdetailsData.subCategory.questions[2].answer.answer : 'No'}</Text></View>
-                                            </View>
+                                            </View> */}
                                         </View>
                                         <View style={[css.line5, css.spaceT20]}>
                                             <View style={[css.flexDRSB]}>
@@ -330,11 +344,15 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         <View style={[css.spaceB20]}>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm, css.f14]}>Date and Time</Text></View>
-                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm, css.f14]}>{jobdetailsData.scheduleDate ?
-                                                    //moment(new Date(jobdetailsData.scheduleDate)).format("ddd DD MMM YYYY")
-                                                    jobdetailsData.scheduleDate
+                                                <View style={[css.flexDR]}>
+                                                    <Text style={[css.alignSelfC, css.blackC, css.fm, css.f14]}>
+                                                        {/* {jobdetailsData.scheduleDate ?
+                                                    moment(new Date(jobdetailsData.scheduleDate)).format("ddd DD MMM YYYY")
+                                                    jobdetailsData.scheduleDate1
                                                     :
-                                                    null} </Text>
+                                                    null}  */}
+                                                        {jobdetailsData.scheduleDate}
+                                                    </Text>
                                                     {/* <Text> | {jobdetailsData.slot[0] == '8' ? '8AM - 10AM' :
                                                         jobdetailsData.slot[0] == '10' ? '10AM - 12PM' :
                                                             jobdetailsData.slot[0] == '12' ? '12PM - 2PM' :
@@ -432,86 +450,123 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 <View><Text style={[css.greyC, css.fbo]}>item</Text></View>
                                                 <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>AED</Text></View>
                                             </View>
-                                            {jobdetailsData.charges.unitCharges ?
-                                                <View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fm]}>Service Charges</Text></View>
-                                                        <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? jobdetailsData.charges.unitCharges : ''}</Text></View>
-                                                    </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fm]}>Discount (online *)</Text></View>
-                                                        <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges ? jobdetailsData.charges.discountCharges : ''}</Text></View>
-                                                    </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fbo]}>Total Charges</Text></View>
-                                                        <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges ? jobdetailsData.charges.totalCharges : ''}</Text></View>
-                                                    </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fm]}>Vat charges</Text></View>
-                                                        <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.vatCharges ? jobdetailsData.charges.vatCharges : ''}</Text></View>
-                                                    </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fbo]}>Total charges (incl VAT)</Text></View>
-                                                        <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.finalCharges ? jobdetailsData.charges.finalCharges : ''}</Text></View>
-                                                    </View>
-                                                    <View style={[css.flexDRSB]}>
-                                                        <View><Text style={[css.greyC, css.fbo]}>Due Amount</Text></View>
-                                                        <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.vatFinalCharges ? jobdetailsData.charges.vatFinalCharges : ''}</Text></View>
+                                            {jobdetailsData.showLabourChargeold && !!jobdetailsData.charges.labourCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>{jobdetailsData.charges.labourSubText}</Text></View>
+                                                    <View style={[css.flexDR]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.labourCharges}</Text>
                                                     </View>
                                                 </View>
-                                                : '0' && jobdetailsData.billAndInvoices.estimatedBill != null ?
-                                                    <View>
-                                                        {jobdetailsData.estimateItems &&
-                                                            <FlatList
-                                                                data={jobdetailsData.estimateItems}
-                                                                keyExtractor={(item, index) => {
-                                                                    return item._id;
-                                                                }}
-                                                                renderItem={({ item }) => (
-                                                                    <View style={[css.flexDRSB]}>
-                                                                        <View><Text style={[css.greyC, css.fm]}>{item.name ? item.name : ''}</Text></View>
-                                                                        <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{item.charge ? item.charge : ''}</Text></View>
-                                                                    </View>
-                                                                )}
-                                                            />
-                                                        }
-                                                        <View style={[css.flexDRSB]}>
-                                                            <View><Text style={[css.greyC, css.fm]}>Discount (online *)</Text></View>
-                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges ? jobdetailsData.charges.discountCharges : ''}</Text></View>
-                                                        </View>
-                                                        <View style={[css.flexDRSB]}>
-                                                            <View><Text style={[css.greyC, css.fbo]}>Total Charges</Text></View>
-                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges ? jobdetailsData.charges.totalCharges : ''}</Text></View>
-                                                        </View>
-                                                        <View style={[css.flexDRSB]}>
-                                                            <View><Text style={[css.greyC, css.fm]}>Vat charges</Text></View>
-                                                            <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.vatCharges ? jobdetailsData.charges.vatCharges : ''}</Text></View>
-                                                        </View>
-                                                        <View style={[css.flexDRSB]}>
-                                                            <View><Text style={[css.greyC, css.fbo]}>Total charges (incl VAT)</Text></View>
-                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.finalCharges ? jobdetailsData.charges.finalCharges : ''}</Text></View>
-                                                        </View>
-                                                        <View style={[css.flexDRSB]}>
-                                                            <View><Text style={[css.greyC, css.fbo]}>Due Amount</Text></View>
-                                                            <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.vatFinalCharges ? jobdetailsData.charges.vatFinalCharges : ''}</Text></View>
-                                                        </View>
+                                            }
+                                            {jobdetailsData.hideLabourCharges && !!jobdetailsData.charges.labourCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Labor {jobdetailsData.charges.labourSubText}</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.labourCharges}</Text>
                                                     </View>
-                                                    : '0' ?
-                                                        <View>
-                                                            <View style={[css.flexDRSB]}>
-                                                                <View><Text style={[css.greyC, css.fm]}>Labor (including inspection)</Text></View>
-                                                                <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges ? jobdetailsData.charges.unitCharges : jobdetailsData.charges.callOutCharges}</Text></View>
-                                                            </View>
-                                                            <View style={[css.flexDRSB]}>
-                                                                <View><Text style={[css.greyC, css.fm]}>Discount (online *)</Text></View>
-                                                                <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges ? jobdetailsData.charges.discountCharges : ''}</Text></View>
-                                                            </View>
-                                                            <View style={[css.flexDRSB]}>
-                                                                <View><Text style={[css.greyC, css.fbo]}>Total Charges</Text></View>
-                                                                <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges ? jobdetailsData.charges.totalCharges : 'To be decided'}</Text></View>
-                                                            </View>
-                                                        </View>
-                                                        : null
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.unitCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Service Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.unitCharges}</Text></View>
+                                                </View>
+                                            }
+                                            {jobdetailsData.showEstimateItems && jobdetailsData.estimateItems &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>{jobdetailsData.name}</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charge}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.emergencyCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Emergency Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.emergencyCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.fridayCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Friday Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.fridayCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {jobdetailsData.showMaterialOld && !!jobdetailsData.charges.materialCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Material</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.materialCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.additionalCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Other Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.additionalCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.discountCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm]}>Discount (online*)</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.discountCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.totalCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.fbo]}>Total Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.totalCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!jobdetailsData.charges.totalCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.fbo]}>Total Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fbo]}>0</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.vatCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.fm]}>Vat Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.charges.vatCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.vatFinalCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.fbo]}>Total Charges (incl VAT)</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.vatFinalCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {jobdetailsData.advanceAvail &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.fm]}>(less) Advance</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm]}>{jobdetailsData.AdvanceAmount}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {jobdetailsData.showDueAmount &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.fbo]}>Due Amount</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fbo]}>{jobdetailsData.charges.dueCharges}</Text>
+                                                    </View>
+                                                </View>
                                             }
                                         </View>
                                         <View style={[css.line5, css.spaceT10]}>
@@ -526,6 +581,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             </View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm]}>Status</Text></View>
+                                                {/* wallet information have to be added */}
                                                 <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.brandC]}>{jobdetailsData.payment_status}</Text></View>
                                             </View>
                                         </View>
@@ -633,9 +689,23 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </Pressable>
                 </View>
             }
-            {jobdetailsData && jobdetailsData.accept && jobdetailsData.billAndInvoices.estimatedBill != null &&
+            {/* {jobdetailsData && jobdetailsData.accept && jobdetailsData.billAndInvoices.estimatedBill != null &&
                 <View style={[css.container, css.paddingT0, css.marginB10, css.flexDRSA]}>
                     <Pressable onPress={() => inspectionAcceptReject(setinspectionAcceptRejectData('APPROVE'), setinspectionAcceptRejectJobID(jobdetailsData._id))} style={[styles.cancelButton, css.yellowBG, { width: 100 }]}>
+                        <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
+                    </Pressable>
+                    <Pressable onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))} style={[styles.cancelButton, { width: 100 }]}>
+                        <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
+                    </Pressable>
+                </View>
+            } */}
+            {jobdetailsData && jobdetailsData.accept &&
+                < View style={[css.container, css.paddingT0, css.marginB10, css.flexDRSA]}>
+                    <Pressable onPress={() => (
+                        (setinspectionAcceptRejectData('APPROVE'), setinspectionAcceptRejectJobID(jobdetailsData._id))
+                        , inspectionAcceptReject())}
+                        style={[styles.cancelButton, css.yellowBG, { width: 100 }]}
+                    >
                         <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
                     </Pressable>
                     <Pressable onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))} style={[styles.cancelButton, { width: 100 }]}>
@@ -971,7 +1041,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 }
             </Modal>
-            {jobdetailsData && jobdetailsData.status == 'RATING' &&
+            {
+                jobdetailsData && jobdetailsData.status == 'RATING' &&
                 <Modal
                     isVisible={ratingModal}
                     animationIn='fadeIn'
@@ -1238,7 +1309,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 }
             </Modal>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
 const form = StyleSheet.create({

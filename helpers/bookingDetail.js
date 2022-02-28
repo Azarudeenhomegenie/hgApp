@@ -12,7 +12,7 @@ const COMPLETED_JOB_TEXT = "The job has now been completed, for any complaints o
 
 
 export const getPastDetail = (data) => {
-    let detail = { };
+    let detail = {};
     const {
         payment,
         materials
@@ -41,10 +41,11 @@ export const getPastDetail = (data) => {
     if (materials && materials.length > 0) {
         detail['AdditionalCharge'] = [];
         materials.filter(m => m.status === 'IN_SERVICE')
-        .forEach((material) => {
-            detail['AdditionalCharges'] = true;
-            detail.additionalCharge.push({name: material.materialName, price: material.materialPrice })
-        });
+            .forEach((material) => {
+                detail['AdditionalCharges'] = true;
+                //detail.additionalCharge.push({ name: material.materialName, price: material.materialPrice })
+                detail.AdditionalCharge.push({ name: material.materialName, price: material.materialPrice })
+            });
     }
 
     if (!data.paymentPlan) {
@@ -86,7 +87,7 @@ export const getPastDetail = (data) => {
     if (Number(AdvanceAmount)) {
         detail.AdvanceAmount = Number(Number(AdvanceAmount).toFixed(2));
     }
-    
+
     // to fix precision issue of charges
 
     const {
@@ -100,11 +101,11 @@ export const getPastDetail = (data) => {
     detail.hideLabourCharges = !isInspectionCompleted || isRejected || status === 'CANCELLED' || status === 'EXPIRED'
     detail.showEstimateItems = isInspectionCompleted && !isRejected;
 
-    const showLabourMatrial = (isInspectionCompleted 
+    const showLabourMatrial = (isInspectionCompleted
         && (
-            !estimateItems 
+            !estimateItems
             || (
-                estimateItems 
+                estimateItems
                 && estimateItems.length === 0
             )
         )
@@ -136,7 +137,7 @@ export const getGenieData = (data) => {
 
     if (data.genie) {
 
-        const { 
+        const {
             genieNotes,
             additionalGenieNote,
             driverData,
@@ -147,7 +148,7 @@ export const getGenieData = (data) => {
         genie['GenieNotes'] = data.genieNotes;
         genie['additionalGenieNote'] = data.additionalGenieNote;
         genie['phoneNo'] = data.companyPhoneNo;
-        
+
         if (genieNotes || additionalGenieNote) {
             genie['showGenieNote'] = true;
         }
@@ -198,7 +199,7 @@ export const getCurrentDetails = (data) => {
     detail['showCall'] = true;
     detail['services'] = data.serviceBasedType;
 
-    const { 
+    const {
         materials,
         status,
         charges,
@@ -216,13 +217,15 @@ export const getCurrentDetails = (data) => {
     const { scheduleDate } = data;
 
     const date = moment(scheduleDate);
+    console.log('scheduleDatehelper', scheduleDate);
     detail['scheduleDate'] = `${date.format('ddd DD MMM YYYY')} | ${SLOTS[slotTime]}`;
+    //console.log('detailDate', detail['scheduleDate']);
     detail['dateScheduled'] = `${SLOTS[slotTime]}, ${date.format('MMM DD')}`;
 
     const { utc_timing: { requestedTime } } = data;
     const requstedMoment = moment(requestedTime);
     detail["utc_timing"]["requestedTime"] = [requstedMoment.format('DD/MM/YYYY'), requstedMoment.format('hh:mm:ss')];
-        
+
     detail.services = data.serviceBasedType;
 
     if (payment['payment_type'] == null) {
@@ -236,19 +239,20 @@ export const getCurrentDetails = (data) => {
         detail.charges['additionalCharges'] = 0;
 
         materials.filter(m => ['IN_SERVICE', 'INSPECTION'].indexOf(m.status) !== -1)
-        .forEach(m => {
-            if (m.status == 'IN_SERVICE') {
-                detail['AdditionalCharges'] = true;
-                detail.charges['additionalCharges'] += m.materialPrice;
-                detail.AdditionalCharge.puhs({name: m.materialName, price: m.materialPrice });
-            } else {
-                detail.charges['materialCharges'] += m.materialPrice;
-            }
-        });
+            .forEach(m => {
+                if (m.status == 'IN_SERVICE') {
+                    detail['AdditionalCharges'] = true;
+                    detail.charges['additionalCharges'] += m.materialPrice;
+                    //detail.AdditionalCharge.puhs({ name: m.materialName, price: m.materialPrice });
+                    detail.AdditionalCharge.push({ name: m.materialName, price: m.materialPrice });
+                } else {
+                    detail.charges['materialCharges'] += m.materialPrice;
+                }
+            });
 
     }
 
-    const { 
+    const {
         finalCharges,
         advanceCharges,
         estimateCharges,
@@ -262,7 +266,7 @@ export const getCurrentDetails = (data) => {
     detail.showDueAmount = false;
     if (status == 'IN_SERVICE' || finalCharges) {
         detail.showDueAmount = true;
-        
+
         if (status == 'IN_SERVICE') {
             if (advanceCharges == estimateCharges) {
                 detail.charges.dueCharges = finalCharges - vatFinalCharges;
@@ -384,7 +388,7 @@ export const getCurrentDetails = (data) => {
 
     detail.charges.discountCharges = Number((discountCharges).toFixed(2));
 
-    const {  AdvanceAmount, driverData } = data;
+    const { AdvanceAmount, driverData } = data;
     if (charges) {
         CHARGE_KEYS.forEach((key) => {
             const c = charges[key]
@@ -399,11 +403,11 @@ export const getCurrentDetails = (data) => {
     }
 
     // to fix precision issue of charges
-   
+
     if (charges && Number(additionalCharges)) {
         detail.charges.additionalCharges = Number(Number(additionalCharges).toFixed(2));
     }
-    
+
     if ((advancePayment && status == "INSPECTION") || (advancePayment && status == "ASSIGNED" && advanceCharges)) {
         if (estimateCharges == advanceCharges) {
             detail.advanceNote = ADVANCE_PAY_NOTE.replace("AMOUNT", vatFinalCharges);
@@ -426,11 +430,11 @@ export const getCurrentDetails = (data) => {
 
     detail.hideLabourCharges = !isInspectionCompleted || isRejected || status === 'CANCELLED' || status === 'EXPIRED';
     detail.showEstimateItems = isInspectionCompleted && !isRejected
-     
+
     let c = isInspectionCompleted && (!estimateItems || (estimateItems && estimateItems.length === 0)) && !isRejected;
     detail.showLabourChargeold = c;
     detail.showMaterialOld = c;
-    
+
     detail.isCategoryMembership = categoryName == 'Membership';
 
     if (driverData) {
@@ -494,7 +498,7 @@ export const getCurrentDetails = (data) => {
         case "ENROUTE":
             defaultOptions.showAction = '- Await arrival'
             defaultOptions.reditems = false;
-            defaultOptions.cancel =  false;
+            defaultOptions.cancel = false;
             break;
         case "INSPECTION":
             if (advancePayment && unitCharges) {
@@ -508,7 +512,7 @@ export const getCurrentDetails = (data) => {
                 defaultOptions.showAction = " - Accept Estimate ";
                 defaultOptions.reditems = true;
                 defaultOptions.cancel = false;
-                defaultOptions.accept =  true;
+                defaultOptions.accept = true;
             }
 
             if (isInspectionCompleted && advancePayment && advanceCharges && advance_payment["payment_type"] == null && payment.payment_type == null) {
@@ -562,6 +566,7 @@ export const getCurrentDetails = (data) => {
             break;
         case "PAYMENT_PENDING":
             defaultOptions.cancel = true;
+            console.log('came here payment pending');
             if (payment && payment["payment_type"]) {
                 defaultOptions.showAction = " - Await collection ";
             } else {
@@ -655,7 +660,7 @@ export const getCurrentDetails = (data) => {
         }
     } else if (status == "INSPECTION" || status == "RESCHEDULED") {
         if (isInspectionCompleted && payment.payment_type) {
-            
+
             if (advanceCharges == estimateCharges) {
                 detail.advancePayment = vatFinalCharges;
             }
@@ -669,25 +674,26 @@ export const getCurrentDetails = (data) => {
             // $("#" + id + "-cancel").html("");
         }
     } else if (status == "REQUESTED" || status == "ASSIGNED" || status == "ENROUTE" || status == "REESTIMATE") {
-        defaultOptions.advancePayment = true;
-        defaultOptions.accept = true;
+        //defaultOptions.advancePayment = true;
+        defaultOptions.cancel = true;
         if (status == "ENROUTE" || status == "REESTIMATE") {
-            defaultOptions.view = false;
+            //defaultOptions.view = false;
+            defaultOptions.cancel = false;
         }
         if (status == "ASSIGNED" && unitCharges && advancePayment && advance_payment.payment_type == null && !payment.payment_type) {
-            defaultOptions.advancePayment = true;
+            //defaultOptions.advancePayment = true;
             defaultOptions.accept = true;
         }
-        if (jobStatus == "ASSIGNED" && results.data[0].charges.unitCharges && results.data[0].advancePayment && (results.data[0]["payment"]["payment_type"] == "CASH" || results.data[0]["payment"]["payment_type"] == "CARD" || results.data[0]["payment"]["payment_type"] == "BANK_TRANSFER")) {
-            defaultOptions.advancePayment = false; 
-            defaultOptions.accept = false;
+        if (status == "ASSIGNED" && unitCharges && advancePayment && (payment["payment_type"] == "CASH" || payment["payment_type"] == "CARD" || payment["payment_type"] == "BANK_TRANSFER")) {
+            //defaultOptions.advancePayment = false;
+            defaultOptions.cancel = false;
         }
     }
 
     detail = {
         ...detail,
         ...defaultOptions
-    } 
+    }
 
-    return 
+    return detail;
 };

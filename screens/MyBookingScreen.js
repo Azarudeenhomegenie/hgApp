@@ -80,7 +80,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                 //console.log('TKN:', token)
                 dispatch(loadBookings(token));
             }
-            console.log('test', token);
+            console.log('sxxsxs');
         }, [])
     );
 
@@ -173,7 +173,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                             </View>
                                             <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
                                                 <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
-                                                    {item.status === 'PAYMENT_PENDING' ?
+                                                    {item.status == 'PAYMENT_PENDING' ?
                                                         <Pressable
                                                             style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
                                                             onPress={() => navigation.navigate("JobdetailPage", {
@@ -212,7 +212,7 @@ const MyBookingScreen = ({ props, navigation }) => {
             case '2':
                 return (
                     <View style={[styles.scene, styles.bookingTabs]}>
-                        {pastBookings == '' ?
+                        {pastBookings == null ?
                             <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                                 <View style={{
                                     width: 150, height: 150,
