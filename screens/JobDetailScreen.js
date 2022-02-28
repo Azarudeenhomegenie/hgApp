@@ -146,7 +146,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
             jobId: inspectionAcceptRejectJobID,
             status: inspectionAcceptRejectData,
         };
-        console.log('Params', params, token);
+        console.log('Paramsds', params, token);
         const isUpdated = await dispatch(updateInspection(token, params));
         if (isUpdated) {
             console.log('Status updated success');
