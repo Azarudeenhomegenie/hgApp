@@ -147,12 +147,12 @@ export const JobBookingDetailConverter = {
 
         const result = {
             ...detail,
-            ...(true === true ? getCurrentDetails(detail) : getPastDetail(detail))
+            //...(true === true ? getCurrentDetails(detail) : getPastDetail(detail))
             //...(['SETTLED', 'CANCELED'].indexOf(status) === -1 ? getCurrentDetails(detail) : getPastDetail(detail))
+            ...(['SETTLED', 'CANCELLED'].indexOf(status) === -1 ? getCurrentDetails(detail) : getPastDetail(detail))
         }
         // console.log('charges_charges', result.charges);
         // console.log('charges_hideLabourCharges', result.hideLabourCharges);
         return result;
-
     }
 };

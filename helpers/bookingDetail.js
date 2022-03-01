@@ -569,15 +569,16 @@ export const getCurrentDetails = (data) => {
             defaultOptions.cancel = false;
             console.log('came here payment pending');
             if (payment && payment["payment_type"]) {
-                defaultOptions.showAction = " - Await collection ";
-            } else {
+                //defaultOptions.showAction = " - Await collection ";
                 defaultOptions.showAction = " - pay final payment ";
+            } else {
+                defaultOptions.showAction = " - PAY FINAL PAYMENT ";
                 defaultOptions.reditems = true;
                 defaultOptions.Payment = true;
             }
             break;
         case "RATING":
-            defaultOptions.showAction = " - rate genie ";
+            defaultOptions.showAction = " - Rate Genie ";
             defaultOptions.reditems = true;
             defaultOptions.rateGenie = true;
             // if ($("#" + id + '-view').hasClass('newstatusview')) {

@@ -622,6 +622,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                         </View>
+                                        {jobdetailsData && jobdetailsData.additionalGenieNote &&
+                                            <View style={[css.line5, css.spaceT10, css.paddingB10]}>
+                                                <View><Text style={[css.f16, css.fsb, css.brandC]}>NOTES: </Text></View>
+                                                <View><Text style={[css.greyC, css.fm, css.f14]}>{jobdetailsData.additionalGenieNote}, </Text></View>
+                                                <View><Text style={[css.greyC, css.fm, css.f14,]}>See detailed breakdown on email sent to registered email address.</Text></View>
+                                            </View>
+                                        }
                                         {jobdetailsData.billAndInvoices.estimatedBill != null &&
                                             <View style={[css.line5, css.spaceT10]}>
                                                 <View><Text style={[css.f16, css.fsb, css.brandC]}>NOTES: </Text></View>
@@ -629,7 +636,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 <View><Text style={[css.greyC, css.fm, css.f14]}>See detailed breakdown on email sent to registered email address.</Text></View>
                                             </View>
                                         }
-                                        <View style={[css.spaceT10]}>
+                                        <View style={[css.spaceT10, css.line5, css.paddingB20]}>
                                             <View style={[css.flexDR]}>
                                                 <View><Image style={[css.marginR20]} source={require(imgPath + 'warranty.png')} /></View>
                                                 <View style={[css.flexDC, css.alignSelfC]}>
@@ -639,7 +646,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                         :
                                                         <Text style={[css.cMaroon, css.f12, css.fr]}>No warranty applicable to this service</Text>
                                                     }
-                                                    <Pressable><Text style={[css.liteBlackC, css.f12, css.fr, { flexWrap: 'wrap' }]}>Visit <Text style={[css.brandC,]} onPress={() => Linking.openURL('https://www.homegenie.com/en/warranty/')}> HomeGenie Warranty Policy</Text></Text>
+                                                    <Pressable>
+                                                        <Text style={[css.liteBlackC, css.f12, css.fr, { flexWrap: 'wrap' }]}>Visit
+                                                            <Text style={[css.brandC,]} onPress={() => Linking.openURL('https://www.homegenie.com/en/warranty/')}> HomeGenie Warranty Policy</Text>
+                                                        </Text>
                                                     </Pressable>
                                                 </View>
                                             </View>
@@ -792,39 +802,39 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             <View style={[css.padding10, css.line10]}>
                                                 <View><Text style={[css.fm, css.f14, css.brandC]}>Ratings</Text></View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
-                                                    <View ><Text>5*</Text></View>
-                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
+                                                    <View style={{ width: '10%' }}><Text>5*</Text></View>
+                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0'})</Text></View>
+                                                    <View style={{ width: '15%' }}><Text>({genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
-                                                    <View><Text>4*</Text></View>
-                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
+                                                    <View style={{ width: '10%' }}><Text>4*</Text></View>
+                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.fourStar ? genieData.feedback.fourStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.fourStar ? genieData.feedback.fourStar : '0'})</Text></View>
+                                                    <View style={{ width: '15%' }}><Text>({genieData.feedback.fourStar ? genieData.feedback.fourStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
-                                                    <View><Text>3*</Text></View>
-                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
+                                                    <View style={{ width: '10%' }}><Text>3*</Text></View>
+                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.threeStar ? genieData.feedback.threeStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.threeStar ? genieData.feedback.threeStar : '0'})</Text></View>
+                                                    <View style={{ width: '15%' }}><Text>({genieData.feedback.threeStar ? genieData.feedback.threeStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
-                                                    <View><Text>2*</Text></View>
-                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
+                                                    <View style={{ width: '10%' }}><Text>2*</Text></View>
+                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.twoStar ? genieData.feedback.twoStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.twoStar ? genieData.feedback.twoStar : '0'})</Text></View>
+                                                    <View style={{ width: '15%' }}><Text>({genieData.feedback.twoStar ? genieData.feedback.twoStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
-                                                    <View><Text>1*</Text></View>
-                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.liteGreyBG, css.borderRadius10, { height: 7, width: '80%' }]}>
+                                                    <View style={{ width: '10%' }}><Text>1*</Text></View>
+                                                    <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.liteGreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
                                                         <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.oneStar ? genieData.feedback.oneStar : '0') + '%' }]}></View>
                                                     </View>
-                                                    <View style={{ width: '10%' }}><Text>({genieData.feedback.oneStar ? genieData.feedback.oneStar : '0'})</Text></View>
+                                                    <View style={{ width: '15%' }}><Text>({genieData.feedback.oneStar ? genieData.feedback.oneStar : '0'})</Text></View>
                                                 </View>
                                             </View>
                                             :
@@ -866,17 +876,18 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 hideModalContentWhileAnimating={true}
             >
                 {jobdetailsData &&
-                    <ScrollView>
-                        <View style={bookModal.modalViewFull}>
-                            <View style={[bookModal.modalHeader]}>
-                                <TouchableOpacity
-                                    style={[css.flexDR, css.padding20, { paddingLeft: 0 }]}
-                                    onPress={() => setserviceDetailModal(!serviceDetailModal)}
-                                >
-                                    <Image style={[css.alignSelfC, css.marginR10]} source={require(imgPath + 'backArrowBlack.png')} />
-                                    <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
-                                </TouchableOpacity>
-                            </View>
+
+                    <View style={bookModal.modalViewFull}>
+                        <View style={[bookModal.modalHeader]}>
+                            <TouchableOpacity
+                                style={[css.flexDR, css.padding20, { paddingLeft: 0 }]}
+                                onPress={() => setserviceDetailModal(!serviceDetailModal)}
+                            >
+                                <Image style={[css.alignSelfC, css.marginR10]} source={require(imgPath + 'backArrowBlack.png')} />
+                                <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <ScrollView>
                             <View style={[bookModal.modalBody]}>
                                 <View style={[css.flexDR, css.line20]}>
                                     <Image style={[css.img30, css.marginR10]} source={require(imgPath + 'expert.png')} />
@@ -917,8 +928,9 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     </View>
                                 </View>
                             </View>
-                        </View>
-                    </ScrollView>
+                        </ScrollView>
+                    </View>
+
                 }
             </Modal>
             <Modal
@@ -933,67 +945,68 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
-                <ScrollView>
-                    {jobdetailsData &&
-                        <View style={bookModal.modalViewFull}>
-                            <View style={[bookModal.modalHeader]}>
-                                <TouchableOpacity
-                                    style={[css.flexDR, css.marginT20, css.marginB20]}
-                                    onPress={() => setpricingDetailModal(!pricingDetailModal)}
-                                >
-                                    <Image style={[css.alignSelfC, css.marginR10]} source={require(imgPath + 'backArrowBlack.png')} />
-                                    <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <ScrollView>
-                                <View style={[bookModal.modalBody]}>
-                                    <View style={[css.flexDR, css.line10]}>
-                                        <Image style={[css.img30, css.marginR10]} source={require(imgPath + 'priceverification.png')} />
-                                        <Text style={[css.f20, css.lGreyC, css.alignSelfC, css.fsb]}>Pricing Details</Text>
-                                    </View>
-                                    <View>
-                                        <View style={[css.line20]}>
-                                            <View style={[css.flexDR]}>
-                                                <Image
-                                                    style={{ width: 20, height: 20, marginRight: 10 }}
-                                                    source={require(imgPath + 'iconIndex.png')}
-                                                />
+                {jobdetailsData &&
+                    <View style={bookModal.modalViewFull}>
+                        <View style={[bookModal.modalHeader]}>
+                            <TouchableOpacity
+                                style={[css.flexDR, css.marginT20, css.marginB20]}
+                                onPress={() => setpricingDetailModal(!pricingDetailModal)}
+                            >
+                                <Image style={[css.alignSelfC, css.marginR10]} source={require(imgPath + 'backArrowBlack.png')} />
+                                <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <ScrollView>
+                            <View style={[bookModal.modalBody]}>
+                                <View style={[css.flexDR, css.line10]}>
+                                    <Image style={[css.img30, css.marginR10]} source={require(imgPath + 'priceverification.png')} />
+                                    <Text style={[css.f20, css.lGreyC, css.alignSelfC, css.fsb]}>Pricing Details</Text>
+                                </View>
+                                <View>
+                                    <View style={[css.line20]}>
+                                        <View style={[css.flexDR]}>
+                                            <Image
+                                                style={{ width: 20, height: 20, marginRight: 10 }}
+                                                source={require(imgPath + 'iconIndex.png')}
+                                            />
+                                            {jobdetailsData && !!jobdetailsData.serviceBasedType &&
                                                 <Text style={[css.f16, css.fsb, css.brandC, css.spaceB10]}>
-                                                    {/* {jobdetailsData.charges.unitCharges != 0 && 'Fixed Price '}
-                                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges != 0 && 'Inspection based '}
-                                                    {jobdetailsData.charges.unitCharges == 0 && jobdetailsData.charges.callOutCharges == 0 && 'Survey based '} */}
                                                     {jobdetailsData.serviceBasedType}
                                                 </Text>
+                                            }
+                                        </View>
+                                        {jobdetailsData && jobdetailsData.subCategory && !!jobdetailsData.subCategory.pricingUnitNote &&
+                                            <View>
+                                                <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
+                                                    {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{'\n'}
+                                                    {jobdetailsData.subCategory.pricingUnitNote.additionalUnitNote}
+                                                </Text>
+                                                <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
+                                                    {jobdetailsData.subCategory.pricingUnitNote.asteriskNote}
+                                                </Text>
                                             </View>
-                                            <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
-                                                {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{'\n'}
-                                                {jobdetailsData.subCategory.pricingUnitNote.additionalUnitNote}
-                                            </Text>
-                                            <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
-                                                {jobdetailsData.subCategory.pricingUnitNote.asteriskNote}
-                                            </Text>
-                                        </View>
-                                        <View style={[css.line20]}>
-                                            <Text style={[css.f16, css.fm, css.blackC, css.spaceB10]}>NOTES: </Text>
-                                            <Text style={[css.fm, css.blackC, css.spaceB5, css.f14]}>Additional charges apply for Emergency bookings, based on availability and permissions from community/ building, as confirmed by the customer. VAT charges are not included and are based on the total invoice amount.</Text>
-                                        </View>
-                                        <View style={[css.line20]}>
-                                            <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
-                                            <View style={[css.flexDR]}>
-                                                <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
-                                                <View style={[css.flexDC, css.alignSelfC]}>
-                                                    {jobdetailsData.charges.unitCharges ? '' : <Text style={[css.greyC, css.fm]}>As provided in the bill estimate.</Text>}
-                                                    <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
-                                                    <Text style={[css.brandC, css.fsb]} onPress={() => { Linking.openURL('https://www.homegenie.com/en/warranty') }}>HomeGenie warranty policy</Text>
-                                                </View>
+                                        }
+                                    </View>
+                                    <View style={[css.line20]}>
+                                        <Text style={[css.f16, css.fm, css.blackC, css.spaceB10]}>NOTES: </Text>
+                                        <Text style={[css.fm, css.blackC, css.spaceB5, css.f14]}>Additional charges apply for Emergency bookings, based on availability and permissions from community/ building, as confirmed by the customer. VAT charges are not included and are based on the total invoice amount.</Text>
+                                    </View>
+                                    <View style={[css.line20]}>
+                                        <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
+                                        <View style={[css.flexDR]}>
+                                            <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
+                                            <View style={[css.flexDC, css.alignSelfC]}>
+                                                {jobdetailsData.charges.unitCharges ? null : <Text style={[css.greyC, css.fm]}>As provided in the bill estimate.</Text>}
+                                                <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
+                                                <Text style={[css.brandC, css.fsb]} onPress={() => { Linking.openURL('https://www.homegenie.com/en/warranty') }}>HomeGenie warranty policy</Text>
                                             </View>
                                         </View>
                                     </View>
                                 </View>
-                            </ScrollView>
-                        </View>
-                    }
-                </ScrollView>
+                            </View>
+                        </ScrollView>
+                    </View>
+                }
             </Modal>
             <Modal
                 isVisible={typeModal}

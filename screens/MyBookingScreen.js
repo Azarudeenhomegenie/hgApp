@@ -80,7 +80,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                 //console.log('TKN:', token)
                 dispatch(loadBookings(token));
             }
-            console.log('xsxscdsx');
+            console.log('xsxxsx');
         }, [])
     );
 
@@ -122,31 +122,39 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <View style={[css.flexDR]}>
                                                         <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
-                                                            {
-                                                                item.status === 'IN_SERVICE' ?
-                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
-                                                                    : item.status === 'PAYMENT_PENDING' ?
-                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
-                                                                        : item.status === 'ENROUTE' ?
-                                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                                            : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill ?
-                                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
-                                                                                : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
-                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                                    : item.status === 'REJECTED' ?
-                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
-                                                                                        : item.status === 'UNFINISHED' ?
-                                                                                            <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                                            </Text>
-                                                                                            : null}
+                                                            {item.status === 'IN_SERVICE' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
+                                                            }
+                                                            {item.status === 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                            }
+                                                            {item.status === 'PAYMENT_PENDING' && item.payment.payment_type != 'null' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                            }
+                                                            {item.status === 'ENROUTE' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
+                                                            }
+                                                            {item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill != null &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                            }
+                                                            {item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                            }
+                                                            {item.status === 'REJECTED' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                            }
+                                                            {item.status === 'UNFINISHED' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                    {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                </Text>
+                                                            }
                                                         </Text>
                                                     </View>
                                                 </View>
                                             </View>
                                             <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
                                                 <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
-                                                    {item.status == 'PAYMENT_PENDING' ?
+                                                    {item.status == 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
                                                         <Pressable
                                                             style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
                                                             onPress={() => navigation.navigate("JobdetailPage", {
@@ -155,16 +163,24 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                         >
                                                             <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
                                                         </Pressable>
-                                                        : 'IN_SERVICE' ?
-                                                            <Text></Text>
-                                                            : 'INSPECTION' ?
-                                                                <Pressable
-                                                                    style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                                    onPress={() => inspectionAcceptReject('APPROVE', item._id)}
-                                                                >
-                                                                    <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
-                                                                </Pressable>
-                                                                : null
+                                                    }
+                                                    {item.status == 'INSPECTION' &&
+                                                        <Pressable
+                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                            onPress={() => inspectionAcceptReject('APPROVE', item._id)}
+                                                        >
+                                                            <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
+                                                        </Pressable>
+                                                    }
+                                                    {item.status == 'RATING' &&
+                                                        <Pressable
+                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                            onPress={() => navigation.navigate("JobdetailPage", {
+                                                                token: token, jobId: item._id
+                                                            })}
+                                                        >
+                                                            <Text style={[css.whiteC, css.f12, css.fm]}>Rate</Text>
+                                                        </Pressable>
                                                     }
                                                     <Pressable
                                                         style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: '30%', height: 40 }]}
@@ -249,19 +265,21 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                                 <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
                                                                 : item.status === 'PAYMENT_PENDING' ?
                                                                     <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
-                                                                    : item.status === 'ENROUTE' ?
-                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                                        : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill ?
-                                                                            <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
-                                                                            : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
-                                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                                : item.status === 'REJECTED' ?
-                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
-                                                                                    : item.status === 'UNFINISHED' ?
-                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                            {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                                        </Text>
-                                                                                        : null
+                                                                    : item.status === 'PAYMENT_PENDING' && item.payment_status == 'PENDING' ?
+                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                                        : item.status === 'ENROUTE' ?
+                                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
+                                                                            : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill ?
+                                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                                                : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
+                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                                                    : item.status === 'REJECTED' ?
+                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                                                        : item.status === 'UNFINISHED' ?
+                                                                                            <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                                            </Text>
+                                                                                            : null
                                                         }
                                                     </Text>
                                                 </View>
