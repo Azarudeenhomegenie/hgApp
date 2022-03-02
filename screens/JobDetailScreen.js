@@ -129,24 +129,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
         } else {
             console.log('Job Deleted Fail');
         }
-
-        // try {
-        //     const header = { headers: { Authorization: `Bearer ${token}` } };
-        //     const api = `${BASE_URL}customer/JobCancelCharge`
-        //     const formData = new FormData();
-        //     formData.append('jobId', appoinmentId)
-        //     formData.append('cancelReason', deleteJobReason)
-        //     const response = await axios.put(
-        //         api,
-        //         { jobId: appoinmentId, cancelReason: deleteJobReason },
-        //         { headers: { Authorization: `Bearer ${token}` } }
-        //     );
-        //     navigation.navigate('MyBookingPage')
-        // } catch (error) {
-        //     console.error(error);
-        // } finally {
-        //     setLoading(false);
-        // }
     }
     const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
         const params = {
@@ -323,9 +305,9 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                         return item._id;
                                                     }}
                                                     renderItem={({ item }) => (
-                                                        <View style={[css.flexDRSB]}>
+                                                        <View style={[css.flexDRSB, css.imgFull]}>
                                                             <View><Text style={[css.greyC, css.fm, css.f12]}>{item.question}</Text></View>
-                                                            <View style={[css.flexDR]}><Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{item.answer.answer}</Text></View>
+                                                            <View><Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{item.answer.answer}</Text></View>
                                                         </View>
                                                     )}
                                                 />
@@ -899,7 +881,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                 </View>
                                 <View style={[css.line20]}>
                                     <Text style={[css.f18, css.fsb, css.ttC, css.blackC,]}>What's included</Text>
-                                    <Text style={[css.fm, css.blackC, css.spaceB5,]}>{jobdetailsData.subCategory.Notes}</Text>
+                                    <Text style={[css.fm, css.blackC, css.spaceB5,]}>
+                                        {jobdetailsData.subCategory.Notes}
+                                        {/* {jobdetailsData.subCategory.serviceNotes} */}
+                                    </Text>
                                 </View>
                                 <View style={[css.line20]}>
                                     <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Availability</Text>
@@ -931,6 +916,14 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         </View>
                                     </View>
                                 </View>
+                                {jobdetailsData.subCategory.customerNotes &&
+                                    <View style={[css.line20]}>
+                                        <Text style={[css.f18, css.fsb, css.ttC, css.blackC,]}>Notes</Text>
+                                        <Text style={[css.fm, css.blackC, css.spaceB5,]}>
+                                            {jobdetailsData.subCategory.customerNotes}
+                                        </Text>
+                                    </View>
+                                }
                             </View>
                         </ScrollView>
                     </View>

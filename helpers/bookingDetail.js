@@ -290,6 +290,8 @@ export const getCurrentDetails = (data) => {
         detail.showDueAmount = false;
         detail.charges.dueCharges = 0;
         detail.showCall = false;
+        //error here
+        detail.rateGenie = false;
     }
 
     // for displayling advance amount

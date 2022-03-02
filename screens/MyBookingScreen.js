@@ -82,7 +82,7 @@ const MyBookingScreen = ({ props, navigation }) => {
             };
             //error
             //loadBookings(token);
-            console.log('xaxs');
+            console.log('xsaxs');
         }, [])
     );
     // useCallback(() => {
