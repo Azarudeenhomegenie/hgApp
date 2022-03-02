@@ -16,6 +16,7 @@ import {
     FlatList
 } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { connect } from "react-redux";
 import axios from "axios";
@@ -45,15 +46,16 @@ const MyBookingScreen = ({ props, navigation }) => {
     const pastBookings = useSelector(getPastBookings);
     const token = useSelector(getAccessToken);
     const [userName, setUserName] = useState(token);
-    console.log('token', token);
+    // console.log('token', token);
     const dispatch = useDispatch();
-    console.log('currentBookings', currentBookings);
+    // console.log('currentBookings', currentBookings);
     const [userData, setUserData] = useState();
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: '1', title: 'Current Bookings' },
         { key: '2', title: 'Past Bookings' },
     ]);
+    const isFocused = useIsFocused();
 
     const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
         try {
@@ -79,11 +81,13 @@ const MyBookingScreen = ({ props, navigation }) => {
             if (token) {
                 //console.log('TKN:', token)
                 dispatch(loadBookings(token));
+            } else {
+                console.log('NOT LOADEDDD>>>>>>>>>>>>>>>>>>')
             };
             //error
             //loadBookings(token);
             console.log('xsaxs');
-        }, [])
+        }, [isFocused])
     );
     // useCallback(() => {
     //     const loadJobdetails = async () => {

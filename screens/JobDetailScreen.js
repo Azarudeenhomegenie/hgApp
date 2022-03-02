@@ -16,7 +16,7 @@ import {
     FlatList,
     TextInput,
 } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Text from "../components/MyText";
 import moment from 'moment';
@@ -54,9 +54,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const dispatch = useDispatch();
     let jobdetailsData = useSelector(getJobDetail);
     jobdetailsData = jobdetailsData ? jobdetailsData : null
-    console.log('jobdetailsData_jobDetailScreen', jobdetailsData);
+    // console.log('jobdetailsData_jobDetailScreen', jobdetailsData);
     const token = route.params.token
     const jobId = route.params.jobId
+    const isFocused = useIsFocused();
     console.log('jobId_jobDetailScreen', jobId);
     console.log('token_jobDetailScreen', token);
 
@@ -153,7 +154,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
 
             loadJobdetails();
             console.log('loadJobdetails', loadJobdetails);
-        }, [])
+        }, [jobId, isFocused])
     );
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFBFF" }}>

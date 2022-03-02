@@ -54,7 +54,7 @@ export default function (state = initialState, action = {}) {
 
 export const loadBookings = (token) => async dispatch => {
     try {
-        console.log('URL', `${BASE_URL}customer/getmybookings`)
+        console.log('URL', `${BASE_URL}customer/getmybookings`, token);
         const res = await axios.get(`${BASE_URL}customer/getmybookings`, { headers: { Authorization: `Bearer ${token}` } });
         // console.log('response ', res.data);
         const data = res.data.data;

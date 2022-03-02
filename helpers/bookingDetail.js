@@ -12,11 +12,23 @@ const COMPLETED_JOB_TEXT = "The job has now been completed, for any complaints o
 
 
 export const getPastDetail = (data) => {
-    let detail = {};
+    let detail = data;
     const {
         payment,
-        materials
+        materials,
+        subCategory
     } = data;
+
+    const { questions } = subCategory;
+
+    console.log('questions', questions)
+    if (questions && questions.length > 0) {
+
+        const descriptiveQues = questions.filter(q => q.type === 'DESCRIPTIVE');
+        const wholeQues = questions.filter(q => q.type === 'WHOLE');
+        const booleanQues = questions.filter(q => q.type === 'BOOLEAN');
+        detail.questions = [].concat(descriptiveQues, wholeQues, booleanQues);
+    }
 
     const { slot } = data;
     const slotTime = slot[0];
@@ -251,6 +263,16 @@ export const getCurrentDetails = (data) => {
                 }
             });
 
+    }
+
+    const { questions } = subCategory;
+    console.log('Ongoing questions:', questions)
+    if (questions && questions.length > 0) {
+
+        const descriptiveQues = questions.filter(q => q.type === 'DESCRIPTIVE');
+        const wholeQues = questions.filter(q => q.type === 'WHOLE');
+        const booleanQues = questions.filter(q => q.type === 'BOOLEAN');
+        detail.questions = [].concat(descriptiveQues, wholeQues, booleanQues);
     }
 
     const {
