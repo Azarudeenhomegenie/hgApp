@@ -1,4 +1,4 @@
-import React, { Component, useState, useCallback } from "react";
+import React, { Component, useState, useCallback, useEffect } from "react";
 import {
     StyleSheet,
     View,
@@ -79,10 +79,28 @@ const MyBookingScreen = ({ props, navigation }) => {
             if (token) {
                 //console.log('TKN:', token)
                 dispatch(loadBookings(token));
-            }
-            console.log('xsxxsx');
+            };
+            //error
+            //loadBookings(token);
+            console.log('xaxs');
         }, [])
     );
+    // useCallback(() => {
+    //     const loadJobdetails = async () => {
+    //         await dispatch(loadJobDetails(token, jobId));
+    //     };
+
+    //     loadJobdetails();
+    //     console.log('loadJobdetails', loadJobdetails);
+    // }, [])
+    // );
+    // useEffect(() => {
+    //     if (token) {
+    //         //console.log('TKN:', token)
+    //         dispatch(loadBookings(token));
+    //     }
+    //     console.log('zxsxa');
+    // }, [])
 
 
     const renderScene = ({ route }) => {

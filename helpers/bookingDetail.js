@@ -30,8 +30,9 @@ export const getPastDetail = (data) => {
 
     const { utc_timing: { requestedTime } } = data;
     const requstedMoment = moment(requestedTime);
-    detail["utc_timing"]["requestedTime"] = [requstedMoment.format('DD/MM/YYYY'), requstedMoment.format('hh:mm:ss')];
-
+    console.log('requstedMomentPast', requstedMoment);
+    //Error here
+    detail["utc_timing"]["requestedTime"] = [requstedMoment.format(' MM/DD/YYYY, '), requstedMoment.format('hh:mm:ss a')];
 
 
     if (payment['payment_type'] == null) {
@@ -224,7 +225,7 @@ export const getCurrentDetails = (data) => {
 
     const { utc_timing: { requestedTime } } = data;
     const requstedMoment = moment(requestedTime);
-    detail["utc_timing"]["requestedTime"] = [requstedMoment.format('DD/MM/YYYY'), requstedMoment.format('hh:mm:ss')];
+    detail["utc_timing"]["requestedTime"] = [requstedMoment.format(' MM/DD/YYYY, '), requstedMoment.format('hh:mm:ss a')];
 
     detail.services = data.serviceBasedType;
 
@@ -497,7 +498,7 @@ export const getCurrentDetails = (data) => {
             }
             break;
         case "ENROUTE":
-            defaultOptions.showAction = '- Await arrival'
+            defaultOptions.showAction = ' - Await arrival'
             defaultOptions.reditems = false;
             defaultOptions.cancel = false;
             break;
@@ -568,9 +569,11 @@ export const getCurrentDetails = (data) => {
         case "PAYMENT_PENDING":
             defaultOptions.cancel = false;
             console.log('came here payment pending');
-            if (payment && payment["payment_type"]) {
+            console.log(payment);
+            if (payment && payment["payment_type"] == 'CASH') {
+                //error here
                 //defaultOptions.showAction = " - Await collection ";
-                defaultOptions.showAction = " - pay final payment ";
+                defaultOptions.showAction = " - Await collection ";
             } else {
                 defaultOptions.showAction = " - PAY FINAL PAYMENT ";
                 defaultOptions.reditems = true;

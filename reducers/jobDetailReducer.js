@@ -113,6 +113,16 @@ export const addRating = (token, data) => async dispatch => {
     }
 };
 
+export const deletetheJob = (token, data) => async dispatch => {
+    try {
+        const res = await axios.put(`${BASE_URL}customer/JobCancelCharge`, data, { headers: { Authorization: `Bearer ${token}` } });
+        return true;
+    } catch (e) {
+        console.log('CATCH');
+        console.log(e)
+        return false;
+    }
+};
 
 export const updateInspection = (token, data) => async dispatch => {
     try {

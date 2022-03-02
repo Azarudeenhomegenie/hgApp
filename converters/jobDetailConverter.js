@@ -21,8 +21,7 @@ export const JobDetailConverter = {
         const { utc_timing: { requestedTime } } = jobDetail;
         const requstedMoment = moment(requestedTime);
         console.log(requstedMoment)
-        jobDetail["utc_timing"]["requestedTime"] = [requstedMoment.format('DD/MM/YYYY'), requstedMoment.format('hh:mm:ss')]
-
+        jobDetail["utc_timing"]["requestedTime"] = [requstedMoment.format('DD/MM/YYYY'), requstedMoment.format('hh:mm:ss a')]
         jobDetail['favouriteGenie'] = !(jobDetail['favouriteGenie'] === 'FALSE')
 
         const { charges: { totalCharges, unitCharges, estimateCharges, cancellationCharges } } = jobDetail;

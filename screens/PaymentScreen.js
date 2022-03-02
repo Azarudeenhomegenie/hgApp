@@ -57,20 +57,6 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
         console.log('jobId', jobId);
         console.log('userToken', token);
         console.log(amount);
-        // try {
-        //     const header = { headers: { Authorization: `Bearer ${token}` } };
-        //     const api = `${BASE_URL}customer/cashPayment?'appointmentID'=jobId&'amount'=amount`
-        //     const response = await axios.get(
-        //         api,
-        //         header,
-        //     );
-        //     setamountPaidModal(true)
-        // } catch (error) {
-        //     console.error(error);
-        // } finally {
-        //     setLoading(false);
-        // }
-
         const isUpdated = await dispatch(updatePayment(token, jobId, amount));
         if (isUpdated) {
             console.log('Status updated success');

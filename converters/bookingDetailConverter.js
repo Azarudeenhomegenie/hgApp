@@ -141,6 +141,9 @@ export const JobBookingDetailConverter = {
         // let addressAuth = {};
         // addressAuth.Auth = udata.data.accessToken; redoo
         const { questions } = subCategory;
+        //console.log('questions', questions);
+        questions.sort((a, b) => (a.question < b.question ? 1 : -1))
+        // Error here
         if (questions) {
             detail.questions = questions;
         }
