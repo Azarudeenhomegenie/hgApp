@@ -15,6 +15,7 @@ import {
     Pressable,
     FlatList,
     TextInput,
+    RefreshControl,
 } from "react-native";
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -27,17 +28,19 @@ import StarRating from 'react-native-star-rating';
 import StatusBarAll from "../components/StatusBar";
 import { List, Checkbox, RadioButton } from 'react-native-paper';
 import { connect, useDispatch, useSelector } from "react-redux";
-import css from '../components/commonCss';
-//import { FlatList } from "react-native-gesture-handler";
-import { loadJobDetails, getJobDetail, getGenie, addRating, updateInspection, deletetheJob } from "../reducers/jobDetailReducer";
+import css, { alignItemsC, justifyContentC } from '../components/commonCss';
+import { loadJobDetails, getJobDetail, getGenie, addRating, updateInspection, deletetheJob, rejectAdvancePayment } from "../reducers/jobDetailReducer";
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 //let Genie = 'yes'
-
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 export default function JobDetailScreen({ route, props, navigation }) {
+    const [refreshing, setRefreshing] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [serviceDetailModal, setserviceDetailModal] = useState(false);
     const toggleserviceDetailModal = () => { setserviceDetailModal(!serviceDetailModal) };
@@ -45,9 +48,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const togglepricingDetailModal = () => { setpricingDetailModal(!pricingDetailModal) };
     const [typeModal, settypeModal] = useState(false);
     const toggletypeModal = () => { settypeModal(!typeModal) };
-
-
-
 
     const [genieData, setGenieData] = useState(null);
     const [genieModal, setGenieModal] = useState(false);
@@ -61,12 +61,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
     console.log('jobId_jobDetailScreen', jobId);
     console.log('token_jobDetailScreen', token);
 
-
     const [ratingModal, setratingModal] = useState(true);
     const toggleratingModal = () => { setratingModal(!ratingModal) };
-    const [reviewTextArea, setReviewTextArea] = useState();
+    const [reviewTextArea, setReviewTextArea] = useState(null);
     const [favGeniechecked, setfavGenieChecked] = useState(false);
-    const [starCount, setstarCount] = useState('1')
+    const [starCount, setstarCount] = useState(null)
+    const [starValidate, setstarValidate] = useState(false)
+    const [reviewValidate, setreviewValidate] = useState(false)
     const [jobDeleteModal, setjobDeleteModal] = useState(false)
     const toggleJobDeleteModal = () => { setjobDeleteModal(!jobDeleteModal) };
     const [cancelReasonModal, setcancelReasonModal] = useState(false)
@@ -74,8 +75,12 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const [deleteJobReason, setdeleteJobReason] = useState('Professional not assigned');
     const [rejectJobModal, setrejectJobModal] = useState(false)
     const togglerejectJobModal = () => { setrejectJobModal(!rejectJobModal) };
-    const [inspectionAcceptRejectData, setinspectionAcceptRejectData] = useState()
-    const [inspectionAcceptRejectJobID, setinspectionAcceptRejectJobID] = useState()
+    const [advancePaynowModal, setadvancePaynowModal] = useState(false)
+    const toggleadvancePaynowModal = () => { setadvancePaynowModal(!advancePaynowModal) };
+    const [advancePaynowRejectModal, setadvancePaynowRejectModal] = useState(false)
+    const toggleadvancePaynowRejectModal = () => { setadvancePaynowRejectModal(!advancePaynowRejectModal) };
+    const [inspectionAcceptRejectData, setinspectionAcceptRejectData] = useState(null)
+    const [inspectionAcceptRejectJobID, setinspectionAcceptRejectJobID] = useState(null)
 
     const getGenieData = async (genieId) => {
         console.log('Token for Genie', token);
@@ -102,21 +107,31 @@ export default function JobDetailScreen({ route, props, navigation }) {
         }
     }
     const updateRatingData = async (appointmentId) => {
-
-        const params = {
-            appointmentId,
-            driverRating: `${starCount}`,
-            favouriteGenie: favGeniechecked,
-            driverComment: reviewTextArea
-        };
-        console.log('Params', params, token);
-        const isUpdated = await dispatch(addRating(token, params));
-        if (isUpdated) {
-            console.log('Rating success');
-            navigation.navigate('MyBookingPage')
+        if (starCount == null) {
+            console.log('starCount', starCount);
+            setstarValidate(true);
+        } if (reviewTextArea == null) {
+            console.log('reviewTextArea', reviewTextArea);
+            setreviewValidate(true)
         } else {
-            console.log('Rating Fail');
+            setstarValidate(false)
+            setreviewValidate(false)
+            const params = {
+                appointmentId,
+                driverRating: `${starCount}`,
+                favouriteGenie: favGeniechecked,
+                driverComment: reviewTextArea
+            };
+            console.log('Params', params, token);
+            const isUpdated = await dispatch(addRating(token, params));
+            if (isUpdated) {
+                console.log('Rating success');
+                navigation.navigate('MyBookingPage')
+            } else {
+                console.log('Rating Fail');
+            }
         }
+
     }
     const deleteJob = async (appointmentId) => {
         const params = {
@@ -131,7 +146,21 @@ export default function JobDetailScreen({ route, props, navigation }) {
             console.log('Job Deleted Fail');
         }
     }
-    const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
+    const inspectionAccept = async (status, jobId) => {
+        const params = {
+            jobId: jobId,
+            status: status,
+        };
+        console.log('Paramsds', params, token);
+        const isUpdated = await dispatch(updateInspection(token, params));
+        if (isUpdated) {
+            console.log('Status updated success');
+            navigation.navigate('MyBookingPage')
+        } else {
+            console.log('inspectionAcceptReject Fail');
+        }
+    }
+    const inspectionAcceptReject = async () => {
         const params = {
             jobId: inspectionAcceptRejectJobID,
             status: inspectionAcceptRejectData,
@@ -145,14 +174,42 @@ export default function JobDetailScreen({ route, props, navigation }) {
             console.log('inspectionAcceptReject Fail');
         }
     }
+    const advancePaynowReject = async (status, jobId) => {
+        const params = {
+            jobId: jobId,
+            status: status,
+        };
+        console.log('advancePaynowRejectData', params, token);
+        const isUpdated = await dispatch(rejectAdvancePayment(token, params));
+        if (isUpdated) {
+            console.log('Status updated success');
+            navigation.navigate('MyBookingPage')
+        } else {
+            console.log('inspectionAcceptReject Fail');
+        }
+    }
 
-    useFocusEffect(
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         const loadJobdetails = async () => {
+    //             await dispatch(loadJobDetails(token, jobId));
+    //         };
+
+    //         loadJobdetails();
+    //         console.log('loadJobdetails', loadJobdetails);
+    //     }, [jobId, isFocused])
+    // );
+
+    const onRefresh = useFocusEffect(
         useCallback(() => {
+            setRefreshing(true);
             const loadJobdetails = async () => {
+
+                wait(2000).then(() => setRefreshing(false));
                 await dispatch(loadJobDetails(token, jobId));
             };
-
             loadJobdetails();
+
             console.log('loadJobdetails', loadJobdetails);
         }, [jobId, isFocused])
     );
@@ -180,16 +237,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
                             }
                             </Text>
                             </View>
-
-
                             <View>
                                 <Text style={[css.f12, css.fr, css.blackC]}>Status: {jobdetailsData.status ? jobdetailsData.status : ''}
-                                    {/* {jobdetailsData && jobdetailsData.status == 'IN_SERVICE' ? ' - AWAIT COMPLETION' : null}
-                                    {jobdetailsData && jobdetailsData.status == 'PAYMENT_PENDING' ? ' - PAY FINAL PAYMENT' : null}
-                                    {jobdetailsData && jobdetailsData.status == 'ENROUTE' ? ' - AWAIT ARRIVAL' : null}
-                                    {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill == null ? ' - AWAIT ESTIMATE' : null}
-                                    {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill ? ' - ACCEPT ESTIMATE' : null}
-                                    {jobdetailsData && jobdetailsData.status == 'REJECTED' ? ' - PAY CALL-OUT CHARGES' : null} */}
                                     {jobdetailsData.showAction}
                                 </Text>
                             </View>
@@ -197,26 +246,35 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 }
             </View>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 <View style={[css.section]}>
                     <View style={css.container}>
                         {jobdetailsData &&
                             <View>
                                 <Image style={[css.imgFull, css.borderRadius10, { height: 120 }]} source={{ uri: jobdetailsData.subCategory.image }} />
                                 <View style={[css.spaceT10]}><Text style={[css.f18, css.blackC, css.fr]}>{jobdetailsData.subCategory.subCategoryName}</Text></View>
-                                {jobdetailsData.driverData ? <View style={[css.spaceT10]}><Text style={[css.f16, css.blackC, css.fr]}>Genie has been assigned to you.</Text></View> : null}
-                                <View style={[css.spaceT10]}><Text style={[css.f20, css.blackC, css.fsb]}>Your HomeGenie</Text></View>
+                                {jobdetailsData.driverData && jobdetailsData.status != 'SETTLED' && jobdetailsData.status != 'CANCELLED' && <View style={[css.spaceT10]}><Text style={[css.f16, css.blackC, css.fr]}>Genie has been assigned to you.</Text></View>}
+                                <View style={[css.spaceT10]}><Text style={[css.f20, css.blackC, css.fsb]}>Your Genie</Text></View>
                                 {jobdetailsData.driverData ?
                                     <View style={[styles.genieAssigned, css.borderGrey1, css.borderRadius10, css.imgFull]}>
                                         <View style={[css.flexDR, styles.genieHeader, css.padding20]}>
                                             <View style={[css.flexDC, css.marginR20, css.width30]}>
-                                                <Image style={[styles.genieLogo, css.img100, css.borderBlack1, { borderRadius: 50, }]} source={{ uri: jobdetailsData.driverData.profilePicURL.original }} />
-                                                <Pressable style={[css.alignCenter, css.marginT5]} onPress={() => getGenieData(jobdetailsData.driverData._id)}><Text style={[css.brandC, css.f12, css.fm]}>View Profile</Text></Pressable>
+                                                <Image style={[styles.genieLogo, css.imgg90, css.borderBlack1, { borderRadius: 50, }]} source={{ uri: jobdetailsData.driverData.profilePicURL.original }} />
+                                                <Pressable style={[css.alignCenter, css.marginT5]} onPress={() => getGenieData(jobdetailsData.driverData._id)}><Text style={[css.brandC, css.f12, css.fm, css.textCenter]}>View Profile</Text></Pressable>
                                             </View>
                                             <View style={[css.width60]}>
-                                                <View style={[css.line10, css.paddingT20]}>
+                                                <View style={[css.line10, css.paddingT10]}>
                                                     <Text style={[css.fbo, css.f20, css.blackC]}>{jobdetailsData.driverData.name}</Text>
-                                                    <Text style={[css.fr, css.f16, css.blackC]}>+971 {jobdetailsData.driverData.phoneNo}</Text>
+                                                    {jobdetailsData.status != 'SETTLED' && jobdetailsData.status != 'CANCELLED' &&
+                                                        <Text style={[css.fr, css.f16, css.blackC]}>+971 {jobdetailsData.driverData.phoneNo}</Text>
+                                                    }
                                                 </View>
                                                 <View style={[css.flexDR]}>
                                                     <Image style={[css.img20]} source={require(imgPath + 'star-fill.png')} />
@@ -224,14 +282,15 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                         </View>
-                                        {jobdetailsData.status == 'RATING' ?
+                                        {jobdetailsData.status == 'RATING' &&
                                             <Pressable
                                                 onPress={() => setratingModal(true)}
                                                 style={[styles.genieFooter, css.maroonBG, css.alignCenter, css.imgFull, { height: 60, borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }]}
                                             >
                                                 <Text style={[css.feb, css.f18, css.whiteC]}> RATE NOW</Text>
                                             </Pressable>
-                                            :
+                                        }
+                                        {jobdetailsData.status != 'SETTLED' && jobdetailsData.status != 'CANCELLED' && jobdetailsData.status != 'RATING' &&
                                             <Pressable style={[styles.genieFooter, css.brandBG, css.alignCenter, css.imgFull, { height: 60, borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }]}>
                                                 <Text onPress={() => Linking.openURL('tel:+971' + jobdetailsData.driverData.phoneNo)} style={[css.feb, css.f18, css.whiteC]}><Image source={require(imgPath + 'call-white.png')} />{' '} CALL NOW</Text>
                                             </Pressable>
@@ -243,7 +302,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             <View style={[css.flexDR, css.imgFull]}>
                                                 <View style={[css.whiteBG, css.imgg90, css.marginR10, { borderRadius: 50 }]}><Image style={[css.imgg80]} source={require(imgPath + 'homegenie-logo.png')} /></View>
                                                 <View style={[css.flexDC, css.alignSelfC]}>
-                                                    <Text style={[css.f18, css.fm, css.blackC, css.line]}>Your HomeGenie</Text>
+                                                    <Text style={[css.f18, css.fm, css.blackC, css.line]}>Your Genie</Text>
                                                     <Text style={[css.f16, css.fr, css.blackC]}>To be assigned</Text>
                                                 </View>
                                             </View>
@@ -256,7 +315,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 </View>
                 <View style={[css.section]}>
-                    <View style={[css.container, { marginBottom: 50, }]}>
+                    <View style={[css.container]}>
                         <List.AccordionGroup>
                             {jobdetailsData &&
                                 <View>
@@ -293,7 +352,14 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             </View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm, css.f12]}>Priority</Text></View>
-                                                <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.orangeC, css.fm, css.f12]}>{jobdetailsData.serviceType}</Text></View>
+                                                <View style={[css.flexDR, css]}>
+                                                    {jobdetailsData.serviceType ==
+                                                        'Emergency' ? <Text style={[css.alignSelfC, css.cMaroon, css.fm, css.f12]}>{jobdetailsData.serviceType}</Text>
+                                                        : 'Sameday' ? <Text style={[css.alignSelfC, css.orangeC, css.fm, css.f12]}>{jobdetailsData.serviceType}</Text>
+                                                            : 'Scheduled' ? <Text style={[css.alignSelfC, css.orangeC, css.fm, css.f12]}>{jobdetailsData.serviceType}</Text>
+                                                                : null
+                                                    }
+                                                </View>
                                             </View>
                                             <View style={[css.flexDRSB]}>
                                                 <View><Text style={[css.greyC, css.fm, css.f12]}>Frequency</Text></View>
@@ -337,9 +403,9 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                         </View>
-                                        {jobdetailsData && jobdetailsData.status == 'INSPECTION' && jobdetailsData.billAndInvoices.estimatedBill ?
+                                        {jobdetailsData && !jobdetailsData.materialImages ?
                                             <View>
-                                                {jobdetailsData.materialImages != [''] ?
+                                                {jobdetailsData.materialImages &&
                                                     <FlatList
                                                         data={jobdetailsData.materialImages}
                                                         keyExtractor={(item, index) => {
@@ -356,30 +422,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                             </View>
                                                         )}
                                                     />
-                                                    : null
                                                 }
                                             </View>
                                             :
                                             <View>
-                                                {/* {jobdetailsData.problemImages != [''] ?
-                                                    <FlatList
-                                                        data={jobdetailsData.problemImages}
-                                                        keyExtractor={(item, index) => {
-                                                            return item._id;
-                                                        }}
-                                                        renderItem={({ item }) => (
-                                                            <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
-                                                                <Text style={[css.brandC, css.f16, css.fr, css.alignSelfC]}>Image Shared</Text>
-                                                                <Image
-                                                                    resizeMode="contain"
-                                                                    style={{ width: 100, height: 60, borderRadius: 10 }}
-                                                                    source={{ uri: item.original }}
-                                                                />
-                                                            </View>
-                                                        )}
-                                                    />
-                                                    : null
-                                                } */}
                                                 {jobdetailsData.problemImages &&
                                                     <FlatList
                                                         data={jobdetailsData.problemImages}
@@ -390,7 +436,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                             <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
                                                                 <Text style={[css.brandC, css.f16, css.fr, css.alignSelfC]}>Image Shared</Text>
                                                                 <Image
-                                                                    resizeMode="contain"
+                                                                    resizeMode="cover"
                                                                     style={{ width: 100, height: 60, borderRadius: 10 }}
                                                                     source={{ uri: item.original }}
                                                                 />
@@ -406,8 +452,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 }
                                             </View>
                                         }
-
-
                                     </List.Accordion>
                                     <List.Accordion title="Payment Summary" id="2"
                                         titleStyle={[css.blackC, css.fsb, css.f14]}
@@ -454,13 +498,22 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     <View style={[css.flexDR, css]}><Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{jobdetailsData.charges.unitCharges}</Text></View>
                                                 </View>
                                             }
-                                            {jobdetailsData.showEstimateItems && jobdetailsData.estimateItems &&
-                                                <View style={[css.flexDRSB]}>
-                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>{jobdetailsData.name}</Text></View>
-                                                    <View style={[css.flexDR, css]}>
-                                                        <Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{jobdetailsData.charge}</Text>
-                                                    </View>
-                                                </View>
+                                            {jobdetailsData && jobdetailsData.estimateItems &&
+                                                <FlatList
+                                                    data={jobdetailsData.estimateItems}
+                                                    keyExtractor={(item, index) => {
+                                                        return item._id;
+                                                    }}
+                                                    renderItem={({ item }) => (
+                                                        <View style={[css.flexDRSB]}>
+                                                            <View><Text style={[css.greyC, css.fm, css.f12]}>{item.name}</Text></View>
+                                                            <View style={[css.flexDR, css]}>
+                                                                <Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{item.charge}</Text>
+                                                            </View>
+                                                        </View>
+                                                    )}
+                                                />
+
                                             }
                                             {!!jobdetailsData.charges.emergencyCharges &&
                                                 <View style={[css.flexDRSB]}>
@@ -491,6 +544,22 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     <View><Text style={[css.greyC, css.fm, css.f12]}>Other Charges</Text></View>
                                                     <View style={[css.flexDR, css]}>
                                                         <Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{jobdetailsData.charges.additionalCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.peakCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>Peak Hour Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>{jobdetailsData.charges.peakCharges}</Text>
+                                                    </View>
+                                                </View>
+                                            }
+                                            {!!jobdetailsData.charges.offPeakCharges &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>Off Peak Hour Charges</Text></View>
+                                                    <View style={[css.flexDR, css]}>
+                                                        <Text style={[css.alignSelfC, css.blackC, css.fm, css.f12]}>-{jobdetailsData.charges.offPeakCharges}</Text>
                                                     </View>
                                                 </View>
                                             }
@@ -557,14 +626,27 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                             </View>
                                         </View>
                                         <View>
-                                            <View style={[css.flexDRSB]}>
-                                                <View><Text style={[css.greyC, css.fm, css.f12]}>Plan</Text></View>
-                                                <View><Text style={[css.alignSelfC, css.brandC, css.f12, css.fm]}>Upon Completion</Text></View>
-                                            </View>
-                                            {jobdetailsData && jobdetailsData.payment.payment_type == 'CASH' &&
+                                            {jobdetailsData &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>Plan</Text></View>
+                                                    <View><Text style={[css.alignSelfC, css.brandC, css.f12, css.fm]}>
+                                                        {/* {jobdetailsData.status == 'CANCELLED' ? 'On Completion' : jobdetailsData.status == 'SETTLED' ? 'On Completion' : jobdetailsData.advancePayment ? 'ADVANCE' : 'Upon Completion'} */}
+                                                        {jobdetailsData.paymentPlan}
+                                                    </Text></View>
+                                                </View>
+                                            }
+                                            {/* {jobdetailsData && jobdetailsData.payment.payment_type == 'CASH' && jobdetailsData.charges.advanceCharges == null &&
                                                 <View style={[css.flexDRSB]}>
                                                     <View><Text style={[css.greyC, css.fm, css.f12]}>Method</Text></View>
-                                                    <View><Text style={[css.alignSelfC, css.brandC, css.f12, css.fm]}>{jobdetailsData.payment.payment_type}</Text></View>
+                                                    <View><Text style={[css.alignSelfC, css.brandC, css.f12, css.fm]}>
+                                                        {jobdetailsData.payment.payment_type}
+                                                    </Text></View>
+                                                </View>
+                                            } */}
+                                            {jobdetailsData && jobdetailsData.status == 'SETTLED' &&
+                                                <View style={[css.flexDRSB]}>
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>Method</Text></View>
+                                                    <View><Text style={[css.alignSelfC, css.brandC, css.f12, css.fm]}>{jobdetailsData.charges.advanceCharges ? 'CASH' + (jobdetailsData.charges.advanceCharges) + "+" : ''} CASH ({jobdetailsData.charges.finalCharges})</Text></View>
                                                 </View>
                                             }
                                             <View style={[css.flexDRSB]}>
@@ -609,33 +691,60 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                         </View>
-                                        {jobdetailsData && jobdetailsData.additionalGenieNote &&
+                                        {jobdetailsData && jobdetailsData.showGenieNote &&
                                             <View style={[css.line5, css.spaceT10, css.paddingB10]}>
+                                                <View><Text style={[css.f16, css.fsb, css.brandC]}>NOTES: </Text></View>
+                                                {jobdetailsData.genieNotes &&
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>{jobdetailsData.genieNotes}, </Text></View>
+                                                }
+                                                {jobdetailsData.additionalGenieNote &&
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>{jobdetailsData.additionalGenieNote}, </Text></View>
+                                                }
+                                                {jobdetailsData && jobdetailsData.advanceNote &&
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>{jobdetailsData.advanceNote}</Text></View>
+                                                }
+                                                {jobdetailsData && jobdetailsData.breakdownNote &&
+                                                    <View><Text style={[css.greyC, css.fm, css.f12]}>See detailed breakdown on email sent to registered email address.</Text></View>
+                                                }
+                                            </View>
+                                        }
+                                        {/* {jobdetailsData && jobdetailsData.additionalGenieNote != null && lb5m6obdetailsData.status != 'SETTLED' && jobdetailsData.status != 'CANCELLED' &&
+                                            < View style={[css.line5, css.spaceT10, css.paddingB10]}>
                                                 <View><Text style={[css.f16, css.fsb, css.brandC]}>NOTES: </Text></View>
                                                 <View><Text style={[css.greyC, css.fm, css.f12]}>{jobdetailsData.additionalGenieNote}, </Text></View>
                                                 <View><Text style={[css.greyC, css.fm, css.f12,]}>See detailed breakdown on email sent to registered email address.</Text></View>
                                             </View>
                                         }
-                                        {jobdetailsData.billAndInvoices.estimatedBill != null &&
+                                        {jobdetailsData && jobdetailsData.genieNotes && jobdetailsData.advancePayment != null && jobdetailsData.status != 'SETTLED' && jobdetailsData.status != 'CANCELLED' &&
                                             <View style={[css.line5, css.spaceT10]}>
                                                 <View><Text style={[css.f16, css.fsb, css.brandC]}>NOTES: </Text></View>
                                                 <View><Text style={[css.greyC, css.fm, css.f12]}>{jobdetailsData.genieNotes}, </Text></View>
+                                                {jobdetailsData.status == 'INSPECTION' &&
+                                                    <View>
+                                                        <Text style={[css.greyC, css.fm, css.f12]}>There is an advance payment of
+                                                            <Text style={[css.greyC, css.fbo, css.f12]}> AED {jobdetailsData.charges.advanceCharges} </Text>
+                                                            applicable to this service which will be charged following the acceptance of estimate.
+                                                        </Text>
+                                                    </View>
+                                                }
                                                 <View><Text style={[css.greyC, css.fm, css.f12]}>See detailed breakdown on email sent to registered email address.</Text></View>
                                             </View>
-                                        }
+                                        } */}
                                         <View style={[css.spaceT10, css.line5, css.paddingB20]}>
                                             <View style={[css.flexDR]}>
-                                                <View><Image style={[css.marginR20]} source={require(imgPath + 'warranty.png')} /></View>
+                                                <View style={[css.width30]}><Image style={[css.marginR20, { width: 80, height: 70 }]} source={require(imgPath + 'warranty.png')} /></View>
                                                 <View style={[css.flexDC, css.alignSelfC]}>
                                                     <Text style={[css.liteBlackC, css.fbo, css.f12]}>Warranty</Text>
-                                                    {jobdetailsData.warranty.warrantyText ?
+                                                    {jobdetailsData.warranty.warranty ?
                                                         <Text style={[css.liteBlackC, css.f12, css.fr]}>{jobdetailsData.warranty.warrantyText}</Text>
                                                         :
-                                                        <Text style={[css.cMaroon, css.f12, css.fr]}>No warranty applicable to this service</Text>
+                                                        <Text style={[css.cMaroon, css.f11, css.fr]}>No warranty applicable to this service</Text>
+                                                        //<Text style={[css.liteBlackC, css.f12, css.fr]}>30 day warranty</Text>
                                                     }
                                                     <Pressable>
-                                                        <Text style={[css.liteBlackC, css.f12, css.fr, { flexWrap: 'wrap' }]}>Visit
-                                                            <Text style={[css.brandC,]} onPress={() => Linking.openURL('https://www.homegenie.com/en/warranty/')}> HomeGenie Warranty Policy</Text>
+                                                        <Text style={[css.liteBlackC, css.f12, css.fr,]}>Visit
+                                                            {/* <Text style={[css.brandC,]} onPress={() => Linking.openURL('https://www.homegenie.com/en/warranty/')}> HomeGenie Warranty Policy</Text> */}
+                                                            <Text style={[css.brandC, css.f12, css.fr]} onPress={() => { navigation.navigate('Browser', { url: 'https://www.homegenie.com/en/warranty/' }) }}> HomeGenie Warranty Policy</Text>
                                                         </Text>
                                                     </Pressable>
                                                 </View>
@@ -648,73 +757,106 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 </View>
             </ScrollView>
-            {/* {jobdetailsData && jobdetailsData.status == 'CANCEL' &&
-                <View style={[css.container, css.paddingT0, css.marginB10]}>
-                    <View style={[styles.cancelButton]}>
-                        <Pressable >
-                            <Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text>
-                        </Pressable></View>
-                </View>
-            }
-            {jobdetailsData && jobdetailsData.status == 'PAYMENT_PENDING' &&
-                <View style={[css.container, css.paddingT0, css.marginB10]}>
-                    <Pressable onPress={() => navigation.navigate('PaymentPage',
-                        { id: jobdetailsData._id, amount: jobdetailsData.charges.vatFinalCharges }
-                    )}>
-                        <View style={[styles.cancelButton, css.yellowBG]}>
-                            <Text style={[css.whiteC, css.fbo, css.f18]}>Pay Now</Text>
-                        </View>
-                    </Pressable>
-                </View>
-            } */}
             {jobdetailsData && jobdetailsData.cancel &&
-                <View style={[css.container, css.paddingT0, css.marginB10]}>
-                    <Pressable onPress={() => toggleJobDeleteModal()}>
-                        <View style={[styles.cancelButton]}>
-                            <Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text>
-                        </View>
+                <View style={[css.justifyContentC, alignItemsC, css.marginB10]}>
+                    <Pressable style={[styles.cancelButton]} onPress={() => toggleJobDeleteModal()}>
+                        <Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text>
                     </Pressable>
                 </View>
             }
             {jobdetailsData && jobdetailsData.Payment &&
-                <View style={[css.container, css.paddingT0, css.marginB10]}>
-                    <Pressable onPress={() => navigation.navigate('PaymentPage',
-                        { jobId: jobdetailsData._id, amount: jobdetailsData.charges.vatFinalCharges }
-                    )}>
-                        <View style={[styles.cancelButton, css.yellowBG]}>
-                            <Text style={[css.whiteC, css.fbo, css.f18]}>Pay Now</Text>
-                        </View>
+                <View style={[css.justifyContentC, alignItemsC, css.marginB10]}>
+                    <Pressable
+                        style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow]}
+                        onPress={() => navigation.navigate('PaymentPage',
+                            { jobId: jobdetailsData._id, amount: jobdetailsData.charges.finalCharges }
+                        )}>
+                        <Text style={[css.whiteC, css.fbo, css.f18]}>Pay Now</Text>
                     </Pressable>
                 </View>
             }
-            {/* {jobdetailsData && jobdetailsData.accept && jobdetailsData.billAndInvoices.estimatedBill != null &&
-                <View style={[css.container, css.paddingT0, css.marginB10, css.flexDRSA]}>
-                    <Pressable onPress={() => inspectionAcceptReject(setinspectionAcceptRejectData('APPROVE'), setinspectionAcceptRejectJobID(jobdetailsData._id))} style={[styles.cancelButton, css.yellowBG, { width: 100 }]}>
-                        <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
-                    </Pressable>
-                    <Pressable onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))} style={[styles.cancelButton, { width: 100 }]}>
-                        <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
-                    </Pressable>
+            {jobdetailsData && jobdetailsData.accept && jobdetailsData.advancePayment === null &&
+                <View style={[css.alignItemsC, css.justifyContentC]}>
+                    <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                        <Pressable
+                            onPress={() => inspectionAccept('APPROVE', jobdetailsData._id)}
+                            style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                        >
+                            <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))}
+                            style={[styles.cancelButton, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                        >
+                            <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            }
+            {jobdetailsData && jobdetailsData.accept && jobdetailsData.advancePayment != null &&
+                <View style={[css.alignItemsC, css.justifyContentC]}>
+                    <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                        <Pressable
+                            onPress={() => inspectionAccept('APPROVE', jobdetailsData._id)}
+                            style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                        >
+                            <Text style={[css.whiteC, css.fbo, css.f18]}>AcceptA</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))}
+                            style={[styles.cancelButton, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                        >
+                            <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            }
+            {/* {jobdetailsData && jobdetailsData.accept &&
+                <View style={[css.alignItemsC, css.justifyContentC]}>
+                    {jobdetailsData && jobdetailsData.isInspectionCompleted && !jobdetailsData.advancePayment ?
+                        <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                            <Pressable
+                                onPress={() => inspectionAccept('APPROVE', jobdetailsData._id)}
+                                style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                            >
+                                <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))}
+                                style={[styles.cancelButton, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                            >
+                                <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
+                            </Pressable>
+                        </View>
+                        :
+                        <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                            <Pressable
+                                onPress={() => setadvancePaynowModal(true)}
+                                style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                            >
+                                <Text style={[css.whiteC, css.fbo, css.f18]}>AcceptA</Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => setadvancePaynowRejectModal(true)}
+                                style={[styles.cancelButton, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
+                            >
+                                <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
+                            </Pressable>
+                        </View>
+                    }
                 </View>
             } */}
-            {jobdetailsData && jobdetailsData.accept &&
-                < View style={[css.container, css.paddingT0, css.marginB10, css.flexDRSA]}>
-                    <Pressable onPress={() => (
-                        (setinspectionAcceptRejectData('APPROVE'), setinspectionAcceptRejectJobID(jobdetailsData._id))
-                        , inspectionAcceptReject())}
-                        style={[styles.cancelButton, css.yellowBG, { width: 100 }]}
-                    >
-                        <Text style={[css.whiteC, css.fbo, css.f18]}>Accept</Text>
-                    </Pressable>
-                    <Pressable onPress={() => (setinspectionAcceptRejectData('CLOSED'), setinspectionAcceptRejectJobID(jobdetailsData._id), setrejectJobModal(true))} style={[styles.cancelButton, { width: 100 }]}>
-                        <Text style={[css.whiteC, css.fbo, css.f18]}>Reject</Text>
-                    </Pressable>
-                </View>
-            }
             <Modal
                 animationType="fade"
                 isVisible={genieModal}
                 hasBackdrop={true}
+                onBackButtonPress={() => setGenieModal(!genieModal)}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
             >
                 <View style={css.centeredView}>
                     <View style={[css.modalNewView, { marginTop: 20, marginBottom: 20 }]}>
@@ -734,13 +876,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         <View style={[css.flexDR, styles.genieHeader, css.padding10, css.line10]}>
                                             <View style={[css.flexDC, css.marginR20, css.width30]}>
                                                 {genieData.profilePicURL.original ?
-                                                    <Image style={[styles.genieLogo, css.img100, css.borderGrey1, { borderRadius: 50, }]} source={{ uri: genieData.profilePicURL.original }} />
+                                                    <Image style={[styles.genieLogo, css.imgg90, css.borderGrey1, { borderRadius: 50, }]} source={{ uri: genieData.profilePicURL.original }} />
                                                     :
-                                                    <Image style={[styles.genieLogo, css.img100, css.borderGrey1, { borderRadius: 50, }]} source={{ uri: 'https://iesoft.nyc3.cdn.digitaloceanspaces.com/homegenie/document_602bdbdf0325e5467c866ffcgOkllk_WD.png' }} />
+                                                    <Image style={[styles.genieLogo, css.imgg90, css.borderGrey1, { borderRadius: 50, }]} source={{ uri: 'https://iesoft.nyc3.cdn.digitaloceanspaces.com/homegenie/document_602bdbdf0325e5467c866ffcgOkllk_WD.png' }} />
                                                 }
                                             </View>
                                             <View style={[css.width60]}>
-                                                <View style={[css.paddingT20]}>
+                                                <View style={[css.paddingT10]}>
                                                     <Text style={[css.fbo, css.f20, css.blackC]}>{genieData.name}</Text>
                                                 </View>
                                                 <View style={[css.flexDR]}>
@@ -785,47 +927,75 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     : null}
                                             </View>
                                         </View>
-                                        {genieData.feedback ?
+                                        {genieData.feedback &&
                                             <View style={[css.padding10, css.line10]}>
                                                 <View><Text style={[css.fm, css.f14, css.brandC]}>Ratings</Text></View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View style={{ width: '10%' }}><Text>5*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
-                                                        <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0') + '%' }]}></View>
+                                                        <View style={[css.yellowBG, css.borderRadius10, {
+                                                            height: 7, width:
+                                                                (genieData.feedback.fiveStar ? (genieData.feedback.fiveStar /
+                                                                    (genieData.feedback.fiveStar + genieData.feedback.fourStar + genieData.feedback.threeStar + genieData.feedback.twoStar + genieData.feedback.oneStar)
+                                                                    * 100) : '0') + '%'
+                                                        }]}>
+                                                        </View>
                                                     </View>
                                                     <View style={{ width: '15%' }}><Text>({genieData.feedback.fiveStar ? genieData.feedback.fiveStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View style={{ width: '10%' }}><Text>4*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
-                                                        <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.fourStar ? genieData.feedback.fourStar : '0') + '%' }]}></View>
+                                                        <View style={[css.yellowBG, css.borderRadius10, {
+                                                            height: 7, width:
+                                                                (genieData.feedback.fourStar ? (genieData.feedback.fourStar /
+                                                                    (genieData.feedback.fiveStar + genieData.feedback.fourStar + genieData.feedback.threeStar + genieData.feedback.twoStar + genieData.feedback.oneStar)
+                                                                    * 100)
+                                                                    : '0') + '%'
+                                                        }]}></View>
                                                     </View>
                                                     <View style={{ width: '15%' }}><Text>({genieData.feedback.fourStar ? genieData.feedback.fourStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View style={{ width: '10%' }}><Text>3*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
-                                                        <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.threeStar ? genieData.feedback.threeStar : '0') + '%' }]}></View>
+                                                        <View style={[css.yellowBG, css.borderRadius10, {
+                                                            height: 7, width:
+                                                                (genieData.feedback.threeStar ? (genieData.feedback.threeStar /
+                                                                    (genieData.feedback.fiveStar + genieData.feedback.fourStar + genieData.feedback.threeStar + genieData.feedback.twoStar + genieData.feedback.oneStar)
+                                                                    * 100)
+                                                                    : '0') + '%'
+                                                        }]}></View>
                                                     </View>
                                                     <View style={{ width: '15%' }}><Text>({genieData.feedback.threeStar ? genieData.feedback.threeStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View style={{ width: '10%' }}><Text>2*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.rgreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
-                                                        <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.twoStar ? genieData.feedback.twoStar : '0') + '%' }]}></View>
+                                                        <View style={[css.yellowBG, css.borderRadius10, {
+                                                            height: 7, width:
+                                                                (genieData.feedback.twoStar ? (genieData.feedback.twoStar /
+                                                                    (genieData.feedback.fiveStar + genieData.feedback.fourStar + genieData.feedback.threeStar + genieData.feedback.twoStar + genieData.feedback.oneStar)
+                                                                    * 100)
+                                                                    : '0') + '%'
+                                                        }]}></View>
                                                     </View>
                                                     <View style={{ width: '15%' }}><Text>({genieData.feedback.twoStar ? genieData.feedback.twoStar : '0'})</Text></View>
                                                 </View>
                                                 <View style={[css.flexDRSA, css.imgFull]}>
                                                     <View style={{ width: '10%' }}><Text>1*</Text></View>
                                                     <View style={[css.alignSelfC, css.marginR10, css.marginL10, css.liteGreyBG, css.borderRadius10, { height: 7, width: '75%' }]}>
-                                                        <View style={[css.yellowBG, css.borderRadius10, { height: 7, width: (genieData.feedback.oneStar ? genieData.feedback.oneStar : '0') + '%' }]}></View>
+                                                        <View style={[css.yellowBG, css.borderRadius10, {
+                                                            height: 7, width:
+                                                                (genieData.feedback.oneStar ? (genieData.feedback.oneStar /
+                                                                    (genieData.feedback.fiveStar + genieData.feedback.fourStar + genieData.feedback.threeStar + genieData.feedback.twoStar + genieData.feedback.oneStar)
+                                                                    * 100)
+                                                                    : '0') + '%'
+                                                        }]}></View>
                                                     </View>
                                                     <View style={{ width: '15%' }}><Text>({genieData.feedback.oneStar ? genieData.feedback.oneStar : '0'})</Text></View>
                                                 </View>
                                             </View>
-                                            :
-                                            null
                                         }
                                         {genieData.feedback.latestComments ?
                                             <View style={[css.padding10, css.line10]}>
@@ -859,11 +1029,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 coverScreen={true}
                 useNativeDriver={true}
                 style={{ margin: 0, }}
-                useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
+                onBackButtonPress={() => setserviceDetailModal(!serviceDetailModal)}
             >
                 {jobdetailsData &&
-
                     <View style={bookModal.modalViewFull}>
                         <View style={[bookModal.modalHeader]}>
                             <TouchableOpacity
@@ -884,7 +1053,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     <Text style={[css.f18, css.fsb, css.ttC, css.blackC,]}>What's included</Text>
                                     <Text style={[css.fm, css.blackC, css.spaceB5,]}>
                                         {jobdetailsData.subCategory.Notes}
-                                        {/* {jobdetailsData.subCategory.serviceNotes} */}
                                     </Text>
                                 </View>
                                 <View style={[css.line20]}>
@@ -940,7 +1108,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 coverScreen={true}
                 useNativeDriver={true}
                 style={{ margin: 0, }}
-                useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
                 {jobdetailsData &&
@@ -992,7 +1159,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                     <View style={[css.line20]}>
                                         <Text style={[css.f18, css.fsb, css.ttC, css.blackC, css.spaceB10]}>Warranty</Text>
                                         <View style={[css.flexDR]}>
-                                            <View style={[css.width30]}><Image style={{ width: 100, height: 90 }} source={require(imgPath + 'warranty.png')} /></View>
+                                            <View style={[css.width30]}><Image style={[css.imgg80]} source={require(imgPath + 'warranty.png')} /></View>
                                             <View style={[css.flexDC, css.alignSelfC]}>
                                                 {jobdetailsData.charges.unitCharges ? null : <Text style={[css.greyC, css.fm]}>As provided in the bill estimate.</Text>}
                                                 <Text style={[css.greyC, css.fm]}>For more details, visit</Text>
@@ -1013,7 +1180,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 animationOut='fadeOut'
                 animationOutTiming={700}
                 coverScreen={true}
-                useNativeDriver={true}
                 useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
@@ -1065,7 +1231,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     animationOutTiming={700}
                     coverScreen={true}
                     useNativeDriver={true}
-                    useNativeDriver={true}
                     hideModalContentWhileAnimating={true}
                 >
                     {jobdetailsData &&
@@ -1102,19 +1267,23 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         </View>
                                         <View>
                                             <Text style={[css.brandC, css.fr, css.f12, css.marginB5]}>Help us improve our services by rating your Genie</Text>
-                                            <StarRating
-                                                disabled={false}
-                                                emptyStar={'ios-star-outline'}
-                                                fullStar={'ios-star'}
-                                                halfStar={'ios-star-half'}
-                                                iconSet={'Ionicons'}
-                                                maxStars={5}
-                                                rating={starCount}
-                                                selectedStar={(rating) => setstarCount(rating)}
-                                                fullStarColor={'#f6b700'}
-                                                emptyStarColor={'#ccc'}
-                                                starSize={30}
-                                            />
+                                            <View style={[css.alignItemsC, css.justifyContentC]}>
+                                                <StarRating
+                                                    disabled={false}
+                                                    emptyStar={'ios-star'}
+                                                    fullStar={'ios-star'}
+                                                    halfStar={'ios-star-half'}
+                                                    iconSet={'Ionicons'}
+                                                    maxStars={5}
+                                                    rating={starCount}
+                                                    selectedStar={(rating) => setstarCount(rating)}
+                                                    fullStarColor={'#f6b700'}
+                                                    emptyStarColor={'#ccc'}
+                                                    starSize={30}
+                                                    containerStyle={[css.width70]}
+                                                />
+                                                {starValidate && <Text style={[css.errorText]}>Please select star for rating</Text>}
+                                            </View>
                                         </View>
                                         <View>
                                             <Text style={[css.brandC, css.fr, css.f12, css.marginT10]}>Write a review</Text>
@@ -1125,6 +1294,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 placeholder={'Write about the Genie and the way they performed the service'}
                                                 numberOfLines={5}
                                             />
+                                            {reviewValidate && <Text style={[css.errorText]}>Please enter some reviews</Text>}
                                         </View>
                                         <View style={[css.marginT10, css.flexDR]}>
                                             <Checkbox
@@ -1138,7 +1308,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         </View>
                                         <Pressable
                                             onPress={() => updateRatingData(jobdetailsData._id)}
-                                            style={[css.brandBG, css.alignItemsC, css.justifyContentC, css.borderRadius5, css.marginT5, { height: 40 }]}
+                                            style={[css.brandBG, css.alignItemsC, css.justifyContentC, css.borderRadius5, css.marginT5, css.borderRadius30, css.boxShadow, { height: 40 }]}
                                         ><Text style={[css.whiteC, css.fm, css.f16]}>SUBMIT</Text>
                                         </Pressable>
                                     </View>
@@ -1154,8 +1324,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 animationInTiming={700}
                 animationOut='fadeOut'
                 animationOutTiming={700}
-                coverScreen={true}
-                useNativeDriver={true}
                 useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
@@ -1196,7 +1364,6 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 animationOut='fadeOut'
                 animationOutTiming={700}
                 coverScreen={true}
-                useNativeDriver={true}
                 useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
@@ -1290,13 +1457,19 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 animationOutTiming={700}
                 coverScreen={true}
                 useNativeDriver={true}
-                useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
                 {jobdetailsData &&
                     <View style={css.centeredView}>
                         <View style={css.modalNewView}>
                             <View style={[css.modalNewHeader]}>
+                                <TouchableOpacity
+                                    style={[css.flexDR, css.padding0, css.marginB10]}
+                                    onPress={() => togglerejectJobModal()}
+                                >
+                                    <Image style={[css.alignSelfC, css.marginR10]} source={require(imgPath + 'backArrowBlack.png')} />
+                                    <Text style={[css.fm, css.f16, css.greyC]}>Back</Text>
+                                </TouchableOpacity>
                                 <View>
                                     <Text style={[css.modalNewText, css.f14, css.blackC, css.fm]}>Are you sure you want to cancel the Booking?</Text>
                                 </View>
@@ -1304,13 +1477,13 @@ export default function JobDetailScreen({ route, props, navigation }) {
                             <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
                                 <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
                                     <TouchableOpacity
-                                        onPress={() => togglerejectJobModal()}
+                                        onPress={() => inspectionAccept('REJECTED', jobdetailsData._id)}
                                         style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
                                     >
                                         <Text style={[css.whiteC, css.fm, css.f12, css.textCenter]}>NO, REQUEST REVISED</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        onPress={() => inspectionAcceptReject()}
+                                        onPress={() => inspectionAccept('CLOSED', jobdetailsData._id)}
                                         style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.liteGreyBG, { width: '40%', height: 40, }]}
                                     >
                                         <Text style={[css.blackC, css.fm, css.f12, css.textCenter]}>YES, CLOSE THE JOB</Text>
@@ -1321,7 +1494,78 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 }
             </Modal>
-        </SafeAreaView >
+            <Modal
+                isVisible={advancePaynowModal}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+                coverScreen={true}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+            >
+                {jobdetailsData &&
+                    <View style={css.centeredView}>
+                        <View style={css.modalNewView}>
+                            <View style={[css.modalNewHeader]}>
+                                <View>
+                                    <Text style={[css.modalNewText, css.f14, css.blackC, css.fm]}>Kindly pay Advance payment of {jobdetailsData.charges.advanceCharges ? jobdetailsData.charges.advanceCharges : ''}  AED in advance to continue the job service.</Text>
+                                </View>
+                            </View>
+                            <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
+                                <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('PaymentPage',
+                                            { jobId: jobdetailsData._id, amount: jobdetailsData.charges.advanceCharges })}
+                                        style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
+                                    >
+                                        <Text style={[css.whiteC, css.fm, css.f12, css.textCenter]}>Pay Now</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                }
+            </Modal>
+            <Modal
+                isVisible={advancePaynowRejectModal}
+                animationIn='fadeIn'
+                animationInTiming={700}
+                animationOut='fadeOut'
+                animationOutTiming={700}
+                coverScreen={true}
+                useNativeDriver={true}
+                hideModalContentWhileAnimating={true}
+            >
+                {jobdetailsData &&
+                    <View style={css.centeredView}>
+                        <View style={css.modalNewView}>
+                            <View style={[css.modalNewHeader]}>
+                                <View>
+                                    <Text style={[css.modalNewText, css.f14, css.blackC, css.fm]}>Are you sure you want to reject the job?</Text>
+                                </View>
+                            </View>
+                            <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
+                                <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
+                                    <TouchableOpacity
+                                        onPress={() => advancePaynowReject('REJECTED', jobdetailsData._id)}
+                                        style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
+                                    >
+                                        <Text style={[css.whiteC, css.fm, css.f12, css.textCenter]}>NO, REQUEST REVISED</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => advancePaynowReject('CLOSED', jobdetailsData._id)}
+                                        style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.liteGreyBG, { width: '40%', height: 40, }]}
+                                    >
+                                        <Text style={[css.blackC, css.fm, css.f12, css.textCenter]}>YES, CLOSE THE JOB { }</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                }
+            </Modal>
+        </SafeAreaView>
     );
 }
 const form = StyleSheet.create({
@@ -1330,7 +1574,7 @@ const form = StyleSheet.create({
 const styles = StyleSheet.create({
     scene: { flex: 1 },
     cancelButtonContainer: { position: 'absolute', bottom: 0, left: 0, right: 10, marginLeft: 20, marginRight: 20 },
-    cancelButton: { width: '100%', height: 50, backgroundColor: '#d1d1d1', alignItems: 'center', justifyContent: 'center', borderRadius: 10, },
+    cancelButton: { width: '90%', height: 50, backgroundColor: '#d1d1d1', alignItems: 'center', justifyContent: 'center', borderRadius: 10, },
     reditems: { color: 'red' }
 });
 const bookModal = StyleSheet.create({

@@ -28,6 +28,7 @@ import Getgeniescreen2 from '../screens/Booking/Getgeniescreen2';
 import Getgeniescreen3 from '../screens/Booking/Getgeniescreen3';
 import Getgeniescreen4 from '../screens/Booking/Getgeniescreen4';
 import Getgeniescreen5 from '../screens/Booking/Getgeniescreen5';
+import Browser from '../screens/Browser';
 
 let imagePath = '../assets/icons/'
 let imagePathImage = '../assets/icons/images/'
@@ -47,20 +48,7 @@ const StackScreen = ({ navigation }) => {
             <Stack.Screen name="SettingAddCardPage" component={SettingAddCardScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="SettingAddAddressPage" component={SettingAddAddressScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name="SettingAddInfoPage" component={SettingAddInfoScreen} options={{ gestureEnabled: false }} />
-            {/*<Stack.Screen name="GetgeniePage1" component={Getgeniescreen1} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage2" component={Getgeniescreen2} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage3" component={Getgeniescreen3} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage4" component={Getgeniescreen4} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage5" component={Getgeniescreen5} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="SettingAddCardPage" component={SettingAddCardScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="SettingAddAddressPage" component={SettingAddAddressScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="SettingAddInfoPage" component={SettingAddInfoScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="ReferEarnPage" component={ReferEarnScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="SupportPage" component={SupportScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="WalletPage" component={WalletScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="NotificationPage" component={NotificationScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="JobdetailPage" component={JobDetailScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="SettingPage" component={SettingScreen} options={{ gestureEnabled: false }} /> */}
+            <Stack.Screen name="Browser" component={Browser} options={{ gestureEnabled: false }} />
         </Stack.Navigator>
     )
 }

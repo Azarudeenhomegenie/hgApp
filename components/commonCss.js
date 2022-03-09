@@ -315,6 +315,7 @@ module.exports = {
     },
     fixedContainer: { flex: 1 },
     fixedHeader: { position: 'absolute', top: 0, marginBottom: 200 },
-    boxShadow: { shadowColor: "#00000050", shadowOffset: { width: 0, height: 2, }, shadowOpacity: 0.7, shadowRadius: 2.84, elevation: 5, },
+    //boxShadow: { shadowColor: "#00000050", shadowOffset: { width: 0, height: 2, }, shadowOpacity: 0.7, shadowRadius: 2.84, elevation: 5, },
+    boxShadow: { elevation: 10, shadowColor: "#000", shadowRadius: 10, shadowOffset: { height: 4, width: 0, }, shadowOpacity: 10, }
 
 }

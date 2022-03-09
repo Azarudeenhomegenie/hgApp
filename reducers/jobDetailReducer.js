@@ -125,8 +125,10 @@ export const deletetheJob = (token, data) => async dispatch => {
 };
 
 export const updateInspection = (token, data) => async dispatch => {
+    console.log('tokenReducer', token);
+    console.log('dataReducer', data);
     try {
-        const res = await axios.put(`${BASE_URL}customer/acceptOrRejectedJobOnce`, data, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.put(`${BASE_URL}customer/acceptOrRejectedJobOnce/`, data, { headers: { Authorization: `Bearer ${token}` } });
         return true;
     } catch (e) {
         console.log('CATCH');
@@ -146,6 +148,18 @@ export const updatePayment = (token, jobId, amount) => async dispatch => {
     }
 };
 
+export const rejectAdvancePayment = (token, data) => async dispatch => {
+    console.log('tokenReducer', token);
+    console.log('dataReducer', data);
+    try {
+        const res = await axios.put(`${BASE_URL}customer/acceptOrRejectedJobOnce/`, data, { headers: { Authorization: `Bearer ${token}` } });
+        return true;
+    } catch (e) {
+        console.log('CATCH');
+        console.log(e)
+        return false;
+    }
+};
 //Selectors
 export const getJobDetail = state => state.jobdetails.jobdetail;
 export const getGenie = state => state.jobdetails.genie;

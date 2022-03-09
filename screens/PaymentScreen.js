@@ -103,7 +103,7 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
                     </View>
                 </View>
                 <Pressable
-                    style={[css.blueBtn, css.imgFull, css.marginT20, { height: 50 }]}
+                    style={[css.blueBtn, css.imgFull, css.marginT20, css.boxShadow, css.alignItemsC, css.justifyContentC, css.borderRadius30, { height: 50 }]}
                     onPress={() => getPaymentDetails(jobId)}
                 >
                     <Text style={[css.fsb, css.whiteC, css.f16]}>PAY NOW</Text>
@@ -128,13 +128,12 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
                         </View>
                         <View style={[css.modalNewBody, css.alignItemsC, css.paddingT0]}>
                             <View style={[css.flexDRSA, css.alignItemsC, css.imgFull, css.alignItemsC]}>
-
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => navigation.navigate('MyBookingPage')}
-                                    style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.borderRadius10, css.yellowBG, { width: '40%', height: 40, }]}
+                                    style={[css.boxShadow, css.alignItemsC, css.justifyContentC, css.spaceT20, css.yellowBG, css.borderRadius30, { width: '40%', height: 40, }]}
                                 >
                                     <Text style={[css.whiteC, css.fm, css.f14]}>Got it</Text>
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                         </View>
                     </View>

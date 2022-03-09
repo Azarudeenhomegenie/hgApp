@@ -28,6 +28,7 @@
     "expo-secure-store": "~11.1.0",
     "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
+    "expo-updates": "~0.11.6",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.34",
     "native-base": "^3.3.4",

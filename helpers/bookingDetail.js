@@ -108,7 +108,8 @@ export const getPastDetail = (data) => {
         isRejected,
         status,
         estimateItems,
-        categoryName
+        categoryName,
+        totalCharges,
     } = data;
 
     detail.hideLabourCharges = !isInspectionCompleted || isRejected || status === 'CANCELLED' || status === 'EXPIRED'
@@ -135,9 +136,9 @@ export const getPastDetail = (data) => {
         // $("#" + id + "-total").html(resultdata.charges.callOutCharges);
         // $("." + id + "-settledjobsubstatus").html("( - Rejected and paid )");
     } else if (status == 'CANCELLED') {
-        detail.showAction = '- Cancelled and paid';
+        //detail.showAction = '- Cancelled and paid';
         if (totalCharges) {
-            detail.showAction = '- Cancelled and paid';
+            //detail.showAction = '- Cancelled and paid';
         }
     }
     return detail;
@@ -220,7 +221,7 @@ export const getCurrentDetails = (data) => {
         advance_payment,
         isRejected,
         payment,
-        subCategory
+        subCategory,
     } = data;
 
     const { slot } = data;
@@ -284,6 +285,7 @@ export const getCurrentDetails = (data) => {
         discountCharges,
         additionalCharges,
         totalCharges,
+        callOutCharges,
     } = charges || {};
 
     // show due amount
@@ -314,6 +316,7 @@ export const getCurrentDetails = (data) => {
         detail.showCall = false;
         //error here
         detail.rateGenie = false;
+        //detail.showGenieNote = true;
     }
 
     // for displayling advance amount
@@ -515,32 +518,36 @@ export const getCurrentDetails = (data) => {
             break;
         case "ASSIGNED":
             if (advancePayment && advanceCharges && advance_payment["payment_type"] == null && payment["payment_type"]) {
-                defaultOptions.showAction = ' - pay advance';
+                defaultOptions.showAction = ' - PAY ADVANCE';
                 defaultOptions.reditems = true;
             } else if (advancePayment && advanceCharges && advance_payment["payment_type"] == null && payment["payment_type"] == "CASH") {
-                defaultOptions.showAction = '- await collection';
+                defaultOptions.showAction = '- AWAIT COLLECTION';
             }
             break;
         case "ENROUTE":
-            defaultOptions.showAction = ' - Await arrival'
+            defaultOptions.showAction = ' - AWAIT ARRIVAL'
             defaultOptions.reditems = false;
             defaultOptions.cancel = false;
             break;
         case "INSPECTION":
             if (advancePayment && unitCharges) {
-                defaultOptions.showAction = " - pay advance";
+                defaultOptions.showAction = " - PAY ADVANCE";
                 defaultOptions.reditems = true;
             }
-            if (isInspectionCompleted) {
-                defaultOptions.showAction = " - Await Estimate ";
+            if (!isInspectionCompleted) {
+                defaultOptions.showAction = " - AWAIT ESTIMATE ";
                 defaultOptions.reditems = false;
-            } else if (isInspectionCompleted && advancePayment) {
-                defaultOptions.showAction = " - Accept Estimate ";
+            } else if (isInspectionCompleted && advancePayment === null) {
+                defaultOptions.showAction = " - ACCEPT ESTIMATE ";
+                defaultOptions.reditems = true;
+                defaultOptions.cancel = false;
+                defaultOptions.accept = true;
+            } else if (isInspectionCompleted && advancePayment != null) {
+                defaultOptions.showAction = " - PAY ADVANCE";
                 defaultOptions.reditems = true;
                 defaultOptions.cancel = false;
                 defaultOptions.accept = true;
             }
-
             if (isInspectionCompleted && advancePayment && advanceCharges && advance_payment["payment_type"] == null && payment.payment_type == null) {
                 defaultOptions.showAction = " - Accept and Pay Advance";
                 defaultOptions.reditems = true;
@@ -551,18 +558,19 @@ export const getCurrentDetails = (data) => {
                 }
                 defaultOptions.cancel = true;
             } else if (isInspectionCompleted && advancePayment && advanceCharges && payment["payment_type"] == "CASH") {
-                defaultOptions.showAction = " - Await Collection ";
+                defaultOptions.showAction = " - AWAIT COLLECTION";
+                defaultOptions.accept = false;
                 defaultOptions.cancel = false;
                 defaultOptions.reditems = false;
             }
             break;
         case "IN_SERVICE":
-            defaultOptions.showAction = ' - Await Completion ';
+            defaultOptions.showAction = ' - AWAIT COMPLETION ';
             defaultOptions.reditems = false;
             defaultOptions.accept = false;
             break;
         case "REESTIMATE":
-            defaultOptions.showAction = ' - Await Estimate ';
+            defaultOptions.showAction = ' - AWAIT ESTIMATE ';
             defaultOptions.reditems = false;
             break;
         case "CANCELLED":
@@ -570,23 +578,24 @@ export const getCurrentDetails = (data) => {
                 defaultOptions.showAction = false;
                 defaultOptions.reditems = false;
             } else if ((totalCharges > 0)) {
-                defaultOptions.showAction = ' - Pay Charges ';
+                defaultOptions.showAction = ' - PAY CHARGES ';
                 defaultOptions.reditems = true;
             }
             if (payment && payment["payment_type"]) {
-                defaultOptions.showAction = " - Await collection ";
+                defaultOptions.showAction = " - AWAIT COLLECTION ";
                 defaultOptions.reditems = false;
             }
 
             break;
         case "REJECTED":
 
-            if (payment && payment["payment_type"]) {
-                defaultOptions.showAction = " - Await collection ";
+            if (payment && payment["payment_type"] == 'CASH') {
+                defaultOptions.showAction = " - AWAIT COLLECTION ";
             } else {
-                defaultOptions.showAction = " - Pay call-out charges";
+                defaultOptions.showAction = " - PAY CALL-OUT CHARGES";
                 defaultOptions.reditems = true;
                 defaultOptions.Payment = true;
+                //defaultOptions.accept = false;
             }
 
             break;
@@ -694,7 +703,7 @@ export const getCurrentDetails = (data) => {
                 detail.advancePayment = vatFinalCharges;
             }
             defaultOptions.advancePayment = true;
-            defaultOptions.accept = true; // doubt
+            //defaultOptions.accept = true; // doubt
         } else {
             defaultOptions.advancePayment = false;
             defaultOptions.view = false;

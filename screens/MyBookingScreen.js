@@ -13,12 +13,12 @@ import {
     Dimensions,
     StatusBar,
     Pressable,
-    FlatList
+    FlatList,
+    TextInput,
 } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import { useIsFocused } from "@react-navigation/native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import { connect } from "react-redux";
 import axios from "axios";
 import { getLogin } from "../actions/hgAction";
 import Whatsapp from "../components/whtsApp";
@@ -29,23 +29,27 @@ import SocialMedia from '../components/socialMedia';
 import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
 import css, { brandC } from "../components/commonCss";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getCurrentBookings, getPastBookings, loadBookings, updateInspection } from '../reducers/bookingsReducer';
+import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-import { useDispatch, useSelector } from "react-redux";
-import { getCurrentBookings, getPastBookings, loadBookings } from '../reducers/bookingsReducer'
 
 //Selectors
 import { getLoggedInStatus, getUser, getAccessToken } from '../reducers/authReducer';
 // import { FlatList } from "-";
 
 const MyBookingScreen = ({ props, navigation }) => {
+    const [isLoading, setLoading] = useState(true);
     const currentBookings = useSelector(getCurrentBookings);
     const pastBookings = useSelector(getPastBookings);
     const token = useSelector(getAccessToken);
     const [userName, setUserName] = useState(token);
+    const [search, setSearch] = useState('');
+    const [filteredcurrentBookings, setFilteredcurrentBookings] = currentBookings;
     // console.log('token', token);
     const dispatch = useDispatch();
     // console.log('currentBookings', currentBookings);
@@ -57,55 +61,51 @@ const MyBookingScreen = ({ props, navigation }) => {
     ]);
     const isFocused = useIsFocused();
 
-    const inspectionAcceptReject = async (approvalOrRejectStatus, jobId) => {
-        try {
-            const header = { headers: { Authorization: `Bearer ${token}` } };
-            const api = `${BASE_URL}customer/acceptOrRejectedJobOnce/`
-            const formData = new FormData();
-            formData.append('jobId', jobId)
-            formData.append('status', approvalOrRejectStatus)
-            const response = await axios.put(
-                api,
-                formData,
-                header
-            );
+    const inspectionAcceptReject = async (status, jobId) => {
+        const params = {
+            jobId: jobId,
+            status: status,
+        };
+        console.log('Paramsds', params, token);
+        const isUpdated = await axios.put(`${BASE_URL}customer/acceptOrRejectedJobOnce/`, params, { headers: { Authorization: `Bearer ${token}` } });
+        if (isUpdated) {
+            console.log('Status updated success');
             navigation.navigate('MyBookingPage')
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
+        } else {
+            console.log('inspectionAcceptRejectFail');
         }
     }
+    const searchFilterFunction = (text) => {
+        // Check if searched text is not blank
+        if (text) {
+            // Inserted text is not blank
+            // Filter the masterDataSource and update FilteredDataSource
+            const newData = currentBookings.filter(function (item) {
+                // Applying filter for the inserted text in search bar
+                const itemData = item.title;
+                const textData = text.toUpperCase();
+                return itemData.indexOf(textData) > -1;
+            });
+            setFilteredDataSource(newData);
+            setSearch(text);
+        } else {
+            // Inserted text is blank
+            // Update FilteredDataSource with masterDataSource
+            setFilteredDataSource(currentBookings);
+            setSearch(text);
+        }
+    };
     useFocusEffect(
         useCallback(() => {
             if (token) {
-                //console.log('TKN:', token)
                 dispatch(loadBookings(token));
             } else {
                 console.log('NOT LOADEDDD>>>>>>>>>>>>>>>>>>')
             };
-            //error
-            //loadBookings(token);
+
             console.log('xsaxs');
         }, [isFocused])
     );
-    // useCallback(() => {
-    //     const loadJobdetails = async () => {
-    //         await dispatch(loadJobDetails(token, jobId));
-    //     };
-
-    //     loadJobdetails();
-    //     console.log('loadJobdetails', loadJobdetails);
-    // }, [])
-    // );
-    // useEffect(() => {
-    //     if (token) {
-    //         //console.log('TKN:', token)
-    //         dispatch(loadBookings(token));
-    //     }
-    //     console.log('zxsxa');
-    // }, [])
-
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -114,6 +114,12 @@ const MyBookingScreen = ({ props, navigation }) => {
                     <View style={[styles.scene, styles.bookingTabs]}>
                         {currentBookings != null ?
                             <View style={{ padding: 10 }}>
+                                {/* <TextInput
+                                    style={{ height: 40, borderWidth: 1, paddingLeft: 20, margin: 5, borderColor: '#009688', ackgroundColor: '#FFFFFF', }}
+                                    onChangeText={(text) => searchFilterFunction(text)}
+                                    value={search}
+                                    placeholder="Search Here"
+                                /> */}
                                 <FlatList
                                     data={currentBookings}
                                     keyExtractor={(item, index) => {
@@ -156,14 +162,26 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                             {item.status === 'ENROUTE' &&
                                                                 <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
                                                             }
-                                                            {item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill != null &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
-                                                            }
-                                                            {item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null &&
+                                                            {item.status === 'INSPECTION' && !item.isInspectionCompleted &&
                                                                 <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
                                                             }
-                                                            {item.status === 'REJECTED' &&
+                                                            {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                            }
+                                                            {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept and Pay Advance</Text>
+                                                            }
+                                                            {item.status === 'INSPECTION' && item.isInspectionCompleted && item.payment.payment_type == 'CASH' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                            }
+                                                            {item.status === 'REJECTED' && item.payment.payment_type == 'null' &&
                                                                 <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                            }
+                                                            {item.status === 'REESTIMATE' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>AWAIT ESTIMATE</Text>
+                                                            }
+                                                            {item.status === 'REJECTED' && item.payment.payment_type != 'null' &&
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
                                                             }
                                                             {item.status === 'UNFINISHED' &&
                                                                 <Text style={[css.brandC, css.f10, css.fr]}>
@@ -186,7 +204,25 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                             <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
                                                         </Pressable>
                                                     }
-                                                    {item.status == 'INSPECTION' &&
+                                                    {item.status == 'REJECTED' && item.payment.payment_type == 'null' &&
+                                                        <Pressable
+                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
+                                                            onPress={() => navigation.navigate("JobdetailPage", {
+                                                                token: token, jobId: item._id
+                                                            })}
+                                                        >
+                                                            <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
+                                                        </Pressable>
+                                                    }
+                                                    {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
+                                                        <Pressable
+                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                            onPress={() => inspectionAcceptReject('APPROVE', item._id)}
+                                                        >
+                                                            <Text style={[css.whiteC, css.f12, css.fm]}>AcceptA</Text>
+                                                        </Pressable>
+                                                    }
+                                                    {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
                                                         <Pressable
                                                             style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
                                                             onPress={() => inspectionAcceptReject('APPROVE', item._id)}
@@ -194,6 +230,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                             <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
                                                         </Pressable>
                                                     }
+
                                                     {item.status == 'RATING' &&
                                                         <Pressable
                                                             style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
@@ -218,7 +255,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     )} />
                             </View>
                             :
-                            <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                            <View style={[styles.bookingTabsContent, { alignItems: 'center', justifyContent: 'center', flex: 1 }]}>
                                 <View style={{
                                     width: 150, height: 150,
                                     borderRadius: 200,
@@ -226,7 +263,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     alignItems: 'center', marginTop: 50,
                                 }}>
                                     <Image
-                                        style={[styles.bookingTabsImage], { width: 100, height: 100, }}
+                                        style={[styles.bookingTabsImage, { width: 100, height: 100, }]}
                                         source={require(imgPath + 'empty-ongoing.png')}
                                     />
                                 </View>
@@ -235,17 +272,11 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     style={[styles.button, { backgroundColor: '#f6b700', }]}
                                     onPress={() => navigation.navigate('GetgenieScreen')}
                                 >
-                                    <Text style={[styles.buttonText], {
-                                        fontSize: 14,
-                                        lineHeight: 21,
-                                        fontFamily: 'PoppinsM',
-                                        letterSpacing: 0.25,
-                                        color: 'white',
-                                    }}>Book Now</Text>
+                                    <Text style={[styles.buttonText, { fontSize: 14, lineHeight: 21, fontFamily: 'PoppinsM', letterSpacing: 0.25, color: 'white', }]}>Book Now</Text>
                                 </Pressable>
                             </View>
                         }
-                    </View>
+                    </View >
                 )
             case '2':
                 return (
@@ -282,26 +313,40 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                 <View style={[css.flexDR]}>
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.status}{' '}
-                                                        {
-                                                            item.status === 'IN_SERVICE' ?
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
-                                                                : item.status === 'PAYMENT_PENDING' ?
-                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
-                                                                    : item.status === 'PAYMENT_PENDING' && item.payment_status == 'PENDING' ?
-                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
-                                                                        : item.status === 'ENROUTE' ?
-                                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                                            : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill ?
-                                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
-                                                                                : item.status === 'INSPECTION' && item.billAndInvoices.estimatedBill == null ?
-                                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                                                    : item.status === 'REJECTED' ?
-                                                                                        <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
-                                                                                        : item.status === 'UNFINISHED' ?
-                                                                                            <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                                            </Text>
-                                                                                            : null
+                                                        {item.status === 'IN_SERVICE' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
+                                                        }
+                                                        {item.status === 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                        }
+                                                        {item.status === 'PAYMENT_PENDING' && item.payment.payment_type != 'null' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                        }
+                                                        {item.status === 'ENROUTE' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
+                                                        }
+                                                        {item.status === 'INSPECTION' && !item.isInspectionCompleted &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                        }
+                                                        {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment == null &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                        }
+                                                        {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Accept and Pay Advance</Text>
+                                                        }
+                                                        {item.status === 'INSPECTION' && item.isInspectionCompleted && item.payment.payment_type == 'CASH' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                        }
+                                                        {item.status === 'REJECTED' && item.payment.payment_type == 'null' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                        }
+                                                        {item.status === 'REJECTED' && item.payment.payment_type != 'null' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                        }
+                                                        {item.status === 'UNFINISHED' &&
+                                                            <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                            </Text>
                                                         }
                                                     </Text>
                                                 </View>
@@ -322,7 +367,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     )} />
                             </View>
                             :
-                            <View style={[styles.bookingTabsContent], { alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                            <View style={[styles.bookingTabsContent, { alignItems: 'center', justifyContent: 'center', flex: 1 }]}>
                                 <View style={{
                                     width: 150, height: 150,
                                     borderRadius: 200,
@@ -330,7 +375,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     alignItems: 'center', marginTop: 50,
                                 }}>
                                     <Image
-                                        style={[styles.bookingTabsImage], { width: 100, height: 100, }}
+                                        style={[styles.bookingTabsImage, { width: 100, height: 100, }]}
                                         source={require(imgPath + 'empty-ongoing.png')}
                                     />
                                 </View>
@@ -339,13 +384,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                     style={[styles.button, { backgroundColor: '#f6b700', }]}
                                     onPress={() => navigation.navigate('GetgenieScreen')}
                                 >
-                                    <Text style={[styles.buttonText], {
-                                        fontSize: 16,
-                                        lineHeight: 21,
-                                        fontWeight: 'bold',
-                                        letterSpacing: 0.25,
-                                        color: 'white',
-                                    }}>Book Now</Text>
+                                    <Text style={[styles.buttonText, { fontSize: 16, lineHeight: 21, fontWeight: 'bold', letterSpacing: 0.25, color: 'white', }]}>Book Now</Text>
                                 </Pressable>
                             </View>
                         }

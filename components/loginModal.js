@@ -102,39 +102,6 @@ const LoginModal = (props) => {
         console.log('accessToken', resp.accessToken);
     };
 
-    // const LoginApi = () => {
-    //     // https://api.homegenie.com/api/customer/validatePhoneNo
-    //     let data = new FormData();
-    //     data.append('phoneNo', phone);
-    //     data.append('countryCode', countryPlus + countryCodeNew)
-    //     // console.log(countryPlus + countryCodeNew);
-    //     // console.log(phone);
-
-    //     fetch('https://api.homegenie.com/api/customer/validatePhoneNo', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //         },
-    //         body: data
-    //     })
-    //         .then(response => response.json())
-    //         .then(res => {
-    //             console.log(res.data.isRegistered)
-    //             if (res.data.isRegistered) {
-    //                 setOtpCodeOne(null);
-    //                 setOtpCodeTwo(null);
-    //                 setOtpCodeThree(null);
-    //                 setOtpCodeFour(null);
-    //                 setOtpModal(true);
-    //             } else {
-    //                 setOtpCodeOne(null);
-    //                 setOtpCodeTwo(null);
-    //                 setOtpCodeThree(null);
-    //                 setOtpCodeFour(null);
-    //                 setRegisterModal(true);
-    //             }
-    //         })
-    // }
     const ResetOtpApi = () => {
         //console.log('resend Api call')
         let data = new FormData();
@@ -154,51 +121,6 @@ const LoginModal = (props) => {
 
             })
     }
-
-    // const OtpVrifyApi = () => {
-    //     let otpData = String(OtpCodeOne) + String(OtpCodeTwo) + String(OtpCodeThree) + String(OtpCodeFour);
-    //     let data = new FormData();
-    //     data.append("deviceType", "WEBSITE");
-    //     data.append("deviceToken", "151");
-    //     data.append("phoneNo", phone);
-    //     data.append("OTPCode", otpData);
-    //     data.append('countryCode', countryPlus + countryCodeNew)
-    //     data.append("timezone", "Asia/Calcutta");
-    //     data.append("latitude", "17.3753");
-    //     data.append("longitude", "78.4744");
-    //     //console.log(data)
-    //     fetch('https://api.homegenie.com/api/customer/verifyOTP1', {
-    //         method: 'PUT',
-    //         headers: {
-    //             Accept: 'application/json',
-    //         },
-    //         body: data
-    //     })
-    //         .then(response => response.json())
-    //         .then(res => {
-    //             //console.log('userDataLoginModal', res)
-    //             if (res.message == "Success") {
-    //                 setOtpModal(false)
-    //                 props.userData(true)
-    //                 setOtpCodeOne(null);
-    //                 setOtpCodeTwo(null);
-    //                 setOtpCodeThree(null);
-    //                 setOtpCodeFour(null);
-    //                 setAccessToken(res.data.accessToken);
-    //                 setDisplayEmail(res.data.userDetails.email);
-    //                 setDisplayName(res.data.userDetails.name);
-    //                 props.getName(res.data.userDetails.name);
-    //                 props.getEmail(res.data.userDetails.email);
-    //                 props.getPhone(res.data.userDetails.phoneNo);
-    //                 props.getToken(res.data.accessToken);
-    //                 props.falseData(false)
-    //                 setUser('in')
-    //             }
-    //         })
-    //         .catch(e => {
-    //             console.log(e)
-    //         })
-    // }
 
     const signUpApi = () => {
         if (userName == null) {
@@ -262,8 +184,8 @@ const LoginModal = (props) => {
                                             source={require("../assets/icons/backArrowBlack.png")}
                                         />
                                     </Pressable>
-                                    <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>Login/Signup to HomeGenie</Text>
-                                    <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Login/Signup to access your stored addressess and service booking details.</Text>
+                                    <Text style={[css.fm, css.f16, css.blackC, css.marginT20, css.textCenter]}>Login/Signup to HomeGenie</Text>
+                                    <Text style={[css.fm, css.f12, css.greyC, css.marginT5, css.textCenter]}>Login/Signup to access your stored addressess and service booking details.</Text>
                                 </View>
                                 <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
                                     <View style={[styles.flexRow, css.alignItemsC, { width: '90%' }]}>
@@ -274,7 +196,7 @@ const LoginModal = (props) => {
                                             pickerTitleStyle={styles.pickerTitleStyle}
                                             selectedCountryTextStyle={styles.selectedCountryTextStyle}
                                             countryNameTextStyle={styles.countryNameTextStyle}
-                                            pickerTitle={'Country Picker'}
+                                            pickerTitle={'Select Country'}
                                             searchBarPlaceHolder={'Search......'}
                                             hideCountryFlag={false}
                                             hideCountryCode={false}
@@ -644,11 +566,12 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
         borderRadius: 0,
         borderColor: '#ccc',
-        backgroundColor: 'white',
-        position: 'absolute',
         backgroundColor: 'transparent',
-        top: 0, left: 0, zIndex: 4,
-        fontSize: 10, fontFamily: 'PoppinsR'
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 4,
+        fontFamily: 'PoppinsR'
     },
     selectedCountryTextStyle: {
         paddingLeft: 5,
