@@ -49,7 +49,7 @@ const MyBookingScreen = ({ props, navigation }) => {
     const token = useSelector(getAccessToken);
     const [userName, setUserName] = useState(token);
     const [search, setSearch] = useState('');
-    const [filteredcurrentBookings, setFilteredcurrentBookings] = currentBookings;
+    const [filteredcurrentBookings, setFilteredcurrentBookings] = [currentBookings];
     // console.log('token', token);
     const dispatch = useDispatch();
     // console.log('currentBookings', currentBookings);
@@ -75,26 +75,26 @@ const MyBookingScreen = ({ props, navigation }) => {
             console.log('inspectionAcceptRejectFail');
         }
     }
-    const searchFilterFunction = (text) => {
-        // Check if searched text is not blank
-        if (text) {
-            // Inserted text is not blank
-            // Filter the masterDataSource and update FilteredDataSource
-            const newData = currentBookings.filter(function (item) {
-                // Applying filter for the inserted text in search bar
-                const itemData = item.title;
-                const textData = text.toUpperCase();
-                return itemData.indexOf(textData) > -1;
-            });
-            setFilteredDataSource(newData);
-            setSearch(text);
-        } else {
-            // Inserted text is blank
-            // Update FilteredDataSource with masterDataSource
-            setFilteredDataSource(currentBookings);
-            setSearch(text);
-        }
-    };
+    // const searchFilterFunction = (text) => {
+    //     // Check if searched text is not blank
+    //     if (text) {
+    //         // Inserted text is not blank
+    //         // Filter the masterDataSource and update FilteredDataSource
+    //         const newData = currentBookings.filter(function (item) {
+    //             // Applying filter for the inserted text in search bar
+    //             const itemData = item.title;
+    //             const textData = text.toUpperCase();
+    //             return itemData.indexOf(textData) > -1;
+    //         });
+    //         setFilteredDataSource(newData);
+    //         setSearch(text);
+    //     } else {
+    //         // Inserted text is blank
+    //         // Update FilteredDataSource with masterDataSource
+    //         setFilteredDataSource(currentBookings);
+    //         setSearch(text);
+    //     }
+    // };
     useFocusEffect(
         useCallback(() => {
             if (token) {
@@ -114,144 +114,158 @@ const MyBookingScreen = ({ props, navigation }) => {
                     <View style={[styles.scene, styles.bookingTabs]}>
                         {currentBookings != null ?
                             <View style={{ padding: 10 }}>
-                                {/* <TextInput
-                                    style={{ height: 40, borderWidth: 1, paddingLeft: 20, margin: 5, borderColor: '#009688', ackgroundColor: '#FFFFFF', }}
-                                    onChangeText={(text) => searchFilterFunction(text)}
-                                    value={search}
-                                    placeholder="Search Here"
-                                /> */}
+                                <View>
+                                    <TextInput
+                                        style={[css.borderRadius10, css.borderBrand1, css.whiteBG, css.brandC, css.paddingL20, css.paddingR20, css.marginT10, css.marginB5, { height: 35, marginLeft: '2%', marginRight: '2%' }]}
+                                        onChangeText={(text) => searchFilterFunction(text)}
+                                        value={search}
+                                        placeholder="Search"
+                                        placeholderTextColor="#2eb0e4"
+                                        placeholderTextAlign="right"
+                                    />
+                                    <Image
+                                        style={[{ position: 'absolute', right: 15, top: 20 }]}
+                                        source={require(imgPath + 'searchIcon.png')} />
+                                </View>
                                 <FlatList
                                     data={currentBookings}
+                                    //data={filteredcurrentBookings}
                                     keyExtractor={(item, index) => {
                                         return item._id;
                                     }}
                                     renderItem={({ item }) => (
-                                        <View style={[styles.screen4box, {}]}>
-                                            <View style={[styles.bookingHead, css.line10, css.padding10]}>
-                                                <View style={[css.flexDR]}>
-                                                    <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
-                                                    <Text style={[css.f16, css.blackC, css.fsb,]}>{item.category.name}</Text>
-                                                </View>
-                                            </View>
-                                            <View style={[styles.bookingBody, css.padding10]}>
-                                                <View style={[css.flexDR]}>
-                                                    <Text style={[css.width25, css.f14, css.liteBlackC, css.fm]}>Job ID</Text>
-                                                    <Text style={[css.width75, css.f14, css.blackC, css.fbo]}>{item.uniqueCode}</Text>
-                                                </View>
-                                                <View style={[css.flexDR]}>
-                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Service</Text>
-                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.subcategory.subCategoryName}</Text>
-                                                </View>
-                                                <View style={[css.flexDR]}>
-                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Location</Text>
-                                                    <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.nickName}</Text>
-                                                </View>
-                                                <View style={[css.flexDR]}>
-                                                    <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
+                                        <View>
+                                            <View style={[styles.screen4box, {}]}>
+                                                <View style={[styles.bookingHead, css.line10, css.padding10]}>
                                                     <View style={[css.flexDR]}>
-                                                        <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
-                                                            {item.status === 'IN_SERVICE' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
-                                                            }
-                                                            {item.status === 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
-                                                            }
-                                                            {item.status === 'PAYMENT_PENDING' && item.payment.payment_type != 'null' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
-                                                            }
-                                                            {item.status === 'ENROUTE' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
-                                                            }
-                                                            {item.status === 'INSPECTION' && !item.isInspectionCompleted &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
-                                                            }
-                                                            {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
-                                                            }
-                                                            {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Accept and Pay Advance</Text>
-                                                            }
-                                                            {item.status === 'INSPECTION' && item.isInspectionCompleted && item.payment.payment_type == 'CASH' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
-                                                            }
-                                                            {item.status === 'REJECTED' && item.payment.payment_type == 'null' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
-                                                            }
-                                                            {item.status === 'REESTIMATE' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>AWAIT ESTIMATE</Text>
-                                                            }
-                                                            {item.status === 'REJECTED' && item.payment.payment_type != 'null' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
-                                                            }
-                                                            {item.status === 'UNFINISHED' &&
-                                                                <Text style={[css.brandC, css.f10, css.fr]}>
-                                                                    {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
-                                                                </Text>
-                                                            }
-                                                        </Text>
+                                                        <Image style={[css.img30, css.marginR10]} source={{ uri: item.category.imageURL.thumbnail }} />
+                                                        <Text style={[css.f16, css.blackC, css.fsb,]}>{item.category.name}</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={[styles.bookingBody, css.padding10]}>
+                                                    <View style={[css.flexDR]}>
+                                                        <Text style={[css.width25, css.f14, css.liteBlackC, css.fm]}>Job ID</Text>
+                                                        <Text style={[css.width75, css.f14, css.blackC, css.fbo]}>{item.uniqueCode}</Text>
+                                                    </View>
+                                                    <View style={[css.flexDR]}>
+                                                        <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Service</Text>
+                                                        <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.subcategory.subCategoryName}</Text>
+                                                    </View>
+                                                    <View style={[css.flexDR]}>
+                                                        <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Location</Text>
+                                                        <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.nickName}</Text>
+                                                    </View>
+                                                    <View style={[css.flexDR]}>
+                                                        <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
+                                                        <View style={[css.flexDR]}>
+                                                            <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
+                                                                {item.status === 'IN_SERVICE' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
+                                                                }
+                                                                {item.status === 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Final Payment</Text>
+                                                                }
+                                                                {item.status === 'PAYMENT_PENDING' && item.payment.payment_type != 'null' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                                }
+                                                                {item.status === 'ENROUTE' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Arrival</Text>
+                                                                }
+                                                                {item.status === 'INSPECTION' && !item.isInspectionCompleted &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Estimate</Text>
+                                                                }
+                                                                {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Accept Estimate</Text>
+                                                                }
+                                                                {item.status === 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Accept and Pay Advance</Text>
+                                                                }
+                                                                {item.status === 'INSPECTION' && item.isInspectionCompleted && item.payment.payment_type == 'CASH' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                                }
+                                                                {item.status === 'REJECTED' && item.payment.payment_type == 'null' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Call-Out Charges</Text>
+                                                                }
+                                                                {item.status === 'REESTIMATE' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>AWAIT ESTIMATE</Text>
+                                                                }
+                                                                {item.status === 'REJECTED' && item.payment.payment_type != 'null' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Await Collection</Text>
+                                                                }
+                                                                {item.status === 'UNFINISHED' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>
+                                                                        {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
+                                                                    </Text>
+                                                                }
+                                                                {item.status === 'CANCELLED' &&
+                                                                    <Text style={[css.brandC, css.f10, css.fr]}>Pay Charges</Text>
+                                                                }
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                                <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
+                                                    <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
+                                                        {item.status == 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
+                                                                onPress={() => navigation.navigate("JobdetailPage", {
+                                                                    token: token, jobId: item._id
+                                                                })}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
+                                                            </Pressable>
+                                                        }
+                                                        {item.status == 'REJECTED' && item.payment.payment_type == 'null' &&
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
+                                                                onPress={() => navigation.navigate("JobdetailPage", {
+                                                                    token: token, jobId: item._id
+                                                                })}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
+                                                            </Pressable>
+                                                        }
+                                                        {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                                onPress={() => inspectionAcceptReject('APPROVE', item._id)}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f12, css.fm]}>AcceptA</Text>
+                                                            </Pressable>
+                                                        }
+                                                        {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                                onPress={() => inspectionAcceptReject('APPROVE', item._id)}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
+                                                            </Pressable>
+                                                        }
+
+                                                        {item.status == 'RATING' &&
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                                onPress={() => navigation.navigate("JobdetailPage", {
+                                                                    token: token, jobId: item._id
+                                                                })}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f12, css.fm]}>Rate</Text>
+                                                            </Pressable>
+                                                        }
+                                                        <Pressable
+                                                            style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: '30%', height: 40 }]}
+                                                            onPress={() => navigation.navigate("JobdetailPage", {
+                                                                token: token, jobId: item._id
+                                                            })}
+                                                        >
+                                                            <Text style={[css.brandC, css.f12, css.fm]}>View Details</Text>
+                                                        </Pressable>
                                                     </View>
                                                 </View>
                                             </View>
-                                            <View style={[styles.bookingFooter, css.padding10, css.liteGreyBG,]}>
-                                                <View style={[css.flexDR, { justifyContent: 'flex-end' }]}>
-                                                    {item.status == 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
-                                                        <Pressable
-                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
-                                                            onPress={() => navigation.navigate("JobdetailPage", {
-                                                                token: token, jobId: item._id
-                                                            })}
-                                                        >
-                                                            <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
-                                                        </Pressable>
-                                                    }
-                                                    {item.status == 'REJECTED' && item.payment.payment_type == 'null' &&
-                                                        <Pressable
-                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10]}
-                                                            onPress={() => navigation.navigate("JobdetailPage", {
-                                                                token: token, jobId: item._id
-                                                            })}
-                                                        >
-                                                            <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
-                                                        </Pressable>
-                                                    }
-                                                    {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
-                                                        <Pressable
-                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                            onPress={() => inspectionAcceptReject('APPROVE', item._id)}
-                                                        >
-                                                            <Text style={[css.whiteC, css.f12, css.fm]}>AcceptA</Text>
-                                                        </Pressable>
-                                                    }
-                                                    {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
-                                                        <Pressable
-                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                            onPress={() => inspectionAcceptReject('APPROVE', item._id)}
-                                                        >
-                                                            <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
-                                                        </Pressable>
-                                                    }
-
-                                                    {item.status == 'RATING' &&
-                                                        <Pressable
-                                                            style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                            onPress={() => navigation.navigate("JobdetailPage", {
-                                                                token: token, jobId: item._id
-                                                            })}
-                                                        >
-                                                            <Text style={[css.whiteC, css.f12, css.fm]}>Rate</Text>
-                                                        </Pressable>
-                                                    }
-                                                    <Pressable
-                                                        style={[css.whiteBG, css.cButtonWH, { borderWidth: 1, borderColor: '#2eb0e4', width: '30%', height: 40 }]}
-                                                        onPress={() => navigation.navigate("JobdetailPage", {
-                                                            token: token, jobId: item._id
-                                                        })}
-                                                    >
-                                                        <Text style={[css.brandC, css.f12, css.fm]}>View Details</Text>
-                                                    </Pressable>
-                                                </View>
-                                            </View>
                                         </View>
+
                                     )} />
                             </View>
                             :

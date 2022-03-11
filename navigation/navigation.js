@@ -29,6 +29,7 @@ import Getgeniescreen3 from '../screens/Booking/Getgeniescreen3';
 import Getgeniescreen4 from '../screens/Booking/Getgeniescreen4';
 import Getgeniescreen5 from '../screens/Booking/Getgeniescreen5';
 import Browser from '../screens/Browser';
+import { TabBar } from 'react-native-tab-view';
 
 let imagePath = '../assets/icons/'
 let imagePathImage = '../assets/icons/images/'
@@ -42,7 +43,13 @@ const StackScreen = ({ navigation }) => {
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomePage">
             <Stack.Screen name="HomePage" component={HomeTab} options={{ gestureEnabled: false }} screenOptions={{ headerShown: false }} />
             <Stack.Screen name="MyBookingPage" component={HomeTab} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="GetgenieCategories" component={GetgenieCategories} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage1" component={Getgeniescreen1} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage2" component={Getgeniescreen2} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage3" component={Getgeniescreen3} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage4" component={Getgeniescreen4} options={{ gestureEnabled: false }} />
+            <Stack.Screen name="GetgeniePage5" component={Getgeniescreen5} options={{ gestureEnabled: false }} />
             <Stack.Screen name="OfferPage" component={HomeTab} options={{ gestureEnabled: false }} />
             <Stack.Screen name="AccountPage" component={HomeTab} options={{ gestureEnabled: false }} />
             <Stack.Screen name="SettingAddCardPage" component={SettingAddCardScreen} options={{ gestureEnabled: false }} />
@@ -72,14 +79,8 @@ const MyBookingStackScreen = ({ navigation }) => {
 
 const GetgenieStackScreen = ({ navigation }) => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="GetgeniePage">
-            <Stack.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgenieCategories" component={GetgenieCategories} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage1" component={Getgeniescreen1} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage2" component={Getgeniescreen2} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage3" component={Getgeniescreen3} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage4" component={Getgeniescreen4} options={{ gestureEnabled: false }} />
-            <Stack.Screen name="GetgeniePage5" component={Getgeniescreen5} options={{ gestureEnabled: false }} />
+        <Stack.Navigator initialRouteName="GetgeniePage" options={{ headerShown: false }}>
+            <Stack.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }
@@ -141,7 +142,7 @@ const HomeTab = ({ navigation }) => {
                             source={require(imagePath + "bookings.png")}
                         />
                     );
-                } else if (route.name === "GetgenieScreen") {
+                } else if (route.name === "GetgeniePage") {
                     return (
                         <Image
                             style={{ width: 70, height: 70, marginTop: -15 }}
@@ -170,8 +171,8 @@ const HomeTab = ({ navigation }) => {
             },
         })}>
             <Tab.Screen name="Home" component={HomeStackScreen} />
-            {login ? <Tab.Screen name="Bookings" component={MyBookingStackScreen} /> : navigation.navigate('Account')}
-            <Tab.Screen name="GetgenieScreen" component={GetgenieScreen} options={{ title: "", }} />
+            <Tab.Screen name="Bookings" component={MyBookingStackScreen} />
+            <Tab.Screen name="GetgeniePage" component={GetgenieStackScreen} options={{ title: "", headerShown: false, tabBarStyle: { display: "none" } }} />
             <Tab.Screen name="Offers" component={OfferStackScreen} />
             <Tab.Screen name="Account" component={AccountStackScreen} />
         </Tab.Navigator>

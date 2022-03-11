@@ -228,8 +228,7 @@ const Login = (props) => {
                 </View>
             </ScrollView>
             <View style={styles.centeredView}>
-                {
-                    loginModal &&
+                {loginModal &&
                     <LoginModal
                         changeData={loginModal}
                         falseData={(data) => setLoginModal(data)}
@@ -248,7 +247,6 @@ const Login = (props) => {
                 animationOut='fadeOut'
                 animationOutTiming={700}
                 coverScreen={true}
-                useNativeDriver={true}
                 useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >

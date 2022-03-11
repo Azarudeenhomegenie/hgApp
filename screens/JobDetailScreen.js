@@ -26,9 +26,10 @@ import axios from 'axios'
 import Modal from 'react-native-modal';
 import StarRating from 'react-native-star-rating';
 import StatusBarAll from "../components/StatusBar";
+// import GenieModal from "../components/Modals/GenieModal";
 import { List, Checkbox, RadioButton } from 'react-native-paper';
 import { connect, useDispatch, useSelector } from "react-redux";
-import css, { alignItemsC, justifyContentC } from '../components/commonCss';
+import css from '../components/commonCss';
 import { loadJobDetails, getJobDetail, getGenie, addRating, updateInspection, deletetheJob, rejectAdvancePayment } from "../reducers/jobDetailReducer";
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
@@ -99,6 +100,8 @@ export default function JobDetailScreen({ route, props, navigation }) {
             let array = jsonData.data;
             console.log('genieData', array);
             setGenieData(array);
+            console.log('testGenie');
+            // <GenieModal setGenieModal={true} />
             setGenieModal(true);
         } catch (error) {
             console.error(error);
@@ -846,6 +849,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     }
                 </View>
             } */}
+            {/* <GenieModal /> */}
             <Modal
                 animationType="fade"
                 isVisible={genieModal}

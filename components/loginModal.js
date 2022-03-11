@@ -27,7 +27,6 @@ import CountryPicker from 'rn-country-picker';
 
 const LoginModal = (props) => {
     const dispatch = useDispatch();
-
     const [email, setEmail] = useState(null);
     const [userName, setUserName] = useState(null);
     const [nameCheck, setNameCheck] = useState(false);
@@ -244,9 +243,9 @@ const LoginModal = (props) => {
                 isVisible={true} hasBackdrop={true}
             >
                 <View>
-                    <View style={[styles.modalView], { padding: 15 }}>
-                        <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                            <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                    <View style={[styles.modalView, { padding: 15 }]}>
+                        <View style={[styles.signupModalContainer, { borderRadius: 10, backgroundColor: '#fff' }]}>
+                            <View style={[styles.modalHeader, { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }]}>
                                 <Pressable
                                     style={[styles.button, styles.buttonClose]}
                                     onPress={() => setRegisterModal(!registerModal)}
@@ -256,7 +255,7 @@ const LoginModal = (props) => {
                                 <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>SIGNUP</Text>
                                 <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Signup and enjoy all the features including our amazing offers.</Text>
                             </View>
-                            <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                            <View style={[styles.modalBody, { alignItems: 'center', padding: 20 }]}>
                                 <TextInput
                                     style={[styles.input]}
                                     id="Name"
@@ -288,7 +287,7 @@ const LoginModal = (props) => {
                                     <Text style={[styles.offerBooknowText]}>SIGNUP</Text>
                                 </Pressable>
                             </View>
-                            <View style={[styles.modalFooter], { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+                            <View style={[styles.modalFooter, { backgroundColor: '#F4F4F4', padding: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }]}>
                                 <Pressable
                                     onRequestClose={() => {
                                         Alert.alert("Modal has been closed.");
@@ -313,9 +312,9 @@ const LoginModal = (props) => {
                 isVisible={true} hasBackdrop={true}
             >
                 <View >
-                    <View style={[styles.modalView], { padding: 15 }}>
-                        <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                            <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                    <View style={[styles.modalView, { padding: 15 }]}>
+                        <View style={[styles.signupModalContainer, { borderRadius: 10, backgroundColor: '#fff' }]}>
+                            <View style={[styles.modalHeader, { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }]}>
                                 <Pressable
                                     style={[styles.button, styles.buttonClose]}
                                     onPress={() => setOtpModal(!otpModal)}
@@ -329,7 +328,7 @@ const LoginModal = (props) => {
                                 <Text style={[css.fm, css.f18, css.blackC, css.marginT20, css.textCenter]}>ONE TIME PASSCODE (OTP)</Text>
                                 <Text style={[css.fm, css.f14, css.greyC, css.marginT5, css.textCenter]}>Please enter 4 digit code sent via SMS</Text>
                             </View>
-                            <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                            <View style={[styles.modalBody, { alignItems: 'center', padding: 20 }]}>
                                 <View style={[css.flexDR]}>
                                     <TextInput
                                         style={[css.borderGrey1, css.borderRadius10, css.textCenter, css.marginR10, css.f24, css.fm, css.blackC, css.width15, { height: 45 }]}
@@ -388,7 +387,7 @@ const LoginModal = (props) => {
                                 {/* <Text style={{ color: 'green' }}>{otpSend ? 'OTP Sent' : 'OTP Sent Again'}</Text> */}
                                 <Text style={[css.fm, css.f14, { color: 'green' }]}>{otpSend ? 'OTP Sent' : 'OTP Sent Again'}</Text>
                             </View>
-                            <View style={[styles.modalFooter], { paddingBottom: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+                            <View style={[styles.modalFooter, { paddingBottom: 20, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }]}>
                                 <Pressable
                                     style={[styles.brand]}
                                     onPress={() => ResetOtpApi()}

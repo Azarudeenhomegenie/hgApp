@@ -117,7 +117,6 @@ const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token
                 animationOutTiming={700}
                 coverScreen={true}
                 useNativeDriver={true}
-                useNativeDriver={true}
                 hideModalContentWhileAnimating={true}
             >
                 <View style={css.centeredView}>

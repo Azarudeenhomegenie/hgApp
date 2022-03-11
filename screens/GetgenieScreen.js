@@ -35,6 +35,7 @@ import Getgeniescreen3 from "./Booking/Getgeniescreen3";
 import Getgeniescreen4 from "./Booking/Getgeniescreen4";
 import Getgeniescreen5 from "./Booking/Getgeniescreen5";
 let categoryShowAll = 'categoryScreen4';
+global.gen = 1
 export default function GetgenieScreen({ navigation }) {
     const [searchQuery, setSearchQuery] = useState('');
     const onChangeSearch = query => setSearchQuery(query);
@@ -45,13 +46,12 @@ export default function GetgenieScreen({ navigation }) {
     const [categoryScreen4, setCategoryScreen4] = useState(false);
     const [categoryScreen5, setCategoryScreen5] = useState(false);
     useEffect(() => {
-        console.log(global.gen)
+        console.log('globalGen', global.gen)
     }, [global.gen])
     return (
         <SafeAreaView>
             <StatusBarAll />
-            <GetgenieCategories />
-            {/* {
+            {
                 global.gen == 1 ?
                     <GetgenieCategories />
                     : global.gen == 2 ?
@@ -66,11 +66,7 @@ export default function GetgenieScreen({ navigation }) {
                                         <Getgeniescreen5 />
                                         : null
 
-            } */}
-            {/* <View style={[css.centeredView, css.padding30, { flex: 1 }]}>
-                <Text style={[css.fm, css.f24, css.blackC]}>Working in progress</Text>
-                <Pressable><Text>Go Back</Text></Pressable>
-            </View> */}
+            }
         </SafeAreaView >
     );
 }

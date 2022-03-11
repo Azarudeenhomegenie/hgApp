@@ -574,18 +574,22 @@ export const getCurrentDetails = (data) => {
             defaultOptions.reditems = false;
             break;
         case "CANCELLED":
-            if ((totalCharges == 0 && !driverData)) {
-                defaultOptions.showAction = false;
-                defaultOptions.reditems = false;
-            } else if ((totalCharges > 0)) {
+            console.log('testCancel0');
+            if ((totalCharges > 0)) {
                 defaultOptions.showAction = ' - PAY CHARGES ';
                 defaultOptions.reditems = true;
+                defaultOptions.Payment = true;
+                console.log('testCancel1');
+            } else if ((totalCharges == 0 && !driverData)) {
+                defaultOptions.showAction = false;
+                defaultOptions.reditems = false;
+                console.log('testCancel2');
             }
             if (payment && payment["payment_type"]) {
                 defaultOptions.showAction = " - AWAIT COLLECTION ";
                 defaultOptions.reditems = false;
+                console.log('testCancel3');
             }
-
             break;
         case "REJECTED":
 
