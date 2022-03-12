@@ -30,7 +30,7 @@ import LoginModal from "../components/loginModal";
 import StatusBarAll from "../components/StatusBar";
 import css, { brandC } from "../components/commonCss";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { getCurrentBookings, getPastBookings, loadBookings, updateInspection } from '../reducers/bookingsReducer';
+import { getCurrentBookings, getPastBookings, loadBookings, updateInspection } from '../reducers/myBookingsReducer';
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
@@ -159,7 +159,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                         <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                         <View style={[css.flexDR]}>
                                                             <Text style={[css.imgFull, css.f12, css.blackC, css.fm, css.alignSelfC]}>{item.status}{'  '}
-                                                                {item.status === 'IN_SERVICE' &&
+                                                                {/* {item.status === 'IN_SERVICE' &&
                                                                     <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
                                                                 }
                                                                 {item.status === 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
@@ -199,7 +199,8 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                                 }
                                                                 {item.status === 'CANCELLED' &&
                                                                     <Text style={[css.brandC, css.f10, css.fr]}>Pay Charges</Text>
-                                                                }
+                                                                } */}
+                                                                <Text style={[css.brandC, css.f10, css.fr]}>{item.showAction}</Text>
                                                             </Text>
                                                         </View>
                                                     </View>

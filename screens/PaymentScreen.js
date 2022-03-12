@@ -34,7 +34,7 @@ const windowHeight = Dimensions.get('window').height;
 
 import { useDispatch, useSelector } from "react-redux";
 import { updatePayment } from "../reducers/jobDetailReducer";
-import { getCurrentBookings, loadBookings } from '../reducers/bookingsReducer'
+import { getCurrentBookings, loadBookings } from '../reducers/myBookingsReducer'
 import { getLoggedInStatus, getUser, getAccessToken } from '../reducers/authReducer';
 
 const PaymentScreen = ({ props, navigation, currentBookings, pastBookings, token, route }) => {

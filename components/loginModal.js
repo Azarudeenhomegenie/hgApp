@@ -67,6 +67,7 @@ const LoginModal = (props) => {
         //console.log(data)
         if (data.isRegistered) {
             setActiveModal('otp');
+            firtOtp.current.focus()
         } else {
             setActiveModal('register');
         }
@@ -170,9 +171,9 @@ const LoginModal = (props) => {
                     isVisible={true} hasBackdrop={true}
                 >
                     <View >
-                        <View style={[styles.modalView], { padding: 15 }}>
-                            <View style={[styles.signupModalContainer], { borderRadius: 10, backgroundColor: '#fff' }}>
-                                <View style={[styles.modalHeader], { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }}>
+                        <View style={[styles.modalView, { padding: 15 }]}>
+                            <View style={[styles.signupModalContainer, { borderRadius: 10, backgroundColor: '#fff' }]}>
+                                <View style={[styles.modalHeader, { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }]}>
                                     <Pressable
                                         style={[styles.button, styles.buttonClose]}
                                         onPress={() => props.falseData(false)}
@@ -186,7 +187,7 @@ const LoginModal = (props) => {
                                     <Text style={[css.fm, css.f16, css.blackC, css.marginT20, css.textCenter]}>Login/Signup to HomeGenie</Text>
                                     <Text style={[css.fm, css.f12, css.greyC, css.marginT5, css.textCenter]}>Login/Signup to access your stored addressess and service booking details.</Text>
                                 </View>
-                                <View style={[styles.modalBody], { alignItems: 'center', padding: 20 }}>
+                                <View style={[styles.modalBody, { alignItems: 'center', padding: 20 }]}>
                                     <View style={[styles.flexRow, css.alignItemsC, { width: '90%' }]}>
                                         <CountryPicker
                                             disable={false}

@@ -11,7 +11,7 @@ export const defaultOptions = {
 }
 
 
-export const getJobDetailsOption = (type, data) => {
+export const getMyBookingsOption = (type, data) => {
     switch (type) {
         case "REQUESTED":
             return getRequestOption(data);

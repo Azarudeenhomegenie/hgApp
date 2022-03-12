@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BASE_URL } from "../base_file";
-
+import { myBookingConverter } from '../converters/myBookingConverter';
 
 async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
@@ -58,9 +58,11 @@ export const loadBookings = (token) => async dispatch => {
         const res = await axios.get(`${BASE_URL}customer/getmybookings`, { headers: { Authorization: `Bearer ${token}` } });
         // console.log('response ', res.data);
         const data = res.data.data;
+        const pastBooking = myBookingConverter.fromApi(data.pastBooking);
+        const upcomingAppointment = myBookingConverter.fromApi(data.upcomingAppointment);
         const payload = {
-            pastBookings: data.pastBooking,
-            currentBookings: data.upcomingAppointment
+            pastBookings: pastBooking,
+            currentBookings: upcomingAppointment
         };
         console.log('Loaded');
         dispatch({ type: LOAD_BOOKINGS_SUCCESS, payload });

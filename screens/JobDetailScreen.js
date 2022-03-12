@@ -30,16 +30,16 @@ import StatusBarAll from "../components/StatusBar";
 import { List, Checkbox, RadioButton } from 'react-native-paper';
 import { connect, useDispatch, useSelector } from "react-redux";
 import css from '../components/commonCss';
-import { loadJobDetails, getJobDetail, getGenie, addRating, updateInspection, deletetheJob, rejectAdvancePayment } from "../reducers/jobDetailReducer";
+import { loadJobDetails, getJobDetail, getGenie, loadGenie, addRating, updateInspection, deletetheJob, rejectAdvancePayment, } from "../reducers/jobDetailReducer";
 import { BASE_URL } from '../base_file';
 let imgPath = '../assets/icons/';
 let imgPathImage = '../assets/icons/images/';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 //let Genie = 'yes'
-const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
+// const wait = (timeout) => {
+//     return new Promise(resolve => setTimeout(resolve, timeout));
+// }
 export default function JobDetailScreen({ route, props, navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [isLoading, setLoading] = useState(true);
@@ -50,9 +50,10 @@ export default function JobDetailScreen({ route, props, navigation }) {
     const [typeModal, settypeModal] = useState(false);
     const toggletypeModal = () => { settypeModal(!typeModal) };
 
-    const [genieData, setGenieData] = useState(null);
+    //const [genieData, setGenieData] = useState(null);
     const [genieModal, setGenieModal] = useState(false);
     const dispatch = useDispatch();
+    let genieData = useSelector(getGenie) || null;
     let jobdetailsData = useSelector(getJobDetail);
     jobdetailsData = jobdetailsData ? jobdetailsData : null
     // console.log('jobdetailsData_jobDetailScreen', jobdetailsData);
@@ -102,7 +103,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
             setGenieData(array);
             console.log('testGenie');
             // <GenieModal setGenieModal={true} />
-            setGenieModal(true);
+            //setGenieModal(true);
         } catch (error) {
             console.error(error);
         } finally {
@@ -192,30 +193,32 @@ export default function JobDetailScreen({ route, props, navigation }) {
         }
     }
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         const loadJobdetails = async () => {
-    //             await dispatch(loadJobDetails(token, jobId));
-    //         };
-
-    //         loadJobdetails();
-    //         console.log('loadJobdetails', loadJobdetails);
-    //     }, [jobId, isFocused])
-    // );
-
-    const onRefresh = useFocusEffect(
+    useFocusEffect(
         useCallback(() => {
-            setRefreshing(true);
             const loadJobdetails = async () => {
-
-                wait(2000).then(() => setRefreshing(false));
-                await dispatch(loadJobDetails(token, jobId));
+                const jD = await dispatch(loadJobDetails(token, jobId));
+                console.log('jobdetailsData_idNNN', jD._id);
+                await dispatch(loadGenie(token, jD.driverData._id));
             };
-            loadJobdetails();
 
+            loadJobdetails();
             console.log('loadJobdetails', loadJobdetails);
         }, [jobId, isFocused])
     );
+
+    // const onRefresh = useFocusEffect(
+    //     useCallback(() => {
+    //         setRefreshing(true);
+    //         const loadJobdetails = async () => {
+
+    //             wait(2000).then(() => setRefreshing(false));
+    //             await dispatch(loadJobDetails(token, jobId));
+    //         };
+    //         loadJobdetails();
+
+    //         console.log('loadJobdetails', loadJobdetails);
+    //     }, [jobId, isFocused])
+    // );
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFBFF" }}>
             <StatusBarAll />
@@ -250,12 +253,12 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 }
             </View>
             <ScrollView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
+            // refreshControl={
+            //     <RefreshControl
+            //         refreshing={refreshing}
+            //         onRefresh={onRefresh}
+            //     />
+            // }
             >
                 <View style={[css.section]}>
                     <View style={css.container}>
@@ -270,7 +273,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         <View style={[css.flexDR, styles.genieHeader, css.padding20]}>
                                             <View style={[css.flexDC, css.marginR20, css.width30]}>
                                                 <Image style={[styles.genieLogo, css.imgg90, css.borderBlack1, { borderRadius: 50, }]} source={{ uri: jobdetailsData.driverData.profilePicURL.original }} />
-                                                <Pressable style={[css.alignCenter, css.marginT5]} onPress={() => getGenieData(jobdetailsData.driverData._id)}><Text style={[css.brandC, css.f12, css.fm, css.textCenter]}>View Profile</Text></Pressable>
+                                                <Pressable style={[css.alignCenter, css.marginT5]} onPress={() => setGenieModal(true)}><Text style={[css.brandC, css.f12, css.fm, css.textCenter]}>View Profile</Text></Pressable>
                                             </View>
                                             <View style={[css.width60]}>
                                                 <View style={[css.line10, css.paddingT10]}>
@@ -362,6 +365,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                             : 'Scheduled' ? <Text style={[css.alignSelfC, css.orangeC, css.fm, css.f12]}>{jobdetailsData.serviceType}</Text>
                                                                 : null
                                                     }
+                                                    {/* {jobdetailsData.serviceType} */}
                                                 </View>
                                             </View>
                                             <View style={[css.flexDRSB]}>
@@ -406,26 +410,24 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                 </View>
                                             </View>
                                         </View>
-                                        {jobdetailsData && !jobdetailsData.materialImages ?
+                                        {jobdetailsData && jobdetailsData.materialImages.length ?
                                             <View>
-                                                {jobdetailsData.materialImages &&
-                                                    <FlatList
-                                                        data={jobdetailsData.materialImages}
-                                                        keyExtractor={(item, index) => {
-                                                            return item._id;
-                                                        }}
-                                                        renderItem={({ item }) => (
-                                                            <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
-                                                                <Text style={[css.brandC, css.f14, css.fr, css.alignSelfC]}>Material Image Shared</Text>
-                                                                <Image
-                                                                    resizeMode="cover"
-                                                                    style={{ width: 100, height: 60, borderRadius: 10 }}
-                                                                    source={{ uri: item.original }}
-                                                                />
-                                                            </View>
-                                                        )}
-                                                    />
-                                                }
+                                                <FlatList
+                                                    data={jobdetailsData.materialImages}
+                                                    keyExtractor={(item, index) => {
+                                                        return item._id;
+                                                    }}
+                                                    renderItem={({ item }) => (
+                                                        <View style={[css.borderRadius10, css.borderGrey1, css.padding20, css.marginB10, css.flexDRSB]}>
+                                                            <Text style={[css.brandC, css.f14, css.fr, css.alignSelfC]}>Material Image Shared</Text>
+                                                            <Image
+                                                                resizeMode="cover"
+                                                                style={{ width: 100, height: 60, borderRadius: 10 }}
+                                                                source={{ uri: item.original }}
+                                                            />
+                                                        </View>
+                                                    )}
+                                                />
                                             </View>
                                             :
                                             <View>
@@ -761,14 +763,14 @@ export default function JobDetailScreen({ route, props, navigation }) {
                 </View>
             </ScrollView>
             {jobdetailsData && jobdetailsData.cancel &&
-                <View style={[css.justifyContentC, alignItemsC, css.marginB10]}>
+                <View style={[css.justifyContentC, css.alignItemsC, css.marginB10]}>
                     <Pressable style={[styles.cancelButton]} onPress={() => toggleJobDeleteModal()}>
                         <Text style={[css.blackC, css.fbo, css.f18]}>Cancel Request</Text>
                     </Pressable>
                 </View>
             }
             {jobdetailsData && jobdetailsData.Payment &&
-                <View style={[css.justifyContentC, alignItemsC, css.marginB10]}>
+                <View style={[css.justifyContentC, css.alignItemsC, css.marginB10]}>
                     <Pressable
                         style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow]}
                         onPress={() => navigation.navigate('PaymentPage',
@@ -780,7 +782,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
             }
             {jobdetailsData && jobdetailsData.accept && jobdetailsData.advancePayment === null &&
                 <View style={[css.alignItemsC, css.justifyContentC]}>
-                    <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                    <View style={[css.justifyContentC, css.alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
                         <Pressable
                             onPress={() => inspectionAccept('APPROVE', jobdetailsData._id)}
                             style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
@@ -798,7 +800,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
             }
             {jobdetailsData && jobdetailsData.accept && jobdetailsData.advancePayment != null &&
                 <View style={[css.alignItemsC, css.justifyContentC]}>
-                    <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                    <View style={[css.justifyContentC, css.alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
                         <Pressable
                             onPress={() => inspectionAccept('APPROVE', jobdetailsData._id)}
                             style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
@@ -817,7 +819,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
             {/* {jobdetailsData && jobdetailsData.accept &&
                 <View style={[css.alignItemsC, css.justifyContentC]}>
                     {jobdetailsData && jobdetailsData.isInspectionCompleted && !jobdetailsData.advancePayment ?
-                        <View style={[css.justifyContentC, alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
+                        <View style={[css.justifyContentC, css.alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
                             <Pressable
                                 onPress={() => inspectionAccept('APPROVE', jobdetailsData._id)}
                                 style={[styles.cancelButton, css.yellowBG, css.borderRadius30, css.boxShadow, css.width50, css.marginR5]}
@@ -1056,7 +1058,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                 <View style={[css.line20]}>
                                     <Text style={[css.f18, css.fsb, css.ttC, css.blackC,]}>What's included</Text>
                                     <Text style={[css.fm, css.blackC, css.spaceB5,]}>
-                                        {jobdetailsData.subCategory.Notes}
+                                        {jobdetailsData.Notes1}
                                     </Text>
                                 </View>
                                 <View style={[css.line20]}>
@@ -1089,14 +1091,20 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         </View>
                                     </View>
                                 </View>
-                                {jobdetailsData.subCategory.customerNotes &&
+                                <View style={[css.line20]}>
+                                    <Text style={[css.f18, css.fr, css.ttC, css.blackC,]}>Note:</Text>
+                                    <Text style={[css.fm, css.blackC, css.spaceB5,]}>
+                                        {jobdetailsData.Notes2}
+                                    </Text>
+                                </View>
+                                {/* {jobdetailsData.subCategory.customerNotes &&
                                     <View style={[css.line20]}>
                                         <Text style={[css.f18, css.fsb, css.ttC, css.blackC,]}>Notes</Text>
                                         <Text style={[css.fm, css.blackC, css.spaceB5,]}>
                                             {jobdetailsData.subCategory.customerNotes}
                                         </Text>
                                     </View>
-                                }
+                                } */}
                             </View>
                         </ScrollView>
                     </View>
@@ -1147,7 +1155,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                         {jobdetailsData && jobdetailsData.subCategory && !!jobdetailsData.subCategory.pricingUnitNote &&
                                             <View>
                                                 <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
-                                                    {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{'\n'}
+                                                    {jobdetailsData.subCategory.pricingUnitNote.mainUnitNote}{' '}
                                                     {jobdetailsData.subCategory.pricingUnitNote.additionalUnitNote}
                                                 </Text>
                                                 <Text style={[css.fm, css.blackC, css.spaceB10, css.f14]}>
@@ -1225,8 +1233,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </View>
                 }
             </Modal>
-            {
-                jobdetailsData && jobdetailsData.status == 'RATING' &&
+            {jobdetailsData && jobdetailsData.status == 'RATING' &&
                 <Modal
                     isVisible={ratingModal}
                     animationIn='fadeIn'
