@@ -55,6 +55,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
     // console.log('jobdetailsData_jobDetailScreen', jobdetailsData);
     const token = route.params.token
     const jobId = route.params.jobId
+    const bookingStatus = route.params.bookingStatus
     const isFocused = useIsFocused();
     console.log('jobId_jobDetailScreen', jobId);
     console.log('token_jobDetailScreen', token);
@@ -193,7 +194,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
     useFocusEffect(
         useCallback(() => {
             const loadJobdetails = async () => {
-                const jD = await dispatch(loadJobDetails(token, jobId));
+                const jD = await dispatch(loadJobDetails(token, jobId, bookingStatus));
                 console.log('jobdetailsData_idNNN', jD._id);
                 await dispatch(loadGenie(token, jD.driverData._id));
                 const cancelCharge = await dispatch(getJobCancelCharge(token, jD._id));

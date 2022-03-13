@@ -168,10 +168,12 @@ const LoginModal = (props) => {
             <>
                 <Modal
                     animationType="fade"
-                    isVisible={true} hasBackdrop={true}
+                    isVisible={true}
+                    hasBackdrop={true}
+                    style={{ padding: 0 }}
                 >
                     <View >
-                        <View style={[styles.modalView, { padding: 15 }]}>
+                        <View style={[styles.modalView,]}>
                             <View style={[styles.signupModalContainer, { borderRadius: 10, backgroundColor: '#fff' }]}>
                                 <View style={[styles.modalHeader, { backgroundColor: '#F4F4F4', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 20 }]}>
                                     <Pressable
@@ -515,10 +517,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     modalView: {
-        margin: 20,
+        //margin: 20,
         backgroundColor: "white",
         borderRadius: 10,
-        padding: 20,
+        //padding: 20,
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {

@@ -1,9 +1,9 @@
 import { getPastDetail, getCurrentDetails } from '../helpers/jobDetail';
 
 export const JobDetailConverter = {
-    fromApi: (data) => {
+    fromApi: (data, bookingStatus) => {
         let detail = data;
-
+        console.log('testungggggg', bookingStatus);
         const {
             _id,
             subCategory,
@@ -150,9 +150,9 @@ export const JobDetailConverter = {
 
         const result = {
             ...detail,
-            //...(true === true ? getCurrentDetails(detail) : getPastDetail(detail))
+            //...(getCurrentDetails(detail))
             //...(['SETTLED', 'CANCELED'].indexOf(status) === -1 ? getCurrentDetails(detail) : getPastDetail(detail))
-            ...(['SETTLED', 'CANCELLED'].indexOf(status) === -1 ? getCurrentDetails(detail) : getPastDetail(detail))
+            ...(bookingStatus === 'ongoing' ? getCurrentDetails(detail) : getPastDetail(detail))
         }
         // console.log('charges_charges', result.charges);
         // console.log('charges_hideLabourCharges', result.hideLabourCharges);

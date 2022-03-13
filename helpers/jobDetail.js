@@ -136,10 +136,10 @@ export const getPastDetail = (data) => {
         // $("#" + id + "-total").html(resultdata.charges.callOutCharges);
         // $("." + id + "-settledjobsubstatus").html("( - Rejected and paid )");
     } else if (status == 'CANCELLED') {
-        console.log('stupid fellow');
-        //detail.showAction = '- Cancelled and paid';
+        console.log('Cancelled and paid');
+        detail.showAction = '- Cancelled and paid';
         if (totalCharges) {
-            //detail.showAction = '- Cancelled and paid';
+            detail.showAction = '- Cancelled and paid';
         }
     }
     return detail;
@@ -585,7 +585,7 @@ export const getCurrentDetails = (data) => {
             defaultOptions.reditems = false;
             break;
         case "CANCELLED":
-            console.log('testCancel0', totalCharges);
+            console.log('testCancel0', totalCharges, payment["payment_type"]);
             if ((totalCharges > 0)) {
                 defaultOptions.showAction = ' - PAY CHARGES ';
                 defaultOptions.reditems = true;
@@ -596,7 +596,7 @@ export const getCurrentDetails = (data) => {
                 defaultOptions.reditems = false;
                 console.log('testCancel2');
             }
-            if (payment && payment["payment_type"]) {
+            if (payment && payment["payment_type"] == 'CASH') {
                 defaultOptions.showAction = " - AWAIT COLLECTION ";
                 defaultOptions.reditems = false;
                 console.log('testCancel3');
