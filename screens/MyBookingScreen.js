@@ -287,7 +287,8 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                 <View style={[css.flexDR]}>
                                                     <Text style={[css.width25, css.f12, css.liteBlackC, css.fr]}>Status</Text>
                                                     <Text style={[css.width75, css.f12, css.blackC, css.fm]}>{item.status}{' '}
-                                                        {item.status === 'IN_SERVICE' &&
+                                                        <Text style={[css.brandC, css.f10, css.fr]}>{item.showAction}</Text>
+                                                        {/* {item.status === 'IN_SERVICE' &&
                                                             <Text style={[css.brandC, css.f10, css.fr]}>Await Completion</Text>
                                                         }
                                                         {item.status === 'PAYMENT_PENDING' && item.payment.payment_type == 'null' &&
@@ -321,7 +322,7 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                             <Text style={[css.brandC, css.f10, css.fr]}>
                                                                 {moment(new Date(item.utc_timing.requestedTime)).format("Do MMM YYYY")}
                                                             </Text>
-                                                        }
+                                                        } */}
                                                     </Text>
                                                 </View>
                                             </View>
