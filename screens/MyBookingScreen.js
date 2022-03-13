@@ -186,15 +186,8 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                                 <Text style={[css.whiteC, css.f14, css.fm]}>Pay Now</Text>
                                                             </Pressable>
                                                         }
-                                                        {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment != null &&
-                                                            <Pressable
-                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
-                                                                onPress={() => inspectionAcceptReject('APPROVE', item._id)}
-                                                            >
-                                                                <Text style={[css.whiteC, css.f12, css.fm]}>AcceptA</Text>
-                                                            </Pressable>
-                                                        }
-                                                        {item.status == 'INSPECTION' && item.isInspectionCompleted && item.advancePayment === null &&
+                                                        <Text>advance value{item.advancePayment}</Text>
+                                                        {item.status == 'INSPECTION' && item.isInspectionCompleted && !item.advancePayment &&
                                                             <Pressable
                                                                 style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
                                                                 onPress={() => inspectionAcceptReject('APPROVE', item._id)}
@@ -202,7 +195,14 @@ const MyBookingScreen = ({ props, navigation }) => {
                                                                 <Text style={[css.whiteC, css.f12, css.fm]}>Accept</Text>
                                                             </Pressable>
                                                         }
-
+                                                        {item.status == 'INSPECTION' && item.isInspectionCompleted && !!item.advancePayment &&
+                                                            <Pressable
+                                                                style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}
+                                                                onPress={() => inspectionAcceptReject('APPROVE', item._id)}
+                                                            >
+                                                                <Text style={[css.whiteC, css.f12, css.fm]}>advance</Text>
+                                                            </Pressable>
+                                                        }
                                                         {item.status == 'RATING' &&
                                                             <Pressable
                                                                 style={[css.maroonBG, css.cButtonWH, css.borderRadius5, css.marginR10, { width: '30%', height: 40 }]}

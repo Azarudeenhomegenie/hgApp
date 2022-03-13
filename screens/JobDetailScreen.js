@@ -624,11 +624,12 @@ export default function JobDetailScreen({ route, props, navigation }) {
                                                     </Text></View>
                                                 </View>
                                             }
-                                            {jobdetailsData && jobdetailsData.payment_type &&
+                                            {jobdetailsData && jobdetailsData.payment.payment_type &&
                                                 <View style={[css.flexDRSB]}>
                                                     <View><Text style={[css.greyC, css.fm, css.f12]}>Method</Text></View>
                                                     <View><Text style={[css.alignSelfC, css.brandC, css.f12, css.fm]}>
-                                                        {jobdetailsData.walletData ? `WALLET (${jobdetailsData.walletData}) + CARD` : jobdetailsData.payment_type}
+                                                        {/* {jobdetailsData.payment.payment_type ? `WALLET (${jobdetailsData.walletData}) + CARD` : jobdetailsData.payment.actual_payment} */}
+                                                        {jobdetailsData.payment.payment_type ? 'CASH' + (jobdetailsData.payment.actual_payment) : jobdetailsData.payment.actual_payment}
                                                     </Text></View>
                                                 </View>
                                             }
@@ -733,7 +734,7 @@ export default function JobDetailScreen({ route, props, navigation }) {
                     </Pressable>
                 </View>
             }
-            {jobdetailsData && jobdetailsData.accept && jobdetailsData.advancePayment === null &&
+            {jobdetailsData && jobdetailsData.accept && jobdetailsData.advancePayment == null &&
                 <View style={[css.alignItemsC, css.justifyContentC]}>
                     <View style={[css.justifyContentC, css.alignItemsC, css.marginB10, css.flexDRSB, { width: '90%' }]}>
                         <Pressable
