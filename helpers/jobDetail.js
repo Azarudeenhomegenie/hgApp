@@ -136,6 +136,7 @@ export const getPastDetail = (data) => {
         // $("#" + id + "-total").html(resultdata.charges.callOutCharges);
         // $("." + id + "-settledjobsubstatus").html("( - Rejected and paid )");
     } else if (status == 'CANCELLED') {
+        console.log('stupid fellow');
         //detail.showAction = '- Cancelled and paid';
         if (totalCharges) {
             //detail.showAction = '- Cancelled and paid';
@@ -552,9 +553,19 @@ export const getCurrentDetails = (data) => {
                 defaultOptions.showAction = " - Accept and Pay Advance";
                 defaultOptions.reditems = true;
                 if (advanceCharges == estimateCharges) {
-                    // $("#" + id + "-cancel").html('<span class="{{payment_status}} status-pos hidden"></span><button class="pay-now" data-id="' + id + '" onclick="acceptOrRejectJob(\'' + id + '\', \'APPROVE\',' + results.data[0].charges.vatFinalCharges + ')"><span class="booking-btn-align">ACCEPT</span></button>');
+                    defaultOptions.accept = true;
+                    // $("#" + id + "-cancel").html('
+                    // <span class="{{payment_status}} status-pos hidden"></span>
+                    //     <button class="pay-now" data-id="' + id + '" onclick="acceptOrRejectJob(\'' + id + '\', \'APPROVE\',' + results.data[0].charges.vatFinalCharges + ')">
+                    //     <span class="booking-btn-align">ACCEPT</span>
+                    //     </button>');
                 } else {
-                    // $("#" + id + "-cancel").html('<span class="{{payment_status}} status-pos hidden"></span><button class="pay-now" data-id="' + id + '" onclick="acceptOrRejectJob(\'' + id + '\', \'APPROVE\',' + results.data[0].advancePayment + ')"><span class="booking-btn-align">ACCEPT</span></button>');
+                    defaultOptions.advancePayment = true;
+                    // $("#" + id + "-cancel").html('
+                    // <span class="{{payment_status}} status-pos hidden"></span>
+                    // <button class="pay-now" data-id="' + id + '" onclick="acceptOrRejectJob(\'' + id + '\', \'APPROVE\',' + results.data[0].advancePayment + ')">
+                    //     <span class="booking-btn-align">ACCEPT</span>
+                    //     </button>');
                 }
                 defaultOptions.cancel = true;
             } else if (isInspectionCompleted && advancePayment && advanceCharges && payment["payment_type"] == "CASH") {
@@ -574,7 +585,7 @@ export const getCurrentDetails = (data) => {
             defaultOptions.reditems = false;
             break;
         case "CANCELLED":
-            console.log('testCancel0');
+            console.log('testCancel0', totalCharges);
             if ((totalCharges > 0)) {
                 defaultOptions.showAction = ' - PAY CHARGES ';
                 defaultOptions.reditems = true;
